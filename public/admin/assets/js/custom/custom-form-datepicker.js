@@ -18,11 +18,11 @@ $(document).ready(function() {
     $('#month-view-date').datepicker({
 	    language: 'en',
 	    minView: 'months',
-	    view: 'months',	    
+	    view: 'months',
 	    dateFormat: 'MM yyyy'
 	});
     $('#time-format').datepicker({
-    	language: 'en',	    
+    	language: 'en',
 	    timeFormat: 'hh:ii aa',
 	    timepicker: true,
 	    dateTimeSeparator: ' - '
@@ -30,11 +30,11 @@ $(document).ready(function() {
     $('#multi-date').datepicker({
 	    language: 'en',
 	    dateFormat: 'dd/mm/yyyy',
-	    multipleDates: 3,  
+	    multipleDates: 3,
 	});
     $('#range-date').datepicker({
 	    language: 'en',
-	    dateFormat: 'dd/mm/yyyy',
+	    dateFormat: 'M dd, yy',
 	    range: true,
 	    multipleDatesSeparator: ' - ',
 	});
@@ -59,5 +59,5 @@ $(document).ready(function() {
 	            }
 	        }
 	    }
-	});	
+	});
 });
