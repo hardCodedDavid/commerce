@@ -255,7 +255,7 @@
                                     @endif class="custom-control-input" value="{{ $brand['id'] }}" id="{{ $brand['name'] }}">
                                     <label class="custom-control-label" for="{{ $brand['name'] }}">{{ $brand['name'] }}</label>
                                 </div>
-                            @endforeach
+                            @endforeach 
                         </div>
                     </div>
                 @endif

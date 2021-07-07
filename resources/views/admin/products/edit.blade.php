@@ -88,7 +88,7 @@
                                             <label for="regularPrice" class="col-sm-4 col-form-label">Buy Price(₦)</label>
                                             <div class="col-sm-8">
                                                 <input type="number" step="any" value="{{ old('buy_price') ?? $product['buy_price'] }}" name="buy_price" class="form-control" id="regularPrice" placeholder="100">
-                                                @error('price')
+                                                @error('buy_price')
                                                     <span class="text-danger small" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -99,7 +99,7 @@
                                             <label for="sellPrice" class="col-sm-4 col-form-label">Sell Price(₦)</label>
                                             <div class="col-sm-8">
                                                 <input type="number" step="any" value="{{ old('sell_price') ?? $product['sell_price'] }}" name="sell_price" class="form-control" id="sellPrice" placeholder="100">
-                                                @error('price')
+                                                @error('sell_price')
                                                     <span class="text-danger small" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -282,7 +282,22 @@
                         <h5 class="card-title">SubCategories</h5>
                     </div>
                     <div class="card-body" id="subCategoriesContainer">
-                        <div>Select a category</div>
+                        @if (count($categories) > 0)
+                            @foreach ($categories as $category)
+                                @foreach ($category->subCategories as $subCategory)
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" name="subcategories[]" class="category-item custom-control-input" @foreach ($product->subCategories()->get() as $currentSubCategory)
+                                        @if ($currentSubCategory['id'] == $subCategory['id'])
+                                            checked
+                                        @endif
+                                    @endforeach value="{{ $subCategory['id'] }}" id="{{ $subCategory['name'] }}">
+                                    <label class="custom-control-label" for="{{ $subCategory['name'] }}">{{ $subCategory['name'] }}</label>
+                                </div>
+                                @endforeach
+                            @endforeach
+                        @else
+                            <div>Select a category</div>
+                        @endif
                     </div>
                 </div>
                 @if (count($variations) > 0)
@@ -357,7 +372,7 @@
                 $(this).on('click', setSelectedSubCategories);
             });
 
-            setSelectedSubCategories();
+            // setSelectedSubCategories();
 
             function setSelectedSubCategories(){
                 const selectedCategories = [];

@@ -4,8 +4,8 @@
 ----------------------------------------------
 */
 "use strict";
-$(document).ready(function() {    
-    
+$(document).ready(function() {
+
     /* -----  Apex Bar Chart ----- */
     var options = {
         chart: {
@@ -19,7 +19,7 @@ $(document).ready(function() {
             bar: {
                 horizontal: false,
                 columnWidth: '25%',
-                endingShape: 'rounded'  
+                endingShape: 'rounded'
             },
         },
         dataLabels: {
@@ -44,11 +44,11 @@ $(document).ready(function() {
         xaxis: {
             categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
             axisBorder: {
-                show: true, 
+                show: true,
                 color: 'rgba(0,0,0,0.05)'
             },
             axisTicks: {
-                show: true, 
+                show: true,
                 color: 'rgba(0,0,0,0.05)'
             }
         },
@@ -75,7 +75,7 @@ $(document).ready(function() {
     );
     chart.render();
 
-    /* -----  Apex Area Chart ----- */
+    /* -----  Apex Area Chart ----- */ 
     var options = {
         chart: {
             height: 300,
@@ -110,11 +110,11 @@ $(document).ready(function() {
             type: 'datetime',
             categories: ["2018-09-19T00:00:00", "2018-09-19T01:30:00", "2018-09-19T02:30:00", "2018-09-19T03:30:00", "2018-09-19T04:30:00", "2018-09-19T05:30:00", "2018-09-19T06:30:00"],
             axisBorder: {
-                show: true, 
+                show: true,
                 color: 'rgba(0,0,0,0.05)'
             },
             axisTicks: {
-                show: true, 
+                show: true,
                 color: 'rgba(0,0,0,0.05)'
             }
         },
@@ -182,12 +182,12 @@ $(document).ready(function() {
         },
         colors:["#0442ba"],
         series: [65],
-        labels: ['Closed Ticket'],        
+        labels: ['Closed Ticket'],
     }
     var chart = new ApexCharts(
         document.querySelector("#apex-stroked-circle-guage-chart"),
         options
-    );        
+    );
     chart.render();
 
 });

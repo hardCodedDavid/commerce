@@ -37,6 +37,11 @@ class Sale extends Model
         return $sum;
     }
 
+    public function getProfit()
+    {
+        return $this->items->sum('profit');
+    }
+
     public function getTotal()
     {
         $shipping = $this->shipping_fee ?? 0;

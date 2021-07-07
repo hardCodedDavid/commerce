@@ -124,12 +124,17 @@
                         @csrf
                         <div class="form-group">
                             <label for="name" class="col-form-label">Name: <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" id="name">
+                            <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="name">
+                            @error('name')
+                                <span class="text-danger small" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label for="email" class="col-form-label">Types:</label>
                             <div class="small">Hit enter to add new subvariation</div>
-                            <input type="text" name="types" id="tagsinput-default" class="form-control" data-role="tagsinput" />
+                            <input type="text" value="{{ old('types') }}" name="types" id="tagsinput-default" class="form-control" data-role="tagsinput" />
                         </div>
                     </form>
                 </div>

@@ -124,7 +124,7 @@
                         @csrf
                         <div class="form-group">
                             <label for="name" class="col-form-label">Name: <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" id="name">
+                            <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="name">
                             @error('name')
                                 <span class="text-danger small" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -134,7 +134,7 @@
                         <div class="form-group">
                             <label for="email" class="col-form-label">Subcategories</label>
                             <div class="small">Hit enter to add new subcategory</div>
-                            <input type="text" name="subcategories" id="tagsinput-default" class="form-control" data-role="tagsinput" />
+                            <input type="text" value="{{ old('subcategories') }}" name="subcategories" id="tagsinput-default" class="form-control" data-role="tagsinput" />
                             @error('subcategories')
                                 <span class="text-danger small" role="alert">
                                     <strong>{{ $message }}</strong>

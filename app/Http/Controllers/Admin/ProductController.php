@@ -58,12 +58,13 @@ class ProductController extends Controller
 
     public function store()
     {
+        // return request()->all();
         // Validate request
         $this->validate(request(), [
             'name' => ['required', 'string', 'unique:products,name'],
             'description' => ['required'],
             'buy_price' => ['required', 'numeric'],
-            'sell_price' => ['required', 'numeric'],
+            'sell_price' => ['required', 'numeric', 'gte:buy_price'],
             'discount' => ['required', 'numeric'],
             'in_stock' => ['required', 'string'],
             'quantity' => ['required', 'numeric'],
@@ -159,7 +160,7 @@ class ProductController extends Controller
             'name' => ['required', 'string', Rule::unique('users')->ignore($product->id)],
             'description' => ['required'],
             'buy_price' => ['required', 'numeric'],
-            'sell_price' => ['required', 'numeric'],
+            'sell_price' => ['required', 'numeric', 'gte:buy_price'],
             'discount' => ['required', 'numeric'],
             'in_stock' => ['required', 'string'],
             'quantity' => ['required', 'numeric'],

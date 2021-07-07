@@ -40,7 +40,7 @@ Route::middleware(['guest:admin'])->group(function () {
 Route::middleware(['auth:admin'])->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Auth\AdminLoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
-    Route::get('/analytics', [HomeController::class, 'index'])->name('dashboard');
+    // Route::get('/analytics', [HomeController::class, 'index'])->name('dashboard');
     Route::get('/products', [ProductController::class, 'index'])->name('products');
     Route::get('/products/new', [ProductController::class, 'create'])->name('products.create');
     Route::get('/products/{product:code}/edit', [ProductController::class, 'edit'])->name('products.edit');

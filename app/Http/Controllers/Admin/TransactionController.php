@@ -191,7 +191,8 @@ class TransactionController extends Controller
                     'product_id' => $product['product'],
                     'brand_id' => $product['brand'],
                     'quantity' => $product['quantity'],
-                    'price' => $product['price']
+                    'price' => $currentProduct['sell_price'],
+                    'profit' => $currentProduct->getProfit()
                 ]);
 
                 // Assign selected variation items to sale item
@@ -309,7 +310,8 @@ class TransactionController extends Controller
                     'product_id' => $product['product'],
                     'brand_id' => $product['brand'],
                     'quantity' => $product['quantity'],
-                    'price' => $product['price']
+                    'price' => $currentProduct['sell_price'],
+                    'profit' => $currentProduct->getProfit()
                 ]);
 
                 // Assign selected variation items to sale item
@@ -398,7 +400,7 @@ class TransactionController extends Controller
         {
             $datum['sn'] = $key;
             $datum['code'] = '<a href="'. route('admin.transactions.purchases.edit', $purchase) .'">'. $purchase['code'] .'</a>';
-            $datum['supplier'] = '<a href="'. route('admin.transactions.purchases.edit', $purchase) .'">'. $purchase['supplier']['name'] .'</a>';
+            $datum['supplier'] = $purchase['supplier']['name'];
             $datum['products'] = count($purchase['items']);
             $datum['quantity'] = $purchase->getTotalQuantity();
             $datum['date'] = $purchase['date']->format('M d, Y');
@@ -441,9 +443,9 @@ class TransactionController extends Controller
         ];
 
         if (request('type')){
-            $sales = Sale::query()->latest()->where('type', request('type'))->with(['items', 'brand']);
+            $sales = Sale::query()->latest()->where('type', request('type'))->with(['items']);
         }else{
-            $sales = Sale::query()->latest()->with(['items', 'brand']);
+            $sales = Sale::query()->latest()->with(['items']);
         }
         //   Set helper variables from request and DB
         $totalData = $totalFiltered = $sales->count();

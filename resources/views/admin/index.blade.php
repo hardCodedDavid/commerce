@@ -21,7 +21,7 @@
             </div>
             <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
-                    <button class="btn btn-primary"><i class="ri-refresh-line mr-2"></i>Refresh</button>
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-primary"><i class="ri-refresh-line mr-2"></i>Refresh</a>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                     <div class="row align-items-center no-gutters">
                         <div class="col-8">
                             <p class="font-15">Total Revenue</p>
-                            <h4 class="card-title mb-0">{{ $revenue }}</h4>
+                            <h5 class="card-title mb-0">₦{{ number_format($sales) }}</h5>
                         </div>
                         <div class="col-4 text-right">
                             <span class="iconbar iconbar-md bg-primary text-white rounded"><i class="ri-arrow-right-up-line align-unset"></i></span>
@@ -52,7 +52,7 @@
                     <div class="row align-items-center no-gutters">
                         <div class="col-8">
                             <p class="font-15">Products</p>
-                            <h4 class="card-title mb-0">{{ $products }}</h4>
+                            <h5 class="card-title mb-0">{{ $products }}</h5>
                         </div>
                         <div class="col-4 text-right">
                             <span class="iconbar iconbar-md bg-primary text-white rounded"><i class="ri-money-dollar-circle-line align-unset"></i></span>
@@ -65,7 +65,7 @@
                     <div class="row align-items-center no-gutters">
                         <div class="col-8">
                             <p class="font-15">Users</p>
-                            <h4 class="card-title mb-0">{{ $users }}</h4>
+                            <h5 class="card-title mb-0">{{ $users }}</h5>
                         </div>
                         <div class="col-4 text-right">
                             <span class="iconbar iconbar-md bg-primary text-white rounded"><i class="ri-user-3-line align-unset"></i></span>
@@ -81,12 +81,12 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6 col-lg-9">
-                            <h5 class="card-title mb-0">Lead Compare</h5>
+                            <h5 class="card-title mb-0">This Year Transactions</h5>
                         </div>
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <div id="apex-bar-chart"></div>
+                    <div id="transactionMonthlyChart"></div>
                 </div>
             </div>
         </div>
@@ -101,12 +101,12 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6 col-lg-9">
-                            <h5 class="card-title mb-0">Lead Compare</h5>
+                            <h5 class="card-title mb-0">This Month Transactions</h5>
                         </div>
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <div id="apex-mixed-line-chart"></div>
+                    <div id="transactionDailyBreakdown"></div>
                 </div>
             </div>
         </div>
@@ -120,7 +120,7 @@
                             <div class="row align-items-center no-gutters">
                                 <div class="col-6">
                                     <p class="font-15">Orders</p>
-                                    <h4 class="card-title mb-0">{{ $orders }}</h4>
+                                    <h5 class="card-title mb-0">{{ $orders }}</h5>
                                 </div>
                                 <div class="col-6 text-right">
                                     <span class="piety-bar-1">5,3,9,6,5</span>
@@ -135,7 +135,7 @@
                             <div class="row align-items-center no-gutters">
                                 <div class="col-6">
                                     <p class="font-15">Sales</p>
-                                    <h4 class="card-title mb-0">10%</h4>
+                                    <h5 class="card-title mb-0">₦{{ number_format($sales) }}</h5>
                                 </div>
                                 <div class="col-6 text-right">
                                     <span class="piety-bar-2">5,3,9,6,5</span>
@@ -149,8 +149,8 @@
                         <div class="card-body">
                             <div class="row align-items-center no-gutters">
                                 <div class="col-6">
-                                    <p class="font-15">Sales</p>
-                                    <h4 class="card-title mb-0">25%</h4>
+                                    <p class="font-15">Purchases</p>
+                                    <h5 class="card-title mb-0">₦{{ number_format($purchases) }}</h5>
                                 </div>
                                 <div class="col-6 text-right">
                                     <span class="piety-bar-3">5,3,9,6,5</span>
@@ -165,10 +165,10 @@
                             <div class="row align-items-center no-gutters">
                                 <div class="col-6">
                                     <p class="font-15">Profit</p>
-                                    <h4 class="card-title mb-0">7%</h4>
+                                    <h5 class="card-title mb-0">₦{{ number_format($profit) }}</h5>
                                 </div>
                                 <div class="col-6 text-right">
-                                    <span class="piety-bar-4">5,3,9,6,5</span>
+                                    <span class="piety-bar-4">1,3,9,6,5</span>
                                 </div>
                             </div>
                         </div>
@@ -179,8 +179,8 @@
                         <div class="card-body">
                             <div class="row align-items-center no-gutters">
                                 <div class="col-6">
-                                    <p class="font-15">Returns</p>
-                                    <h4 class="card-title mb-0">21%</h4>
+                                    <p class="font-15">Suppliers</p>
+                                    <h5 class="card-title mb-0">{{ $suppliers }}</h5>
                                 </div>
                                 <div class="col-6 text-right">
                                     <span class="piety-bar-5">5,3,9,6,5</span>
@@ -194,8 +194,8 @@
                         <div class="card-body">
                             <div class="row align-items-center no-gutters">
                                 <div class="col-6">
-                                    <p class="font-15">Refunds</p>
-                                    <h4 class="card-title mb-0">18%</h4>
+                                    <p class="font-15">Listed Products</p>
+                                    <h5 class="card-title mb-0">{{ $listed_products }}</h5>
                                 </div>
                                 <div class="col-6 text-right">
                                     <span class="piety-bar-6">5,3,9,6,5</span>
@@ -217,13 +217,13 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6 col-lg-9">
-                            <h5 class="card-title mb-0">Average Monthly Revenue</h5>
+                            <h5 class="card-title mb-0">Average Monthly Profit</h5>
                         </div>
                     </div>
-                    <h2>$9,86,587</h2>
+                    <h2>₦ {{ number_format(array_sum($chart_data['year_transactions']['profit']) / 12) }}</h2>
                 </div>
                 <div class="card-body p-0">
-                    <div id="apex-area-chart"></div>
+                    <div id="profitChart"></div>
                 </div>
             </div>
         </div>
@@ -234,7 +234,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-6 col-lg-9">
-                            <h5 class="card-title mb-0">Payment Breakdown</h5>
+                            <h5 class="card-title mb-0">Transaction Breakdown</h5>
                         </div>
                     </div>
                 </div>
@@ -274,10 +274,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col-9">
-                            <h5 class="card-title mb-0">Top Selling Products</h5>
-                        </div>
-                        <div class="col-3">
-                            <button type="button" class="btn btn-outline-light text-muted btn-sm float-right font-12">View</button>
+                            <h5 class="card-title mb-0">Top 5 Selling Products</h5>
                         </div>
                     </div>
                 </div>
@@ -287,107 +284,23 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Progress</th>
-                                    <th class="text-right">%</th>
+                                    <th>Price</th>
+                                    <th class="text-right">Qty sold</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Healthcare</td>
-                                    <td>
-                                        <div class="progress" style="height: 4px;">
-                                          <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </td>
-                                    <td class="text-right">75%</td>
-                                </tr>
-                                <tr>
-                                    <td>Banking Finance</td>
-                                    <td>
-                                        <div class="progress" style="height: 4px;">
-                                          <div class="progress-bar bg-success" role="progressbar" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </td>
-                                    <td class="text-right">40%</td>
-                                </tr>
-                                <tr>
-                                    <td>FMCG</td>
-                                    <td>
-                                        <div class="progress" style="height: 4px;">
-                                          <div class="progress-bar bg-danger" role="progressbar" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </td>
-                                    <td class="text-right">60%</td>
-                                </tr>
-                                <tr>
-                                    <td>Agriculture</td>
-                                    <td>
-                                        <div class="progress" style="height: 4px;">
-                                          <div class="progress-bar bg-warning" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </td>
-                                    <td class="text-right">50%</td>
-                                </tr>
-                                <tr>
-                                    <td>Automobile</td>
-                                    <td>
-                                        <div class="progress" style="height: 4px;">
-                                          <div class="progress-bar bg-info" role="progressbar" style="width: 87%;" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </td>
-                                    <td class="text-right">87%</td>
-                                </tr>
+                                @foreach ($top_selling as $product)
+                                    <tr>
+                                        <td>{{ $product['name'] }}</td>
+                                        <td>
+                                            {{ $product['sell_price'] }}
+                                        </td>
+                                        <td class="text-right">{{ $product->saleItems->count() }}</td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-        </div>
-        <!-- End col -->
-        <!-- Start col -->
-        <div class="col-lg-12 col-xl-6">
-            <div class="card m-b-30">
-                <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col-9">
-                            <h5 class="card-title mb-0">Activity</h5>
-                        </div>
-                        <div class="col-3">
-                            <button type="button" class="btn btn-outline-light text-muted btn-sm float-right font-12">View</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        <li class="media mb-4">
-                            <span class="iconbar iconbar-md bg-primary text-white rounded align-self-center mr-3"><i class="ri-folder-5-line align-unset"></i></span>
-                            <div class="media-body">
-                                <h5 class="mt-0 mb-1 font-16">Project 01 timeline approved</h5>
-                                <p class="mb-0">2 hours ago</p>
-                            </div>
-                        </li>
-                        <li class="media mb-4">
-                            <span class="iconbar iconbar-md bg-success text-white rounded align-self-center mr-3"><i class="ri-user-3-line align-unset"></i></span>
-                            <div class="media-body">
-                                <h5 class="mt-0 mb-1 font-16">Ronnie applied for leave</h5>
-                                <p class="mb-0">10 hours ago</p>
-                            </div>
-                        </li>
-                        <li class="media mb-4">
-                            <span class="iconbar iconbar-md bg-warning text-white rounded align-self-center mr-3"><i class="ri-calendar-event-line align-unset"></i></span>
-                            <div class="media-body">
-                                <h5 class="mt-0 mb-1 font-16">Meeting Schedule with WIPRO</h5>
-                                <p class="mb-0">27 May, 2020</p>
-                            </div>
-                        </li>
-                        <li class="media mb-4">
-                            <span class="iconbar iconbar-md bg-danger text-white rounded align-self-center mr-3"><i class="ri-eye-2-line align-unset"></i></span>
-                            <div class="media-body">
-                                <h5 class="mt-0 mb-1 font-16">Presentation for final tapeout</h5>
-                                <p class="mb-0">15 Mar, 2020</p>
-                            </div>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -401,11 +314,330 @@
     <!-- Piety Chart js -->
     <script src="{{ asset('admin/assets/plugins/jquery-sparkline/jquery.sparkline.min.js') }}"></script>
     <!-- Dashboard js -->
-    <script src="{{ asset('admin/assets/js/custom/custom-dashboard-ecommerce.js') }}"></script>
+    {{-- <script src="{{ asset('admin/assets/js/custom/custom-dashboard-ecommerce.js') }}"></script> --}}
     <script src="{{ asset('admin/assets/plugins/peity/jquery.peity.min.js') }}"></script>
     <!-- Apex js -->
     <script src="{{ asset('admin/assets/plugins/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('admin/assets/plugins/apexcharts/irregular-data-series.js') }}"></script>
     <!-- Custom Dashboard js -->
-    <script src="{{ asset('admin/assets/js/custom/custom-dashboard.js') }}"></script>
+    {{-- <script src="{{ asset('admin/assets/js/custom/custom-dashboard.js') }}"></script> --}}
+    <script>
+        $(document).ready(function() {
+            var options = {
+                chart: {
+                    height: 270,
+                    type: 'bar',
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '25%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                colors: ['#0442ba', '#9ccc34'],
+                series: [{
+                    name: 'Purchases',
+                    data: {!! json_encode($chart_data['year_transactions']['purchases']) !!}
+                }, {
+                    name: 'Sales',
+                    data: {!! json_encode($chart_data['year_transactions']['sales']) !!}
+                }],
+                legend: {
+                    show: false,
+                },
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    axisBorder: {
+                        show: true,
+                        color: 'rgba(0,0,0,0.05)'
+                    },
+                    axisTicks: {
+                        show: true,
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+                grid: {
+                    row: {
+                        colors: ['transparent', 'transparent'], opacity: .2
+                    },
+                    borderColor: 'rgba(0,0,0,0.05)'
+                },
+                fill: {
+                    opacity: 1,
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return "$ " + val + " thousands"
+                        }
+                    }
+                }
+            }
+            var chart = new ApexCharts(
+                document.querySelector("#transactionMonthlyChart"),
+                options
+            );
+            chart.render();
+
+            var options = {
+            chart: {
+            height: 270,
+            type: 'line',
+            toolbar: {
+                    show: false
+                },
+                zoom: {
+                    enabled: false
+                }
+            },
+            colors: ['#0442ba','#9ccc34','#fcbc04'],
+            series: [{
+                name: "Purchases",
+                data: {!! json_encode($chart_data['month_transactions']['purchases']) !!}
+            },
+            {
+                name: 'Sales',
+                data: {!! json_encode($chart_data['month_transactions']['sales']) !!}
+            }
+            ],
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+            width: [3, 3],
+            curve: 'straight',
+            },
+            grid: {
+                row: {
+                    colors: ['transparent', 'transparent'], opacity: .2
+                },
+                borderColor: 'rgba(0,0,0,0.05)'
+            },
+            legend: {
+            tooltipHoverFormatter: function(val, opts) {
+                return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + ''
+            }
+            },
+            markers: {
+            size: 0,
+            hover: {
+                sizeOffset: 6
+            }
+            }
+        };
+        var chart = new ApexCharts(document.querySelector("#transactionDailyBreakdown"), options);
+        chart.render();
+
+        })
+
+        var options = {
+            chart: {
+                height: 300,
+                type: 'area',
+                toolbar: {
+                    show: false
+                },
+                zoom: {
+                type: 'x',
+                enabled: false,
+                autoScaleYaxis: true
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+            },
+            colors: ['#0442ba'],
+            series: [{
+                name: 'Profit',
+                data: {!! json_encode($chart_data['year_transactions']['profit']) !!}
+            }],
+            legend: {
+                show: false,
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                axisBorder: {
+                    show: true,
+                    color: 'rgba(0,0,0,0.05)'
+                },
+                axisTicks: {
+                    show: true,
+                    color: 'rgba(0,0,0,0.05)'
+                }
+            },
+            grid: {
+                row: {
+                    colors: ['transparent', 'transparent'], opacity: .2
+                },
+                borderColor: 'rgba(0,0,0,0.05)'
+            },
+            tooltip: {
+                x: {
+                    format: 'dd/MM/yy HH:mm'
+                },
+            }
+        }
+        var chart = new ApexCharts(
+            document.querySelector("#profitChart"),
+            options
+        );
+        chart.render();
+
+        var options = {
+            chart: {
+            type: 'donut',
+            width: 300,
+            },
+            colors: ['#0442ba', '#9ccc34'],
+            series: [{!! json_encode($purchases) !!}, {!! json_encode($sales) !!}],
+            labels: ['Purchases', 'Sales'],
+            legend: {
+                position: 'bottom'
+            },
+            responsive: [{
+            breakpoint: 480,
+            options: {
+                chart: {
+                width: 250
+                }
+            }
+            }]
+        };
+        var chart = new ApexCharts(document.querySelector("#apex-donut-chart"), options);
+        chart.render();
+
+        var options = {
+            series: [{
+            name: 'Sales',
+            data: {!! json_encode($chart_data['year_transactions']['sales']) !!}
+            }],
+            annotations: {
+            points: [{
+                seriesIndex: 0,
+                label: {
+                borderColor: '#0442ba',
+                offsetY: 0,
+                style: {
+                    color: '#fff',
+                    background: '#0442ba',
+                }
+                }
+            }]
+            },
+            chart: {
+            height: 300,
+            type: 'bar',
+            toolbar: {
+                show: false
+            }
+            },
+            plotOptions: {
+            bar: {
+                columnWidth: '25%',
+                endingShape: 'rounded'
+            }
+            },
+            colors: ['#0442ba'],
+            dataLabels: {
+            enabled: false
+            },
+            stroke: {
+            width: 2
+            },
+            grid: {
+            row: {
+                colors: ['#fff', '#fff']
+            }
+            },
+            xaxis: {
+            labels: {
+                rotate: -45
+            },
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            tickPlacement: 'on'
+            },
+            yaxis: {
+            title: {
+                text: 'Sales',
+            },
+            },
+            fill: {
+            type: 'gradient',
+            gradient: {
+                shade: 'light',
+                type: "horizontal",
+                shadeIntensity: 0.25,
+                gradientToColors: undefined,
+                inverseColors: true,
+                opacityFrom: 0.85,
+                opacityTo: 0.85,
+                stops: [50, 0, 100]
+            },
+            }
+            };
+            var chart = new ApexCharts(document.querySelector("#apex-column-chart"), options);
+            chart.render();
+
+            $(".piety-bar-1").peity("bar", {
+                width: 55,
+                height: 55,
+                padding: 0.2,
+                fill: ["#0442ba"],
+            });
+
+                /* -- Piety - Bar Chart 2 -- */
+            $(".piety-bar-2").peity("bar", {
+                width: 55,
+                height: 55,
+                padding: 0.2,
+                fill: ["#acacb4"]
+            });
+
+                /* -- Piety - Bar Chart 3 -- */
+            $(".piety-bar-3").peity("bar", {
+                width: 55,
+                height: 55,
+                padding: 0.2,
+                fill: ["#9ccc34"]
+            });
+
+                /* -- Piety - Bar Chart 4  -- */
+            $(".piety-bar-4").peity("bar", {
+                width: 55,
+                height: 55,
+                padding: 0.2,
+                fill: ["#fcbc04"]
+            });
+
+                /* -- Piety - Bar Chart 5 -- */
+            $(".piety-bar-5").peity("bar", {
+                width: 55,
+                height: 55,
+                padding: 0.2,
+                fill: ["#25bef6"]
+            });
+
+                /* -- Piety - Bar Chart 6  -- */
+            $(".piety-bar-6").peity("bar", {
+                width: 55,
+                height: 55,
+                padding: 0.2,
+                fill: ["#f62525"]
+            });
+    </script>
 @endsection

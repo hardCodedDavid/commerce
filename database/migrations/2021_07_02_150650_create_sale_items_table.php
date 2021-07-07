@@ -20,6 +20,7 @@ class CreateSaleItemsTable extends Migration
             $table->foreignId('brand_id')->nullable();
             $table->integer('quantity');
             $table->decimal('price');
+            $table->decimal('profit');
             $table->timestamps();
         });
     }

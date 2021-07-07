@@ -329,6 +329,15 @@
             el.parent().parent().find('.item-brand select').html('<option value="">Select Brand</option>');
         }
 
+        function setPrice(el, price){
+            el.parent().parent().find('.item-unit-price input').val(price);
+        }
+
+        function clearPrice(el){
+            el.parent().parent().find('.item-unit-price input').val('');
+        }
+
+
         function setVariations(el, variations) {
             variationList.forEach(item => {
                 variations[item.name].forEach(variation => {
@@ -374,8 +383,10 @@
                 success: function (data) {
                     clearBrands(el);
                     clearVariations(el);
+                    clearPrice(el);
                     setBrands(el, data.brands);
                     setVariations(el, data.variations);
+                    setPrice(el, data.sell_price);
                 },
                 error: function(err) {
                     console.log(err);

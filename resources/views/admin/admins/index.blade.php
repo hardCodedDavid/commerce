@@ -68,6 +68,7 @@
                                             <td>{{ $admin['email'] }}</td>
                                             <td>{{ $admin->roles()->first()['name'] ?? '---' }}</td>
                                             <td>
+                                                @if ($admin['id'] != 1)
                                                 <div class="dropdown">
                                                     <button style="white-space: nowrap" class="btn small btn-sm btn-primary" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         Action <i class="icon-lg fa fa-angle-down"></i>
@@ -81,6 +82,7 @@
                                                         </form>
                                                     </div>
                                                 </div>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

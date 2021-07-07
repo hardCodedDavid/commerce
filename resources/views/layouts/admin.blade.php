@@ -130,13 +130,13 @@
                                 <i class="ri-account-box-line"></i><span>Suppliers</span>
                             </a>
                         </li>
-                        <li @if (Route::is(['admin.suppliers']))
+                        {{-- <li @if (Route::is(['admin.suppliers']))
                             class="active"
                         @endif>
                             <a href="{{ route('admin.suppliers') }}">
                                 <i class="ri-bar-chart-line"></i><span>Analytics</span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="vertical-header">Online Store</li>
                         <li @if (Route::is(['admin.users']))
                             class="active"

@@ -10,6 +10,7 @@ use App\Models\SubCategory;
 use App\Models\Brand;
 use App\Models\VariationItem;
 use App\Models\Media;
+use App\Models\SaleItem;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -38,9 +39,19 @@ class Product extends Model
         return $this->belongsToMany(VariationItem::class);
     }
 
+    public function saleItems()
+    {
+        return $this->hasMany(SaleItem::class);
+    }
+
     public function media()
     {
         return $this->hasMany(Media::class);
+    }
+
+    public function getProfit()
+    {
+        return $this['sell_price'] - $this['buy_price'];
     }
 
     public static function getCode()
