@@ -226,7 +226,9 @@
                         @if (count($categories) > 0)
                             @foreach ($categories as $category)
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" name="categories[]" class="category-item custom-control-input" value="{{ $category['id'] }}" id="{{ $category['name'] }}">
+                                    <input type="checkbox" name="categories[]" @if (old('categories') && in_array($category['id'], old('categories')))
+                                        checked
+                                    @endif class="category-item custom-control-input" value="{{ $category['id'] }}" id="{{ $category['name'] }}">
                                     <label class="custom-control-label" for="{{ $category['name'] }}">{{ $category['name'] }}</label>
                                 </div>
                             @endforeach
@@ -248,7 +250,9 @@
                         <div class="card-body">
                             @foreach ($brands as $brand)
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" name="brands[]" class="custom-control-input" value="{{ $brand['id'] }}" id="{{ $brand['name'] }}">
+                                    <input type="checkbox" name="brands[]" @if (old('brands') && in_array($brand['id'], old('brands')))
+                                        checked
+                                    @endif class="custom-control-input" value="{{ $brand['id'] }}" id="{{ $brand['name'] }}">
                                     <label class="custom-control-label" for="{{ $brand['name'] }}">{{ $brand['name'] }}</label>
                                 </div>
                             @endforeach
@@ -272,7 +276,9 @@
                             <div class="card-body">
                                 @foreach ($variation->items as $item)
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="variations[]" class="custom-control-input" value="{{ $item['id'] }}" id="{{ $item['name'] }}">
+                                        <input type="checkbox" name="variations[]" @if (old('variations') && in_array($item['id'], old('variations')))
+                                            checked
+                                        @endif class="custom-control-input" value="{{ $item['id'] }}" id="{{ $item['name'] }}">
                                         <label class="custom-control-label" for="{{ $item['name'] }}">{{ $item['name'] }}</label>
                                     </div>
                                 @endforeach

@@ -34,10 +34,18 @@
                         <div class="card-header">
                             <div class="row align-items-center">
                                 <div class="col-7">
-                                    <h5 class="card-title mb-0">Order No : #02101</h5>
+                                    <h5 class="card-title mb-0">Order No : #{{ $order['code'] }}</h5>
                                 </div>
                                 <div class="col-5 text-right">
-                                    <span class="badge badge-success-inverse">Completed</span>
+                                    @if ($order['status'] == 'pending')
+                                        <span class="badge badge-warning-inverse">pending</span>
+                                    @elseif ($order['status'] == 'processing')
+                                        <span class="badge badge-primary-inverse">processing</span>
+                                    @elseif ($order['status'] == 'delivered')
+                                        <span class="badge badge-success-inverse">delivered</span>
+                                    @elseif ($order['status'] == 'cancelled')
+                                        <span class="badge badge-danger-inverse">cancelled</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -46,41 +54,36 @@
                                 <div class="col-md-6 col-lg-6 col-xl-3">
                                     <div class="order-primary-detail mb-4">
                                     <h6>Order Placed</h6>
-                                    <p class="mb-0">01/04/2020 at 03:35 PM</p>
+                                    <p class="mb-0">{{ $order['created_at']->format('d/m/Y \a\t h:m A') }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-6 col-xl-3">
                                     <div class="order-primary-detail mb-4">
                                     <h6>Name</h6>
-                                    <p class="mb-0">Michelle Johnson</p>
+                                    <p class="mb-0">{{ $order['name'] }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-6 col-xl-3">
                                     <div class="order-primary-detail mb-4">
                                     <h6>Email ID</h6>
-                                    <p class="mb-0">demo@example.com</p>
+                                    <p class="mb-0">{{ $order['email'] }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-6 col-xl-3">
                                     <div class="order-primary-detail mb-4">
                                     <h6>Contact No</h6>
-                                    <p class="mb-0">+1 9876543210</p>
+                                    <p class="mb-0">{{ $order['phone'] }}</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 col-lg-6 col-xl-6 ">
                                     <div class="order-primary-detail mb-4">
-                                    <h6>Delivery Address <a href="#" class="badge badge-primary-inverse">Edit</a></h6>
-                                    <p>417 Redbud Drive, Manhattan Building,<br/> Whitestone, NY.<br/> New York-11357</p>
-                                    <p class="mb-0">+1 123 123 4567</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-lg-6 col-xl-6 ">
-                                    <div class="order-primary-detail mb-4">
-                                    <h6>Billing Address <a href="#" class="badge badge-primary-inverse">Edit</a></h6>
-                                    <p>417 Redbud Drive, Manhattan Building,<br/> Whitestone, NY.<br/> New York-11357</p>
-                                    <p class="mb-0">+1 123 123 4567</p>
+                                    <h6>Delivery Information </h6>
+                                    <p><i>Address</i>: {{ $order['address'] }}</p>
+                                    <p><i>Country</i>: {{ $order['country'] }}</p>
+                                    <p><i>State</i>: {{ $order['state'] }}</p>
+                                    <p><i>City</i>: {{ $order['city'] }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -95,52 +98,45 @@
                                 <table class="table table-borderless">
                                     <thead>
                                         <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Action</th>
-                                            <th scope="col">Photo</th>
+                                            <th scope="col">ID</th>
                                             <th scope="col">Product</th>
+                                            <th scope="col">Brand</th>
+                                            @foreach ($variations as $variation)
+                                                <th scope="col">{{ ucfirst($variation['name']) }}</th>
+                                            @endforeach
                                             <th scope="col">Qty</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col" class="text-right">Total</th>
+                                            <th scope="col">Unit Price</th>
+                                            <th scope="col">Total Price</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td><a href="#" class="text-success mr-2"><i class="ri-pencil-line"></i></a><a href="#" class="text-danger"><i class="ri-delete-bin-3-line"></i></a></td>
-                                            <td><img src="assets/images/ecommerce/product_01.svg" class="img-fluid" width="35" alt="product"></td>
-                                            <td>Apple MacBook Pro</td>
-                                            <td>1</td>
-                                            <td>$10</td>
-                                            <td class="text-right">$500</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td><a href="#" class="text-success mr-2"><i class="ri-pencil-line"></i></a><a href="#" class="text-danger"><i class="ri-delete-bin-3-line"></i></a></td>
-                                            <td><img src="assets/images/ecommerce/product_02.svg" class="img-fluid" width="35" alt="product"></td>
-                                            <td>Dell Alienware</td>
-                                            <td>2</td>
-                                            <td>$20</td>
-                                            <td class="text-right">$200</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td><a href="#" class="text-success mr-2"><i class="ri-pencil-line"></i></a><a href="#" class="text-danger"><i class="ri-delete-bin-3-line"></i></a></td>
-                                            <td><img src="assets/images/ecommerce/product_03.svg" class="img-fluid" width="35" alt="product"></td>
-                                            <td>Acer Predator Helios</td>
-                                            <td>3</td>
-                                            <td>$30</td>
-                                            <td class="text-right">$300</td>
-                                        </tr>
+                                        @foreach ($order->items()->get() as $key=>$item)
+                                            <tr>
+                                                <th scope="row">{{ $key + 1 }}</th>
+                                                <td>{{ $item->product['name'] }}</td>
+                                                <td>{{ $item->brand['name'] ?? 'N/A' }}</td>
+                                                @foreach ($variations as $variation)
+                                                    @php $value = null; @endphp
+                                                    @foreach ($item->product->variationItems()->get() as $currentVariationItem)
+                                                        @if ($currentVariationItem['variation_id'] == $variation['id'])
+                                                            @php $value = $currentVariationItem['name'] @endphp
+                                                        @endif
+                                                    @endforeach
+                                                    <td>{{ $value ?? 'N/A' }}</td>
+                                                @endforeach
+                                                <td>{{ $item['quantity'] }}</td>
+                                                <td>₦{{ number_format($item['price']) }}</td>
+                                                <td>₦{{ number_format($item['price'] * $item['quantity']) }}</td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
                             <div class="row border-top pt-3">
                                 <div class="col-md-12 order-2 order-lg-1 col-lg-4 col-xl-6">
                                     <div class="order-note">
-                                        <p class="mb-5"><span class="badge badge-secondary-inverse">Free Shipping Order</span></p>
                                         <h6>Note :</h6>
-                                        <p>Please, Pack with product air bag and handle with care.</p>
+                                        <p>{{ $order['note'] }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-12 order-1 order-lg-2 col-lg-8 col-xl-6">
@@ -149,19 +145,15 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Sub Total :</td>
-                                                    <td>$1000.00</td>
+                                                    <td>₦{{ number_format($order->getSubTotal()) }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Shipping :</td>
-                                                    <td>$0.00</td>
+                                                    <td>Shipping Fee :</td>
+                                                    <td>₦{{ $order['shipping'] ?? 0 }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Tax(18%) :</td>
-                                                    <td>$180.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-black f-w-7 font-18">Amount :</td>
-                                                    <td class="text-black f-w-7 font-18">$1180.00</td>
+                                                    <td class="f-w-7 font-18"><h5>Total :</h5></td>
+                                                    <td class="f-w-7 font-18"><h5>₦{{ number_format($order->getTotal()) }}</h5></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -170,10 +162,53 @@
                             </div>
                         </div>
                         <div class="card-footer text-right">
-                            <button type="button" class="btn btn-warning-rgba my-1">Mark Pending</button>
-                            <button type="button" class="btn btn-primary-rgba my-1">Mark Processing</button>
-                            <button type="button" class="btn btn-success-rgba my-1">Mark Delivered</button>
-                            <button type="button" class="btn btn-danger-rgba my-1">Mark Cancelled</button>
+                            @if ($order['status'] != 'pending')
+                                <button type="button" onclick="confirmSubmission('markPendingForm')" class="btn btn-warning-rgba my-1">Mark Pending</button>
+                            @endif
+
+                            @if ($order['status'] != 'processing')
+                                <button type="button" onclick="confirmSubmission('markProcessingForm')" class="btn btn-primary-rgba my-1">Mark Processing</button>
+                            @endif
+
+                            @if ($order['status'] != 'delivered')
+                                <button type="button" onclick="confirmSubmission('markDeliveredForm')" class="btn btn-success-rgba my-1">Mark Delivered</button>
+                            @endif
+
+                            @if ($order['status'] != 'cancelled')
+                                <button type="button" onclick="confirmSubmission('markCancelledForm')" class="btn btn-danger-rgba my-1">Mark Cancelled</button>
+                            @endif
+
+                            @if ($order['status'] != 'pending')
+                                <form method="POST" id="markPendingForm" action="{{ route('admin.orders.state.change', $order) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="state" value="pending" />
+                                </form>
+                            @endif
+
+                            @if ($order['status'] != 'processing')
+                                <form method="POST" id="markProcessingForm" action="{{ route('admin.orders.state.change', $order) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="state" value="processing"/>
+                                </form>
+                            @endif
+
+                            @if ($order['status'] != 'delivered')
+                                <form method="POST" id="markDeliveredForm" action="{{ route('admin.orders.state.change', $order) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="state" value="delivered" />
+                                </form>
+                            @endif
+
+                            @if ($order['status'] != 'cancelled')
+                                <form method="POST" id="markCancelledForm" action="{{ route('admin.orders.state.change', $order) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="state" value="cancelled" />
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>

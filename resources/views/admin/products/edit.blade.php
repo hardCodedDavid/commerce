@@ -321,7 +321,6 @@
     <script src="{{ asset('admin/assets/plugins/repeater/jquery.repeater.min.js') }}"></script>
     <script src="{{ asset('admin/assets/pages/jquery.form-repeater.js') }}"></script>
     <script>
-        // $(document).ready(function() {
             const subCategoriesContainer = $('#subCategoriesContainer');
             const addImageFieldButton = $('#addImageFieldButton');
             const imageFileFields = $('#imageFileFields');
@@ -432,6 +431,5 @@
                     }
                 });
             }
-        // });
     </script>
 @endsection

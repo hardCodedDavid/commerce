@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Purchase Details')
+@section('title', 'Purchase Invoice')
 
 @section('style')
 
@@ -10,12 +10,12 @@
     <div class="breadcrumbbar">
         <div class="row align-items-center">
             <div class="col-md-8 col-lg-8">
-                <h4 class="page-title">Purchase Details</h4>
+                <h4 class="page-title">Purchase Invoice</h4>
                 <div class="breadcrumb-list">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('admin.transactions.purchases') }}">Purchases</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Details</li>
+                        <li class="breadcrumb-item active" aria-current="page">Invoice</li>
                     </ol>
                 </div>
             </div>
@@ -45,9 +45,9 @@
                                     </div>
                                     <div class="col-12 col-md-5 col-lg-5">
                                         <div class="invoice-name">
-                                            <p class="mb-1">No : #INV001</p>
-                                            <p class="mb-0">01 April, 2020</p>
-                                            <h4 class="text-success mb-0 mt-3">$1180</h4>
+                                            <p class="mb-1">No : <b>#{{ $purchase['code'] }}</b></p>
+                                            <p class="mb-0">{{ $purchase['date']->format('d M, Y') }}</p>
+                                            <h4 class="text-success mb-0 mt-3">₦{{ number_format($purchase->getTotal()) }}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -57,11 +57,11 @@
                                     <div class="col-sm-6 col-md-4 col-lg-4">
                                         <div class="invoice-address">
                                             <h6 class="mb-3">Supplier Details</h6>
-                                            <h6 class="text-muted">Amy Adams</h6>
+                                            <h6 class="text-muted">{{ $purchase['supplier']['name'] }}</h6>
                                             <ul class="list-unstyled">
-                                                <li>417 Redbud Drive, Manhattan Building, Whitestone, NY, New York-11357</li>
-                                                <li>+1-9876543210</li>
-                                                <li>amyadams@email.com</li>
+                                                <li>{{ $purchase['supplier']['address'] }}</li>
+                                                <li>{{ $purchase['supplier']['phone'] }}</li>
+                                                <li>{{ $purchase['supplier']['email'] }}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -73,38 +73,36 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">ID</th>
-                                                <th scope="col">Photo</th>
                                                 <th scope="col">Product</th>
+                                                <th scope="col">Brand</th>
+                                                @foreach ($variations as $variation)
+                                                    <th scope="col">{{ ucfirst($variation['name']) }}</th>
+                                                @endforeach
                                                 <th scope="col">Qty</th>
-                                                <th scope="col">Price</th>
-                                                <th scope="col" class="text-right">Total</th>
+                                                <th scope="col">Unit Price</th>
+                                                <th scope="col">Total Price</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td><img src="{{ asset('admin/assets/images/ecommerc') }}e/product_01.svg" class="img-fluid" width="35" alt="product"></td>
-                                                <td>Apple Watch</td>
-                                                <td>1</td>
-                                                <td>$10</td>
-                                                <td class="text-right">$500</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td><img src="{{ asset('admin/assets/images/ecommerc') }}e/product_02.svg" class="img-fluid" width="35" alt="product"></td>
-                                                <td>Apple iPhone</td>
-                                                <td>2</td>
-                                                <td>$20</td>
-                                                <td class="text-right">$200</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">3</th>
-                                                <td><img src="{{ asset('admin/assets/images/ecommerc') }}e/product_03.svg" class="img-fluid" width="35" alt="product"></td>
-                                                <td>Apple iPad</td>
-                                                <td>3</td>
-                                                <td>$30</td>
-                                                <td class="text-right">$300</td>
-                                            </tr>
+                                            @foreach ($purchase->items()->get() as $key=>$item)
+                                                <tr>
+                                                    <th scope="row">{{ $key + 1 }}</th>
+                                                    <td>{{ $item->product['name'] }}</td>
+                                                    <td>{{ $item->brand['name'] ?? 'N/A' }}</td>
+                                                    @foreach ($variations as $variation)
+                                                        @php $value = null; @endphp
+                                                        @foreach ($item->product->variationItems()->get() as $currentVariationItem)
+                                                            @if ($currentVariationItem['variation_id'] == $variation['id'])
+                                                                @php $value = $currentVariationItem['name'] @endphp
+                                                            @endif
+                                                        @endforeach
+                                                        <td>{{ $value ?? 'N/A' }}</td>
+                                                    @endforeach
+                                                    <td>{{ $item['quantity'] }}</td>
+                                                    <td>₦{{ number_format($item['price']) }}</td>
+                                                    <td>₦{{ number_format($item['price'] * $item['quantity']) }}</td>
+                                                </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -117,19 +115,19 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>Sub Total :</td>
-                                                        <td>$1000.00</td>
+                                                        <td>₦{{ number_format($purchase->getSubTotal()) }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>Shipping Charges :</td>
-                                                        <td>$0.00</td>
+                                                        <td>Shipping Fee :</td>
+                                                        <td>₦{{ $purchase['shipping_fee'] ?? 0 }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>Tax (18%) :</td>
-                                                        <td>$180.00</td>
+                                                        <td>Additional Fee :</td>
+                                                        <td>₦{{ $purchase['additional_fee'] ?? 0 }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="f-w-7 font-18"><h5>Amount Payable :</h5></td>
-                                                        <td class="f-w-7 font-18"><h5>$1180.00</h5></td>
+                                                        <td class="f-w-7 font-18"><h5>Total :</h5></td>
+                                                        <td class="f-w-7 font-18"><h5>₦{{ number_format($purchase->getTotal()) }}</h5></td>
                                                     </tr>
                                                 </tbody>
                                             </table>

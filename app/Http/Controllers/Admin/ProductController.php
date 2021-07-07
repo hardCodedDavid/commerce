@@ -33,7 +33,9 @@ class ProductController extends Controller
 
     public function listed()
     {
-        return view('admin.products.listed');
+        return view('admin.products.listed', [
+            'type' => 'listed'
+        ]);
     }
 
     public function show()
@@ -130,6 +132,26 @@ class ProductController extends Controller
         }));
     }
 
+    public function getProductDetails(Product $product){
+        $product['brands'] = $product->brands()->get()->map(function($brand){
+            return [
+                'id' => $brand['id'],
+                'name' => $brand['name']
+            ];
+        });
+        $variations = [];
+        foreach (Variation::all() as $variation) {
+            $variations[$variation['name']] = $product->variationItems()->where('variation_id', $variation['id'])->get()->map(function($item) {
+                return [
+                    'id' => $item['id'],
+                    'name' => $item['name']
+                ];
+            });
+        }
+        $product['variations'] = $variations;
+        return response()->json($product);
+    }
+
     public function update(Product $product)
     {
         // Validate request
@@ -166,9 +188,11 @@ class ProductController extends Controller
         $product->variationItems()->sync(request('variations'));
 
         // Save Media
-        foreach (request('media') as $key=>$file){
-            $path = $this->saveFileAndReturnPath($file, $product['code'].$key);
-            $product->media()->create(['url' => $path]);
+        if (request('media')){
+            foreach (request('media') as $key=>$file){
+                $path = $this->saveFileAndReturnPath($file, $product['code'].$key);
+                $product->media()->create(['url' => $path]);
+            }
         }
         return redirect()->route('admin.products')->with('success', 'Product updated successfully');
     }
@@ -178,15 +202,13 @@ class ProductController extends Controller
     {
         //   Define all column names
         $columns = [
-            'id', 'code', 'name', 'buy_price', 'sell_price', 'discount', 'sku', 'in_stock', 'quantity', 'weight', 'brands', 'variations', 'status', 'action'
+            'id', 'code', 'name', 'buy_price', 'sell_price', 'discount', 'sku', 'in_stock', 'quantity', 'weight', 'id', 'id', 'id'
         ];
         //    Find data based on page
-        switch ($request->type){
-            case 'listed':
-                $products = Product::query()->latest()->with(['variationItems'])->where('is_listed', 1);
-                break;
-            default:
-                $products = Product::query()->latest()->with(['variationItems']);
+        if (request('type') == 'listed'){
+            $products = Product::query()->where('is_listed', 1)->with(['variationItems']);
+        }else{
+            $products = Product::query()->with(['variationItems']);
         }
         //   Set helper variables from request and DB
         $totalData = $totalFiltered = $products->count();
@@ -221,7 +243,8 @@ class ProductController extends Controller
         }
         //   Loop through all data and mutate data
         $data = [];
-        foreach ($products as $key=>$product)
+        $key = $start + 1;
+        foreach ($products as $product)
         {
             $variations = $brands = null;
             foreach ($product->variationItems()->get() as $item) {
@@ -244,8 +267,8 @@ class ProductController extends Controller
                             </form>';
             }
 
-            $datum['sn'] = $key + 1;
-            $datum['code'] = $product['code'];
+            $datum['sn'] = $key;
+            $datum['code'] = '<a href="'. route('admin.products.edit', $product) .'">'. $product['code'] .'</a>';
             $datum['name'] = $product['name'];
             $datum['buy_price'] = $product['buy_price'];
             $datum['sell_price'] = $product['sell_price'];
@@ -258,7 +281,7 @@ class ProductController extends Controller
             $datum['variations'] = $variations ?? '---';
             $datum['status'] = $product['is_listed'] == 1 ? '<span class="small badge badge-success-inverse">Featured</span>' : '<span class="small badge badge-danger-inverse">Not Featured</span>';
             $datum['action'] = '<div class="dropdown">
-                                    <button style="white-space: nowrap" class="btn btn-sm btn-primary" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button style="white-space: nowrap" class="btn small btn-sm btn-primary" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Action <i class="icon-lg fa fa-angle-down"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
@@ -272,6 +295,7 @@ class ProductController extends Controller
                                     </div>
                                 </div>';
             $data[] = $datum;
+            $key++;
         }
         //   Ready results for datatable
         $res = array(

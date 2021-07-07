@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\SubCategory;
-use App\Models\Brands;
+use App\Models\Brand;
 use App\Models\VariationItem;
 use App\Models\Media;
 use Illuminate\Database\Eloquent\SoftDeletes;

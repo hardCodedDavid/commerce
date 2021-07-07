@@ -19,7 +19,7 @@ class CreatePurchasesTable extends Migration
             $table->string('code');
             $table->date('date');
             $table->text('note')->nullable();
-            $table->decimal('shipping')->nullable();
+            $table->decimal('shipping_fee')->nullable();
             $table->decimal('additional_fee')->nullable();
             $table->timestamps();
         });

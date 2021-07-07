@@ -10,6 +10,8 @@ class Variation extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function items()
     {
         return $this->hasMany(VariationItem::class);

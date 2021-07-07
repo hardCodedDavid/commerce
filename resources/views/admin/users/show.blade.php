@@ -32,11 +32,11 @@
             <div class="col-lg-5 col-xl-3">
                 <div class="card m-b-30">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">My Account</h5>
+                        <h5 class="card-title mb-0">User Information</h5>
                     </div>
                     <div class="card-body">
                         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                            <a class="nav-link mb-2 active" id="v-pills-dashboard-tab" data-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true"><i class="ri-dashboard-line mr-2"></i>Dashboard</a>
+                            <a class="nav-link mb-2 active" id="v-pills-dashboard-tab" data-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true"><i class="ri-user-line mr-2"></i>Personal Information</a>
                             <a class="nav-link mb-2" id="v-pills-order-tab" data-toggle="pill" href="#v-pills-order" role="tab" aria-controls="v-pills-order" aria-selected="false"><i class="ri-dropbox-line mr-2"></i>Orders</a>
                         </div>
                     </div>
@@ -55,43 +55,71 @@
                                     <div class="card-body">
                                         <form>
                                             <div class="form-row">
+                                                <div class="col-12">
+                                                    <h5>Personal Information</h5>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
                                                 <div class="form-group col-md-6">
-                                                    <label for="username">Username</label>
-                                                    <input type="text" class="form-control" id="username">
+                                                    <label for="username">Name</label>
+                                                    <input disabled value="{{ $user['name'] }}" type="text" class="form-control" id="username">
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label for="useremail">Email</label>
-                                                    <input type="email" class="form-control" id="useremail">
+                                                    <input disabled  value="{{ $user['email'] }}" type="email" class="form-control" id="useremail">
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
-                                                    <label for="usermobile">Mobile Number</label>
-                                                    <input type="text" class="form-control" id="usermobile">
+                                                    <label for="usermobile">Phone</label>
+                                                    <input disabled value="{{ $user['phone'] }}" type="text" class="form-control" id="usermobile">
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <label for="userbirthdate">Date of Birth</label>
-                                                    <input type="date" class="form-control" id="userbirthdate">
+                                                    <label for="country">Country</label>
+                                                    <input disabled value="{{ $user['country'] }}" type="text" class="form-control" id="country">
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
-                                                    <label for="userpassword">Password</label>
-                                                    <input type="password" class="form-control" id="userpassword">
+                                                    <label for="state">State</label>
+                                                    <input disabled value="{{ $user['state'] }}" type="text" class="form-control" id="state">
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <label for="userconfirmedpassword">Confirmed Password</label>
-                                                    <input type="password" class="form-control" id="userconfirmedpassword">
+                                                    <label for="city">City</label>
+                                                    <input disabled value="{{ $user['city'] }}" type="text" class="form-control" id="city">
                                                 </div>
                                             </div>
-                                            <div class="form-group">
-                                                <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" id="usermale" name="usergender" class="custom-control-input" checked>
-                                                    <label class="custom-control-label" for="usermale">Male</label>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="address">Address</label>
+                                                    <textarea disabled class="form-control" id="address" rows="2"></textarea>
                                                 </div>
-                                                <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" id="userfemale" name="usergender" class="custom-control-input">
-                                                    <label class="custom-control-label" for="userfemale">Female</label>
+                                            </div>
+                                            <div class="form-row mt-4">
+                                                <div class="col-12">
+                                                    <h5>Delivery Information</h5>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="country">Country</label>
+                                                    <input disabled value="{{ $user['country'] }}" type="text" class="form-control" id="country">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="state">State</label>
+                                                    <input disabled value="{{ $user['state'] }}" type="text" class="form-control" id="state">
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="city">City</label>
+                                                    <input disabled value="{{ $user['city'] }}" type="text" class="form-control" id="city">
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="address">Address</label>
+                                                    <textarea disabled class="form-control" id="address" rows="2"></textarea>
                                                 </div>
                                             </div>
                                         </form>

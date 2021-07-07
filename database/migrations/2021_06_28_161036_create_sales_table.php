@@ -22,7 +22,8 @@ class CreateSalesTable extends Migration
             $table->text('customer_address')->nullable();
             $table->date('date');
             $table->text('note')->nullable();
-            $table->decimal('shipping')->nullable();
+            $table->enum('type', ['online', 'offline'])->default('offline');
+            $table->decimal('shipping_fee')->nullable();
             $table->decimal('additional_fee')->nullable();
             $table->timestamps();
         });

@@ -60,7 +60,7 @@
                         <table id="productTable" class="table">
                             <thead>
                             <tr>
-                                <th><i class="fas fa-list-ul"></i></th>
+                                <th><i class="fa fa-list-ul"></i></th>
                                 <th>Code</th>
                                 <th>Name</th>
                                 <th>Buy Price</th>

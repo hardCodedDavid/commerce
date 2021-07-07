@@ -117,8 +117,8 @@
                                     <a href="javaScript:void();">Sales<i class="ri-arrow-right-s-line"></i></a>
                                     <ul class="vertical-submenu">
                                         <li><a href="{{ route('admin.transactions.sales') }}">All</a></li>
-                                        <li><a href="{{ route('admin.transactions.sales') }}">Online</a></li>
-                                        <li><a href="{{ route('admin.transactions.sales') }}">Offline</a></li>
+                                        <li><a href="{{ route('admin.transactions.sales', 'online') }}">Online</a></li>
+                                        <li><a href="{{ route('admin.transactions.sales', 'offline') }}">Offline</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -146,8 +146,8 @@
                             </a>
                             <ul class="vertical-submenu">
                                 <li><a href="{{ route('admin.users') }}">All</a></li>
-                                <li><a href="{{ route('admin.users') }}">Verified</a></li>
-                                <li><a href="{{ route('admin.users') }}">Unverified</a></li>
+                                <li><a href="{{ route('admin.users', 'verified') }}">Verified</a></li>
+                                <li><a href="{{ route('admin.users', 'unverified') }}">Unverified</a></li>
                             </ul>
                         </li>
                         <li @if (Route::is(['admin.products.listed']))
@@ -172,10 +172,10 @@
                             </a>
                             <ul class="vertical-submenu">
                                 <li><a href="{{ route('admin.orders') }}">All</a></li>
-                                <li><a href="{{ route('admin.orders') }}">Pending</a></li>
-                                <li><a href="{{ route('admin.orders') }}">Processing</a></li>
-                                <li><a href="{{ route('admin.orders') }}">Delivered</a></li>
-                                <li><a href="{{ route('admin.orders') }}">Cancelled</a></li>
+                                <li><a href="{{ route('admin.orders', 'pending') }}">Pending</a></li>
+                                <li><a href="{{ route('admin.orders', 'processing') }}">Processing</a></li>
+                                <li><a href="{{ route('admin.orders', 'delivered') }}">Delivered</a></li>
+                                <li><a href="{{ route('admin.orders', 'cancelled') }}">Cancelled</a></li>
                             </ul>
                         </li>
                         <li class="vertical-header">Others</li>
@@ -214,15 +214,15 @@
                                 <i class="ri-user-settings-line"></i><span>Authorization</span>
                             </a>
                         </li>
-                        <li @if (Route::is(['admin.notifications']))
+                        {{-- <li @if (Route::is(['admin.notifications']))
                             class="active"
                         @endif>
                             <a href="{{ route('admin.notifications') }}">
                                 <i class="ri-notification-2-line"></i><span>Notifications</span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li>
-                            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit()">
+                            <a href="#" onclick="event.preventDefault(); confirmSubmission('logout-form');">
                                 <i class="ri-todo-line"></i><span>Logout</span>
                             </a>
                         </li>
@@ -312,7 +312,7 @@
                                         </a>
                                     </div>
                                 </li>
-                                <li class="list-inline-item">
+                                {{-- <li class="list-inline-item">
                                     <div class="notifybar">
                                         <div class="dropdown">
                                             <a class="dropdown-toggle infobar-icon" href="#" role="button" id="notoficationlink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -358,7 +358,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </li>
+                                </li> --}}
                                 <li class="list-inline-item">
                                     <div class="profilebar">
                                         <div class="dropdown">
@@ -367,7 +367,7 @@
                                                 <a class="dropdown-item" href="#"><i class="ri-user-6-line"></i>My Profile</a>
                                                 <a class="dropdown-item" href="#"><i class="ri-mail-line"></i>Email</a>
                                                 <a class="dropdown-item" href="#"><i class="ri-settings-3-line"></i>Settings</a>
-                                                <a class="dropdown-item text-danger" href="#"><i class="ri-shut-down-line"></i>Logout</a>
+                                                <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); confirmSubmission('logout-form');"><i class="ri-shut-down-line"></i>Logout</a>
                                             </div>
                                         </div>
                                     </div>
@@ -418,9 +418,15 @@
         const success = {!! json_encode(session('success')) !!};
         const error = {!! json_encode(session('error')) !!};
         const warning = {!! json_encode(session('warning')) !!};
+        const errors = {!! json_encode($errors->any()) !!}
         if (success)
             new PNotify( {
                 title: 'Success', text: success, type: 'success'
+            });
+
+        if (errors)
+            new PNotify( {
+                title: 'Error', text: 'Invalid input data', type: 'error'
             });
 
         if (error)
@@ -446,6 +452,18 @@
                 $('#'+id).submit();
             });
         };
+        function numberFormat(amount, decimal = ".", thousands = ",") {
+            try {
+                amount = Number.parseFloat(amount);
+                let decimalCount = Number.isInteger(amount) ? 0 : amount.toString().split('.')[1].length;
+                const negativeSign = amount < 0 ? "-" : "";
+                let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+                let j = (i.length > 3) ? i.length % 3 : 0;
+                return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
+            } catch (e) {
+                console.log(e)
+            }
+        }
     </script>
     @yield('script')
     <!-- End js -->

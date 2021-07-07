@@ -39,7 +39,7 @@
                     <div class="row align-items-center no-gutters">
                         <div class="col-8">
                             <p class="font-15">Total Revenue</p>
-                            <h4 class="card-title mb-0">5%</h4>
+                            <h4 class="card-title mb-0">{{ $revenue }}</h4>
                         </div>
                         <div class="col-4 text-right">
                             <span class="iconbar iconbar-md bg-primary text-white rounded"><i class="ri-arrow-right-up-line align-unset"></i></span>
@@ -52,7 +52,7 @@
                     <div class="row align-items-center no-gutters">
                         <div class="col-8">
                             <p class="font-15">Products</p>
-                            <h4 class="card-title mb-0">198</h4>
+                            <h4 class="card-title mb-0">{{ $products }}</h4>
                         </div>
                         <div class="col-4 text-right">
                             <span class="iconbar iconbar-md bg-primary text-white rounded"><i class="ri-money-dollar-circle-line align-unset"></i></span>
@@ -64,8 +64,8 @@
                 <div class="card-body">
                     <div class="row align-items-center no-gutters">
                         <div class="col-8">
-                            <p class="font-15">Employees</p>
-                            <h4 class="card-title mb-0">15,986</h4>
+                            <p class="font-15">Users</p>
+                            <h4 class="card-title mb-0">{{ $users }}</h4>
                         </div>
                         <div class="col-4 text-right">
                             <span class="iconbar iconbar-md bg-primary text-white rounded"><i class="ri-user-3-line align-unset"></i></span>
@@ -82,13 +82,6 @@
                     <div class="row align-items-center">
                         <div class="col-6 col-lg-9">
                             <h5 class="card-title mb-0">Lead Compare</h5>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <select class="form-control font-12">
-                                <option value="class1" selected>Last Week</option>
-                                <option value="class2">Last Month</option>
-                                <option value="class3">Last Year</option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -110,13 +103,6 @@
                         <div class="col-6 col-lg-9">
                             <h5 class="card-title mb-0">Lead Compare</h5>
                         </div>
-                        <div class="col-6 col-lg-3">
-                            <select class="form-control font-12">
-                                <option value="class1" selected>Last Week</option>
-                                <option value="class2">Last Month</option>
-                                <option value="class3">Last Year</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -134,7 +120,7 @@
                             <div class="row align-items-center no-gutters">
                                 <div class="col-6">
                                     <p class="font-15">Orders</p>
-                                    <h4 class="card-title mb-0">250</h4>
+                                    <h4 class="card-title mb-0">{{ $orders }}</h4>
                                 </div>
                                 <div class="col-6 text-right">
                                     <span class="piety-bar-1">5,3,9,6,5</span>
@@ -148,7 +134,7 @@
                         <div class="card-body">
                             <div class="row align-items-center no-gutters">
                                 <div class="col-6">
-                                    <p class="font-15">Comission</p>
+                                    <p class="font-15">Sales</p>
                                     <h4 class="card-title mb-0">10%</h4>
                                 </div>
                                 <div class="col-6 text-right">
@@ -233,13 +219,6 @@
                         <div class="col-6 col-lg-9">
                             <h5 class="card-title mb-0">Average Monthly Revenue</h5>
                         </div>
-                        <div class="col-6 col-lg-3">
-                            <select class="form-control font-12">
-                                <option value="class1" selected>Last Week</option>
-                                <option value="class2">Last Month</option>
-                                <option value="class3">Last Year</option>
-                            </select>
-                        </div>
                     </div>
                     <h2>$9,86,587</h2>
                 </div>
@@ -256,13 +235,6 @@
                     <div class="row align-items-center">
                         <div class="col-6 col-lg-9">
                             <h5 class="card-title mb-0">Payment Breakdown</h5>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <select class="form-control font-12">
-                                <option value="class1" selected>Last Week</option>
-                                <option value="class2">Last Month</option>
-                                <option value="class3">Last Year</option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -283,13 +255,6 @@
                     <div class="row align-items-center">
                         <div class="col-6 col-lg-9">
                             <h5 class="card-title mb-0">Sales</h5>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <select class="form-control font-12">
-                                <option value="class1" selected>Last Week</option>
-                                <option value="class2">Last Month</option>
-                                <option value="class3">Last Year</option>
-                            </select>
                         </div>
                     </div>
                 </div>
