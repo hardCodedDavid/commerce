@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\VariationController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\ExportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,4 +125,9 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('/getSalesByAjax', [TransactionController::class, 'getSalesByAjax'])->name('sales.ajax');
     Route::post('/getUsersByAjax', [UserController::class, 'getUsersByAjax'])->name('users.ajax');
     Route::post('/getOrdersByAjax', [OrderController::class, 'getOrdersByAjax'])->name('orders.ajax');
+
+    Route::post('/users/export/download', [ExportController::class, 'exportUsers'])->name('users.export');
+    Route::post('/products/export/download', [ExportController::class, 'exportProducts'])->name('products.export');
+    Route::post('/purchases/export/download', [ExportController::class, 'exportPurchases'])->name('purchases.export');
+    Route::post('/sales/export/download', [ExportController::class, 'exportSales'])->name('sales.export');
 });

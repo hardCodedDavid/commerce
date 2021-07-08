@@ -42,9 +42,17 @@
                 <div class="card m-b-30">
                     <div class="card-header d-sm-flex d-block justify-content-between align-content-center">
                         <h5 class="card-title my-1">Users</h5>
-                        <form class="d-sm-flex d-block my-1">
+                        <form method="POST" action="{{ route('admin.users.export') }}" class="d-sm-flex d-block my-1">
+                            @csrf
+                            <input type="hidden" name="type" @if(request()->offsetExists('verified'))
+                                                                value="verified"
+                                                            @elseif(request()->offsetExists('unverified'))
+                                                                value="unverified"
+                                                            @else
+                                                                value="all"
+                                                            @endif>
                             <div>
-                                <input type="text" name="range" id="range-date" class="datepicker-here form-control" placeholder="From - To" aria-describedby="basic-addon7" />
+                                <input type="text" required name="range" id="range-date" class="datepicker-here form-control" placeholder="From - To" aria-describedby="basic-addon7" />
                             </div>
                             <div>
                                 <button class="btn btn-primary"><i class="ri-download-line mr-2"></i>Download CSV</button>

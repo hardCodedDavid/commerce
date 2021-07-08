@@ -42,14 +42,14 @@
                 <div class="card m-b-30">
                     <div class="card-header d-sm-flex d-block justify-content-between align-content-center">
                         <h5 class="card-title my-1">Orders</h5>
-                        <form class="d-sm-flex d-block my-1">
+                        {{-- <form class="d-sm-flex d-block my-1">
                             <div>
                                 <input type="text" name="range" id="range-date" class="datepicker-here form-control" placeholder="From - To" aria-describedby="basic-addon7" />
                             </div>
                             <div>
                                 <button class="btn btn-primary"><i class="ri-download-line mr-2"></i>Download CSV</button>
                             </div>
-                        </form>
+                        </form> --}}
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
