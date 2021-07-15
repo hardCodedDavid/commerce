@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Admin;
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Admin\NotificationController;
 
 class AdminController extends Controller
 {
@@ -25,7 +26,7 @@ class AdminController extends Controller
         // Validate request
         $this->validate(request(), [
             'name' => ['required'],
-            'email' => ['required', Rule::unique('admins')],
+            'email' => ['required', 'email', Rule::unique('admins')],
             'role' => ['required']
         ]);
 
@@ -43,7 +44,10 @@ class AdminController extends Controller
         $data = request()->only('name', 'email');
         $data['password'] = $hashedPassword;
         $admin = Admin::create($data);
+
+        // Assign role and send email notification
         $admin->assignRole($role);
+        NotificationController::sendAdminRegistrationEmailNotification($admin, $password);
         return back()->with('success', 'Admin created successfully');
     }
 
@@ -52,7 +56,7 @@ class AdminController extends Controller
         // Validate request
         $this->validate(request(), [
             'name' => ['required'],
-            'email' => ['required', Rule::unique('admins')->ignore($admin->id)],
+            'email' => ['required', 'email', Rule::unique('admins')->ignore($admin->id)],
             'role' => ['required']
         ]);
 
