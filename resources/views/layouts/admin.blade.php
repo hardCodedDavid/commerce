@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- Mirrored from themesbox.in/admin-templates/olian/html/light-vertical/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 18 Oct 2020 00:22:46 GMT -->
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Olian is a bootstrap minimal & clean admin template">
-    <meta name="keywords" content="admin, admin panel, admin template, admin dashboard, admin theme, bootstrap 4, responsive, sass support, ui kits, crm, ecommerce">
-    <meta name="author" content="Themesbox17">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <title>@yield('title')</title>
     <!-- Fevicon -->
-    <link rel="shortcut icon" href="{{ asset('admin/assets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('logo/5.png') }}">
     <!-- Start css -->
     <!-- Switchery css -->
     <link href="{{ asset('admin/assets/plugins/switchery/switchery.min.css') }}" rel="stylesheet">
@@ -80,8 +75,8 @@
             <div class="sidebar">
                 <!-- Start Logobar -->
                 <div class="logobar">
-                    <a href="{{ route('admin.dashboard') }}" class="logo logo-large"><img src="{{ asset('admin/assets/images/logo.svg') }}" class="img-fluid" alt="logo"></a>
-                    <a href="{{ route('admin.dashboard') }}" class="logo logo-small"><img src="{{ asset('admin/assets/images/small_logo.svg') }}" class="img-fluid" alt="logo"></a>
+                    <a href="{{ route('admin.dashboard') }}" class="logo logo-large"><img src="{{ asset('logo/7.png') }}" class="img-fluid" alt="logo"></a>
+                    <a href="{{ route('admin.dashboard') }}" class="logo logo-small"><img src="{{ asset('logo/5.png') }}" class="img-fluid" alt="logo"></a>
                 </div>
                 <!-- End Logobar -->
                 <!-- Start Navigationbar -->
@@ -243,7 +238,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-12">
                         <div class="mobile-logobar">
-                            <a href="{{ route('admin.dashboard') }}" class="mobile-logo"><img src="{{ asset('admin/assets/images/logo.svg') }}" class="img-fluid" alt="logo"></a>
+                            <a href="{{ route('admin.dashboard') }}" class="mobile-logo"><img src="{{ asset('logo/7.png') }}" class="img-fluid" alt="logo"></a>
                         </div>
                         <div class="mobile-togglebar">
                             <ul class="list-inline mb-0">
@@ -366,7 +361,6 @@
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profilelink">
                                                 <a class="dropdown-item" href="#"><i class="ri-user-6-line"></i>My Profile</a>
                                                 <a class="dropdown-item" href="#"><i class="ri-mail-line"></i>Email</a>
-                                                <a class="dropdown-item" href="#"><i class="ri-settings-3-line"></i>Settings</a>
                                                 <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); confirmSubmission('logout-form');"><i class="ri-shut-down-line"></i>Logout</a>
                                             </div>
                                         </div>

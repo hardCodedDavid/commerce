@@ -12,6 +12,7 @@ use App\Models\VariationItem;
 use App\Models\Media;
 use App\Models\SaleItem;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Product extends Model
 {
@@ -68,5 +69,30 @@ class Product extends Model
             $num = '0'.$num;
         }
         return 'PD'.$num;
+    }
+
+    public function getFormattedActualPrice()
+    {
+        return number_format($this->sell_price);
+    }
+
+    public function getFormattedDiscountedPrice()
+    {
+        return number_format($this->sell_price - $this->discount);
+    }
+
+    public function getDiscountedPercent()
+    {
+        return round((($this->discount) / $this->sell_price) * 100);
+    }
+
+    public function isDiscounted()
+    {
+        return ($this->discount && $this->discount > 0);
+    }
+
+    public function isNew()
+    {
+        return Carbon::parse($this->created_at)->addDays(30)->gt(now());
     }
 }

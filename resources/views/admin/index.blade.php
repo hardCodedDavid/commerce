@@ -346,7 +346,7 @@
                     width: 2,
                     colors: ['transparent']
                 },
-                colors: ['#0442ba', '#9ccc34'],
+                colors: ['#190D3F', '#c4ec19'],
                 series: [{
                     name: 'Purchases',
                     data: {!! json_encode($chart_data['year_transactions']['purchases']) !!}
@@ -402,7 +402,7 @@
                     enabled: false
                 }
             },
-            colors: ['#0442ba','#9ccc34','#fcbc04'],
+            colors: ['#190D3F','#c4ec19'],
             series: [{
                 name: "Purchases",
                 data: {!! json_encode($chart_data['month_transactions']['purchases']) !!}
@@ -461,7 +461,7 @@
             stroke: {
                 curve: 'smooth',
             },
-            colors: ['#0442ba'],
+            colors: ['#190D3F'],
             series: [{
                 name: 'Profit',
                 data: {!! json_encode($chart_data['year_transactions']['profit']) !!}
@@ -503,7 +503,7 @@
             type: 'donut',
             width: 300,
             },
-            colors: ['#0442ba', '#9ccc34'],
+            colors: ['#190D3F', '#c4ec19'],
             series: [{!! json_encode($purchases) !!}, {!! json_encode($sales) !!}],
             labels: ['Purchases', 'Sales'],
             legend: {
@@ -530,11 +530,11 @@
             points: [{
                 seriesIndex: 0,
                 label: {
-                borderColor: '#0442ba',
+                borderColor: '#190D3F',
                 offsetY: 0,
                 style: {
                     color: '#fff',
-                    background: '#0442ba',
+                    background: '#190D3F',
                 }
                 }
             }]
@@ -552,7 +552,7 @@
                 endingShape: 'rounded'
             }
             },
-            colors: ['#0442ba'],
+            colors: ['#190D3F'],
             dataLabels: {
             enabled: false
             },
@@ -597,7 +597,7 @@
                 width: 55,
                 height: 55,
                 padding: 0.2,
-                fill: ["#0442ba"],
+                fill: ["#190D3F"],
             });
 
                 /* -- Piety - Bar Chart 2 -- */
@@ -613,7 +613,7 @@
                 width: 55,
                 height: 55,
                 padding: 0.2,
-                fill: ["#9ccc34"]
+                fill: ["#c4ec19"]
             });
 
                 /* -- Piety - Bar Chart 4  -- */
