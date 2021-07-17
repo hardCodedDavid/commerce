@@ -8,7 +8,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="apple-touch-icon.html" rel="apple-touch-icon">
-    <link href="favicon.html" rel="icon">
+    <link rel="shortcut icon" href="{{ asset('logo/5.png') }}">
     <meta name="author" content="">
     <meta name="keywords" content="">
     <meta name="description" content="">
