@@ -384,7 +384,7 @@
             <!-- Start Footerbar -->
             <div class="footerbar">
                 <footer class="footer">
-                    <p class="mb-0">© 2020 Olian - All Rights Reserved.</p>
+                    <p class="mb-0">© {{ date('Y') }} {{ env('APP_NAME') }} - All Rights Reserved.</p>
                 </footer>
             </div>
             <!-- End Footerbar -->

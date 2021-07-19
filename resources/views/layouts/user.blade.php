@@ -400,7 +400,7 @@
                 @endforeach
             </div>
             <div class="row ps-footer__copyright">
-                <div class="col-12 col-lg-6 ps-footer__text">&copy; 2020 Farmart Marhetplace. All Rights Reversed.</div>
+                <div class="col-12 col-lg-6 ps-footer__text">&copy; {{ date('Y') }} {{ env('APP_NAME') }} All Rights Reversed.</div>
                 <div class="col-12 col-lg-6 ps-footer__social"> <a class="icon_social facebook" href="#"><i class="fa fa-facebook-f"></i></a><a class="icon_social twitter" href="#"><i class="fa fa-twitter"></i></a><a class="icon_social google" href="#"><i class="fa fa-google-plus"></i></a><a class="icon_social youtube" href="#"><i class="fa fa-youtube"></i></a><a class="icon_social wifi" href="#"><i class="fa fa-wifi"></i></a></div>
             </div>
         </div>
