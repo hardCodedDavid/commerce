@@ -88,8 +88,7 @@
                                 <button class="category-toggler"><i class="icon-menu"></i></button>
                                 <div class="mega-menu mega-menu-category">
                                     <ul class="menu--mobile menu--horizontal">
-                                        <li class="daily-deals category-item"><a href="flash-sale.html">Daily Deals</a></li>
-                                        <li class="category-item"><a href="shop-categories.html">Top Promotions</a></li>
+                                        <li class="daily-deals category-item"><a href="/deals">Top Deals</a></li>
                                         <li class="category-item"><a class="active" href="shop-categories.html">New Arrivals</a></li>
                                         @foreach ($categories as $category)
                                             <li class="has-mega-menu category-item"><a href="javascript:void(0);">{{ $category['name'] }}</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
@@ -259,7 +258,7 @@
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/">Home</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/shop">Shop</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">Top Selling</a></li>
-                    <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">Discounted Deals</a></li>
+                    <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/deals">Discounted Deals</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">About Us</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">Contact Us</a></li>
                 </ul>
@@ -376,7 +375,7 @@
                                 <p class="contact__title">Products<span class="footer-toggle"><i class="icon-chevron-down"></i></span></p>
                                 <ul class="footer-list">
                                     <li><a href="#">Top Selling</a></li>
-                                    <li><a href="#">Discounted Deals</a></li>
+                                    <li><a href="/deals">Discounted Deals</a></li>
                                     <li><a href="#">New Arrivals</a></li>
                                     <li><a href="#">Careers</a></li>
                                     <li><a href="#">Our Suppliers</a></li>
@@ -429,8 +428,7 @@
         </div>
         <div class="category__content">
             <ul class="menu--mobile">
-                <li class="daily-deals category-item"><a href="flash-sale.html">Daily Deals</a></li>
-                <li class="category-item"><a href="shop-categories.html">Top Promotions</a></li>
+                <li class="daily-deals category-item"><a href="/deals">Top Deals</a></li>
                 <li class="category-item"><a href="shop-categories.html">New Arrivals</a></li>
                 @foreach ($categories as $category)
                 <li class="menu-item-has-children category-item"><a href="shop-categories.html">{{ $category['name'] }}</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
@@ -476,7 +474,7 @@
                 <li class="menu-item-has-children"><a class="nav-link" href="/">Home</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="/shop">Shop</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="#">Top Selling</a></li>
-                    <li class="menu-item-has-children"><a class="nav-link" href="#">Discounted Deals</a></li>
+                    <li class="menu-item-has-children"><a class="nav-link" href="/deals">Discounted Deals</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="#">About Us</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="#">Contact Us</a></li>
             </ul>

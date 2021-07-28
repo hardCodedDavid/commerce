@@ -308,11 +308,11 @@ figure {
 }
 
 .text-warning {
-  color: #c4ec19 !important;
+  color: #26901b !important;
 }
 
 .bg-warning {
-  background-color: #c4ec19 !important;
+  background-color: #26901b !important;
 }
 
 .text-heading {
@@ -440,7 +440,7 @@ body {
 }
 
 .icon_social.wifi {
-  background-color: #c4ec19;
+  background-color: #26901b;
 }
 
 .icon_social.wifi i {
@@ -952,7 +952,7 @@ label:hover:before {
 }
 
 .ps-button {
-  background-color: #c4ec19;
+  background-color: #26901b;
   color: white;
   border-radius: 2px;
   text-align: center;
@@ -1230,7 +1230,7 @@ label:hover:before {
 }
 
 .ps-social--share .ps-social__icon {
-  background-color: #c4ec19;
+  background-color: #26901b;
   border-radius: 3px;
   color: white;
   font-size: 12px;
@@ -2505,7 +2505,7 @@ label:hover:before {
 .ps-product--standard .ps-product__content .ps-product__ofstock {
   font-size: 13px;
   font-weight: 600;
-  color: #c4ec19;
+  color: #26901b;
   margin-bottom: 5px;
 }
 
@@ -2588,7 +2588,7 @@ label:hover:before {
 }
 
 .ps-product--standard .ps-product__offbadge {
-  background-color: #c4ec19;
+  background-color: #26901b;
 }
 
 .ps-product--standard .ps-product__stock {
@@ -2619,7 +2619,7 @@ label:hover:before {
 
 .ps-product--standard .ps-product__addcart {
   color: white;
-  background-color: #c4ec19;
+  background-color: #26901b;
   border: none;
   border-radius: 3px;
   width: 100%;
@@ -3623,7 +3623,7 @@ label:hover:before {
 
 .ps-product--list .ps-product__addcart {
   color: white;
-  background-color: #c4ec19;
+  background-color: #26901b;
   border: none;
   border-radius: 3px;
   width: 100%;
@@ -3699,7 +3699,7 @@ label:hover:before {
 }
 
 .ps-product--list .ps-product__offbadge {
-  background-color: #c4ec19;
+  background-color: #26901b;
 }
 
 .ps-product--list .ps-product__stock {
@@ -3925,7 +3925,7 @@ label:hover:before {
 .ps-product--horizontal .ps-product__content .ps-product__ofstock {
   font-size: 13px;
   font-weight: 600;
-  color: #c4ec19;
+  color: #26901b;
   margin-bottom: 5px;
 }
 
@@ -4009,7 +4009,7 @@ label:hover:before {
 }
 
 .ps-product--horizontal .ps-product__offbadge {
-  background-color: #c4ec19;
+  background-color: #26901b;
 }
 
 .ps-product--horizontal .ps-product__stock {
@@ -4023,7 +4023,7 @@ label:hover:before {
 
 .ps-product--horizontal .ps-product__addcart {
   color: white;
-  background-color: #c4ec19;
+  background-color: #26901b;
   border: none;
   border-radius: 3px;
   width: 100%;
@@ -4179,7 +4179,7 @@ label:hover:before {
 
 .section-slide--default .ps-banner .ps-content .ps-shopnow a {
   color: white;
-  background-color: #c4ec19;
+  background-color: #26901b;
   padding: 10px 20px;
   border-radius: 3px;
   display: inline-block;
@@ -5909,7 +5909,7 @@ label:hover:before {
 
 .ps-product--reviews .product__rate {
   font-size: 45px;
-  color: #c4ec19;
+  color: #26901b;
   font-weight: bold;
 }
 
@@ -6549,7 +6549,7 @@ label:hover:before {
 }
 
 .menu > li.current-menu-item > a {
-  color: #c4ec19;
+  color: #26901b;
 }
 
 .menu > li.current-menu-item .sub-toggle {
@@ -7091,7 +7091,7 @@ label:hover:before {
 }
 
 .ps-quickview .product__action .product__addcart {
-  background-color: #c4ec19;
+  background-color: #26901b;
   color: white;
   font-size: 14px;
   padding: 7px 30px;
@@ -7140,7 +7140,7 @@ label:hover:before {
 }
 
 .ps-quickview .product__price .off {
-  color: #c4ec19;
+  color: #26901b;
   font-weight: bold;
   font-size: 20px;
 }
@@ -8107,7 +8107,7 @@ label:hover:before {
 
 .ps-footer--contact button {
   color: white;
-  background-color: #c4ec19;
+  background-color: #26901b;
   font-size: 14px;
   height: 45px;
   margin-top: -1px;
@@ -8703,11 +8703,11 @@ label:hover:before {
 }
 
 .select--dropdown li:hover a {
-  color: #c4ec19;
+  color: #26901b;
 }
 
 .select--dropdown li.active {
-  background-color: #c4ec19;
+  background-color: #26901b;
 }
 
 .select--dropdown li.active a {
@@ -8954,7 +8954,7 @@ label:hover:before {
 }
 
 .ps-header--center .logo {
-  color: #c4ec19;
+  color: #26901b;
   font-weight: bold;
   font-size: 35px;
   line-height: 35px;
@@ -9119,11 +9119,11 @@ label:hover:before {
 }
 
 .ps-header--center .header-search-select .category-option a:hover {
-  color: #c4ec19;
+  color: #26901b;
 }
 
 .ps-header--center .header-search-select .category-option.active a {
-  color: #c4ec19;
+  color: #26901b;
 }
 
 .ps-header--center .header-search-select .category-option li {
@@ -9166,12 +9166,12 @@ label:hover:before {
 }
 
 .ps-header--center .input-group-append .btn {
-  background-color: #c4ec19;
+  background-color: #26901b;
   color: white;
   font-family: Muli;
   font-size: 14px;
   font-weight: bold;
-  border: 1px solid #c4ec19;
+  border: 1px solid #26901b;
   padding: 0 24px;
 }
 
@@ -9421,9 +9421,9 @@ label:hover:before {
 }
 
 .mini-cart__footer .checkout {
-  background-color: #c4ec19;
+  background-color: #26901b;
   color: white;
-  border-color: #c4ec19;
+  border-color: #26901b;
   margin-left: 5px;
 }
 
@@ -10609,7 +10609,7 @@ label:hover:before {
   border-radius: 3px;
   width: 100%;
   text-align: center;
-  background-color: #c4ec19;
+  background-color: #26901b;
   margin-top: 15px;
   padding: 15px 0;
   font-size: 14px;
@@ -10855,7 +10855,7 @@ label:hover:before {
 
 .section--checkout .checkout__order {
   color: white;
-  background-color: #c4ec19;
+  background-color: #26901b;
   border-radius: 3px;
   padding: 15px 0;
   text-align: center;
@@ -10930,7 +10930,7 @@ label:hover:before {
 }
 
 .section--login .btn-login {
-  background-color: #c4ec19;
+  background-color: #26901b;
   color: white;
   width: 100%;
   font-size: 14px;
@@ -11121,7 +11121,7 @@ label:hover:before {
 }
 
 .section--wishlist .icon_social.wifi {
-  background-color: #c4ec19;
+  background-color: #26901b;
 }
 
 .section--wishlist .icon_social.wifi i {
@@ -11154,7 +11154,7 @@ label:hover:before {
 
 .section--wishlist .wishlist__btn.add-cart {
   color: white;
-  background-color: #c4ec19;
+  background-color: #26901b;
 }
 
 .section--wishlist .wishlist__btn.readmore {
@@ -11206,7 +11206,7 @@ label:hover:before {
 }
 
 .section--wishlist .ps-product__ofstock {
-  color: #c4ec19;
+  color: #26901b;
   font-weight: 600;
 }
 
@@ -12247,7 +12247,7 @@ label:hover:before {
 
 .section--coming .logo {
   font-size: 35px;
-  color: #c4ec19;
+  color: #26901b;
 }
 
 .section--coming .logo span {
@@ -12458,7 +12458,7 @@ label:hover:before {
 }
 
 .section--flashSale .flashSale__product .ps-product--standard:hover {
-  height: 480px !important;
+  height: 380px !important;
 }
 
 .section--flashSale .flashSale__product .ps-product--standard:hover .ps-product__rating, .section--flashSale .flashSale__product .ps-product--standard:hover .progress, .section--flashSale .flashSale__product .ps-product--standard:hover .ps-product__sold {
@@ -12599,7 +12599,7 @@ label:hover:before {
 }
 
 .section--storeList .item__footer .item__store {
-  background-color: #c4ec19;
+  background-color: #26901b;
   color: white;
   border-radius: 5px;
   padding: 5px 15px 7px;
@@ -13908,6 +13908,10 @@ label:hover:before {
 }
 
 .section-shop .result__content .pagination {
+  justify-content: center;
+}
+
+.pagination {
   justify-content: center;
 }
 
