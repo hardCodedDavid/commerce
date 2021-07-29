@@ -88,19 +88,18 @@
                                 <button class="category-toggler"><i class="icon-menu"></i></button>
                                 <div class="mega-menu mega-menu-category">
                                     <ul class="menu--mobile menu--horizontal">
-                                        <li class="daily-deals category-item"><a href="/deals">Top Deals</a></li>
-                                        <li class="category-item"><a class="active" href="shop-categories.html">New Arrivals</a></li>
+                                        <li class="daily-deals category-item"><a href="/deals">Deals</a></li>
+                                        <li class="category-item"><a class="active" href="/top-selling">Top Selling</a></li>
                                         @foreach ($categories as $category)
-                                            <li class="has-mega-menu category-item"><a href="javascript:void(0);">{{ $category['name'] }}</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
+                                            <li class="has-mega-menu category-item"><a href="{{ route('category.products', $category['name']) }}">{{ $category['name'] }}</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
                                                 <div class="mega-menu">
                                                     <div class="mega-anchor"></div>
                                                     <div class="mega-menu__column">
                                                         <h4>{{ $category['name'] }}<span class="sub-toggle"></span></h4>
                                                         <ul class="sub-menu--mega">
                                                             @foreach ($category->subCategories as $subCategory)
-                                                                <li><a href="shop-view-grid.html">{{ $subCategory['name'] }}</a></li>
+                                                                <li><a href="{{ route('category.products', ['category' => $category, 'subcategory' => $subCategory['name']]) }}">{{ $subCategory['name'] }}</a></li>
                                                             @endforeach
-                                                            <li class="see-all"><a href="shop-view-grid.html">See all products <i class='icon-chevron-right'></i></a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -118,10 +117,10 @@
                                     <ul class="list">
                                         <li class="category-option active" data-value="option"><a href="javascript:void(0);">All</a></li>
                                         @foreach ($categories as $category)
-                                            <li class="category-option"><a>{{ $category['name'] }}</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
+                                            <li class="category-option"><a href="{{ route('category.products', $category) }}">{{ $category['name'] }}</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
                                                 <ul>
                                                     @foreach ($category->subCategories as $subCategory)
-                                                        <li><a href="#">{{ $subCategory['name'] }}</a></li>
+                                                        <li><a href="{{ route('category.products', ['category' => $category, 'subcategory' => $subCategory['name']]) }}">{{ $subCategory['name'] }}</a></li>
                                                     @endforeach
                                                 </ul>
                                             </li>
@@ -257,7 +256,7 @@
                 <ul class="menu">
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/">Home</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/shop">Shop</a></li>
-                    <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">Top Selling</a></li>
+                    <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/top-selling">Top Selling</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/deals">Discounted Deals</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">About Us</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">Contact Us</a></li>
@@ -374,7 +373,7 @@
                             <div class="col-12 col-lg-6">
                                 <p class="contact__title">Products<span class="footer-toggle"><i class="icon-chevron-down"></i></span></p>
                                 <ul class="footer-list">
-                                    <li><a href="#">Top Selling</a></li>
+                                    <li><a href="/top-selling">Top Selling</a></li>
                                     <li><a href="/deals">Discounted Deals</a></li>
                                     <li><a href="#">New Arrivals</a></li>
                                     <li><a href="#">Careers</a></li>
@@ -392,7 +391,7 @@
                 <div class="categories__list"><b>{{ $category['name'] }}: </b>
                     <ul class="menu--vertical">
                         @foreach ($category->subCategories as $subCategory)
-                            <li class="menu-item"><a href="shop-categories.html">{{ $subCategory['name'] }}</a></li>
+                            <li class="menu-item"><a href="{{ route('category.products', ['category' => $category, 'subcategory' => $subCategory['name']]) }}">{{ $subCategory['name'] }}</a></li>
                         @endforeach
                     </ul>
                 </div>
@@ -424,17 +423,17 @@
     </div>
     <div class="ps-category--mobile">
         <div class="category__header">
-            <div class="category__title">All Departments</div><span class="category__close"><i class="icon-cross"></i></span>
+            <div class="category__title">All Categories</div><span class="category__close"><i class="icon-cross"></i></span>
         </div>
         <div class="category__content">
             <ul class="menu--mobile">
-                <li class="daily-deals category-item"><a href="/deals">Top Deals</a></li>
-                <li class="category-item"><a href="shop-categories.html">New Arrivals</a></li>
+                <li class="daily-deals category-item"><a href="/deals">Deals</a></li>
+                <li class="category-item"><a href="/top-selling">Top Selling</a></li>
                 @foreach ($categories as $category)
-                <li class="menu-item-has-children category-item"><a href="shop-categories.html">{{ $category['name'] }}</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
+                <li class="menu-item-has-children category-item"><a href="{{ route('category.products', $category['name']) }}">{{ $category['name'] }}</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
                     <ul class="sub-menu">
                         @foreach ($category->subCategories as $subCategory)
-                            <li><a href="shop-view-grid.html">{{ $subCategory['name'] }}</a></li>
+                            <li><a href="{{ route('category.products', ['category' => $category, 'subcategory' => $subCategory['name']]) }}">{{ $subCategory['name'] }}</a></li>
                         @endforeach
                     </ul>
                 </li>
@@ -473,7 +472,7 @@
             <ul class="menu--mobile">
                 <li class="menu-item-has-children"><a class="nav-link" href="/">Home</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="/shop">Shop</a></li>
-                    <li class="menu-item-has-children"><a class="nav-link" href="#">Top Selling</a></li>
+                    <li class="menu-item-has-children"><a class="nav-link" href="/top-selling">Top Selling</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="/deals">Discounted Deals</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="#">About Us</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="#">Contact Us</a></li>

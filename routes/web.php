@@ -35,3 +35,5 @@ Route::get('/checkout', [App\Http\Controllers\HomeController::class, 'checkout']
 Route::get('/wishlist', [App\Http\Controllers\HomeController::class, 'wishlist'])->name('wishlist');
 Route::get('/product/{product:code}/details', [App\Http\Controllers\HomeController::class, 'productDetail'])->name('product.detail');
 Route::get('/deals/{category?}', [App\Http\Controllers\ProductController::class, 'deals'])->name('deals');
+Route::get('/top-selling/{category?}', [App\Http\Controllers\ProductController::class, 'topSelling'])->name('topSelling');
+Route::get('/categories/{category:name}/products/{subcategory?}', [App\Http\Controllers\CategoryController::class, 'getProducts'])->name('category.products');

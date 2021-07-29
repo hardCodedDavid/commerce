@@ -14,7 +14,14 @@ class HomeController extends Controller
 
     public function shop()
     {
-        $products = Product::where('is_listed', 1)->paginate(request('rpp') ?? 24);
+        $products = Product::where('is_listed', 1);
+        if (request('sort') == 'sale')
+            $products = $products->orderBy('sold');
+        if (request('sort') == 'price')
+            $products = $products->orderBy('sell_price');
+        if (request('sort') == 'name')
+            $products = $products->orderBy('name');
+        $products = $products->paginate(request('rpp') ?? 24);
         return view('shop', compact('products'));
     }
 
