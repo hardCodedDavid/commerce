@@ -30,6 +30,7 @@ Route::post('/email/verification-notification', [App\Http\Controllers\Verificati
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/shop', [App\Http\Controllers\HomeController::class, 'shop'])->name('shop');
+Route::post('/shop/filter', [App\Http\Controllers\HomeController::class, 'filterShop'])->name('shop.filter');
 Route::get('/cart', [App\Http\Controllers\HomeController::class, 'cart'])->name('cart');
 Route::get('/checkout', [App\Http\Controllers\HomeController::class, 'checkout'])->name('checkout');
 Route::get('/wishlist', [App\Http\Controllers\HomeController::class, 'wishlist'])->name('wishlist');

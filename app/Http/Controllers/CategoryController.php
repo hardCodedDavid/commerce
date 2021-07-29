@@ -9,7 +9,7 @@ class CategoryController extends Controller
 {
     public function getProducts(Category $category, $subcategory = null)
     {
-        $products = $category->products()->with('media');
+        $products = $category->products()->where('is_listed', 1)->with('media');
         if ($subcategory)
             $products = $products->whereHas('subCategories', function($q) use ($subcategory) {
                 $q->where('name', $subcategory);

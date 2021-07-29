@@ -247,12 +247,12 @@
         $('.navbar-toggler').on('click', function(e) {
             $('.navigation--mobile').toggleClass('open');
         });
-        
+
         $('.close-navbar-slide').on('click', function(e) {
             $('.navigation--mobile').removeClass('open');
         });
     }
-    
+
     function currencyGetValue() {
         $('.currency-item').on('click', function(e) {
             $('.currency-item').removeClass('active');
@@ -371,7 +371,7 @@
             $('html,body').animate({ scrollTop: 0 }, 500);
         });
 
-        $('.floating-item').on('click', function(event){     
+        $('.floating-item').on('click', function(event){
             event.preventDefault();
             $('.floating-item').removeClass('active');
             $(this).addClass('active');
@@ -470,7 +470,7 @@
             var step = $(this).attr('data-step');
             var noStep = $(this).attr('data-no-step');
             $('.nav-tabs li').removeClass('active');
-            
+
             if (noStep) {
                 $('.nav-tabs .step-' + step).addClass('active');
             } else {
@@ -478,7 +478,7 @@
                     $('.nav-tabs .step-' + index).addClass('active');
                 }
             }
-            
+
 
             if(step <= 2) {
                 $('.steps__action').scrollLeft(0);
@@ -496,7 +496,7 @@
                 nextTab(item);
             }
         });
-        
+
         $(".prev-step").on('click', function (e) {
             var active = $('.nav-tabs li.active:last');
             if (active.prev().length) {
@@ -577,92 +577,6 @@
         });
     }
 
-    function slidePriceWidget() {
-        var rangeSlider = document.getElementById('slide-price');
-        if (rangeSlider) {
-            var input0 = document.getElementById('input-with-keypress-0');
-            var input1 = document.getElementById('input-with-keypress-1');
-            var inputs = [input0, input1];
-            noUiSlider.create(rangeSlider, {
-                start: [20, 80],
-                connect: true,
-                step: 1,
-                range: {
-                    min: [1],
-                    max: [100]
-                }
-            });
-
-            rangeSlider.noUiSlider.on("update", function(values, handle) {
-                inputs[handle].value = values[handle];
-
-                /* begin Listen to keypress on the input */
-                function setSliderHandle(i, value) {
-                    var r = [null, null];
-                    r[i] = value;
-                    rangeSlider.noUiSlider.set(r);
-                }
-
-                inputs.forEach(function(input, handle) {
-                    input.addEventListener("change", function() {
-                        setSliderHandle(handle, this.value);
-                    });
-
-                    input.addEventListener("keydown", function(e) {
-                        var values = rangeSlider.noUiSlider.get();
-                        var value = Number(values[handle]);
-
-                        // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
-                        var steps = rangeSlider.noUiSlider.steps();
-
-                        // [down, up]
-                        var step = steps[handle];
-
-                        var position;
-
-                        // 13 is enter,
-                        // 38 is key up,
-                        // 40 is key down.
-                        switch (e.which) {
-                            case 13:
-                            setSliderHandle(handle, this.value);
-                            break;
-
-                            case 38:
-                            // Get step to go increase slider value (up)
-                            position = step[1];
-
-                            // false = no step is set
-                            if (position === false) {
-                                position = 1;
-                            }
-
-                            // null = edge of slider
-                            if (position !== null) {
-                                setSliderHandle(handle, value + position);
-                            }
-
-                            break;
-
-                            case 40:
-                            position = step[0];
-
-                            if (position === false) {
-                                position = 1;
-                            }
-
-                            if (position !== null) {
-                                setSliderHandle(handle, value - position);
-                            }
-
-                            break;
-                        }
-                    });
-                });
-            });
-        }
-    }
-
     function shopallBrandTab() {
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             $('.categories-item').removeClass('active');
@@ -700,7 +614,7 @@
 
         function updateClock() {
             var t = getTimeRemaining(endtime);
-            
+
             var hoursText = ('0' + t.hours).slice(-2);
             var minutesText = ('0' + t.minutes).slice(-2);
             var secondsText = ('0' + t.seconds).slice(-2);
@@ -751,7 +665,6 @@
     $(function() {
         countDown();
         shopallBrandTab();
-        slidePriceWidget();
         selectImageProductDetail();
         backgroundImage();
         owlCarouselConfig();

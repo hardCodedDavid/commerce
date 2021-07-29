@@ -25,6 +25,23 @@ class HomeController extends Controller
         return view('shop', compact('products'));
     }
 
+    public function filterShop()
+    {
+        $products = Product::where('is_listed', 1);
+        $from = request('from');
+        $to = request('to');
+        $brands = request('brands');
+        $variations = request('variations');
+        if ($from && $to)
+            $products->whereBetween('sell_price', [$from, $to]);
+        if ($variations)
+            $products->whereHas('variationItems', function ($q) use ($variations) {
+                $q->whereIn('variation_items.id', $variations);
+            });
+        $products = $products->paginate(24);
+        return view('shop', compact('products'));
+    }
+
     public function cart()
     {
         return view('cart');

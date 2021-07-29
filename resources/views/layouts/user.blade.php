@@ -15,6 +15,7 @@
     <title>{{ getenv('APP_NAME') }} - @yield('title')</title>
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700&amp;amp;subset=latin-ext" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/fonts/Linearicons/Font/demo-files/demo.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/nouislider.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/font-awesome/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-bar-rating/dist/themes/fontawesome-stars.css') }}">
@@ -497,5 +498,6 @@
     <script src="{{ asset('assets/plugins/nouislider.min.js') }}"></script>
     <!-- custom code-->
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    @yield('scripts')
 </body>
 </html>
