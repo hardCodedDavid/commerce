@@ -73,7 +73,7 @@
                     <div class="header-inner__left">
                         <button class="navbar-toggler"><i class="icon-menu"></i></button>
                     </div>
-                    <div class="header-inner__center"><a class="logo open" href="index.html"><img class="img-fluid" width="200px" src="{{ asset('logo/1.png') }}" alt="Logo"></span></a></div>
+                    <div class="header-inner__center"><a class="logo open" href="/"><img class="img-fluid" width="200px" src="{{ asset('logo/1.png') }}" alt="Logo"></a></div>
                     <div class="header-inner__right">
                         <button class="button-icon icon-sm search-mobile"><i class="icon-magnifier"></i></button>
                     </div>
@@ -83,7 +83,7 @@
         <section class="ps-header--center header-desktop">
             <div class="container">
                 <div class="header-inner">
-                    <div class="header-inner__left"><a class="logo" href="index.html"><img class="img-fluid" width="200px" src="{{ asset('logo/1.png') }}" alt="Logo"></a>
+                    <div class="header-inner__left"><a class="logo" href="/"><img class="img-fluid" width="200px" src="{{ asset('logo/1.png') }}" alt="Logo"></a>
                         <ul class="menu">
                             <li class="menu-item-has-children has-mega-menu">
                                 <button class="category-toggler"><i class="icon-menu"></i></button>
@@ -189,15 +189,15 @@
                         </div>
                     </div>
                     <div class="header-inner__right">
-                        <a class="button-icon icon-md" href="/wishlist"><i class="icon-heart"></i><span class="badge bg-warning">2</span></a>
-                        <div class="button-icon btn-cart-header"><i class="icon-cart icon-shop5"></i><span class="badge bg-warning">3</span>
+                        <a class="button-icon icon-md" href="/wishlist"><i class="icon-heart"></i><span class="badge bg-warning wishlist-items-count"></span></a>
+                        <div class="button-icon btn-cart-header"><i class="icon-cart icon-shop5"></i><span class="badge bg-warning cart-items-count"></span>
                             <div class="mini-cart">
                                 <div class="mini-cart--content">
                                     <div class="mini-cart--overlay"></div>
                                     <div class="mini-cart--slidebar cart--box">
                                         <div class="mini-cart__header">
                                             <div class="cart-header-title">
-                                                <h5>Shopping Cart(3)</h5><a class="close-cart" href="javascript:void(0);"><i class="icon-arrow-right"></i></a>
+                                                <h5>Shopping Cart(<span class="cart-items-count-alt"></span>)</h5><a class="close-cart" href="javascript:void(0);"><i class="icon-arrow-right"></i></a>
                                             </div>
                                         </div>
                                         <div class="mini-cart__products">
@@ -207,41 +207,11 @@
                                                 </div>
                                             </div>
                                             <ul class="list-cart">
-                                                <li class="cart-item">
-                                                    <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_18a.jpg" alt="alt" /></a>
-                                                        <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Extreme Budweiser Light Can</a>
-                                                            <p class="ps-product__unit">500g</p>
-                                                            <p class="ps-product__meta"> <span class="ps-product__price">$3.90</span><span class="ps-product__quantity">(x1)</span>
-                                                            </p>
-                                                        </div>
-                                                        <div class="ps-product__remove"><i class="icon-trash2"></i></div>
-                                                    </div>
-                                                </li>
-                                                <li class="cart-item">
-                                                    <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_31a.jpg" alt="alt" /></a>
-                                                        <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Honest Organic Still Lemonade</a>
-                                                            <p class="ps-product__unit">100g</p>
-                                                            <p class="ps-product__meta"> <span class="ps-product__price-sale">$5.99</span><span class="ps-product__is-sale">$8.99</span><span class="quantity">(x1)</span>
-                                                            </p>
-                                                        </div>
-                                                        <div class="ps-product__remove"><i class="icon-trash2"></i></div>
-                                                    </div>
-                                                </li>
-                                                <li class="cart-item">
-                                                    <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_16a.jpg" alt="alt" /></a>
-                                                        <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Matures Own 100% Wheat</a>
-                                                            <p class="ps-product__unit">1.5L</p>
-                                                            <p class="ps-product__meta"> <span class="ps-product__price">$12.90</span><span class="ps-product__quantity">(x1)</span>
-                                                            </p>
-                                                        </div>
-                                                        <div class="ps-product__remove"><i class="icon-trash2"></i></div>
-                                                    </div>
-                                                </li>
                                             </ul>
                                         </div>
                                         <div class="mini-cart__footer row">
                                             <div class="col-6 title">TOTAL</div>
-                                            <div class="col-6 text-right total">$29.98</div>
+                                            <div class="col-6 text-right cart-total-amount total">₦</div>
                                             <div class="col-12 d-flex"><a class="view-cart" href="/cart">View cart</a><a class="checkout" href="/checkout">Checkout</a></div>
                                         </div>
                                     </div>
@@ -407,10 +377,10 @@
     <div class="ps-footer-mobile">
         <div class="menu__content">
             <ul class="menu--footer">
-                <li class="nav-item"><a class="nav-link" href="index.html"><i class="icon-home3"></i><span>Home</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="/"><i class="icon-home3"></i><span>Home</span></a></li>
                 <li class="nav-item"><a class="nav-link footer-category" href="javascript:void(0);"><i class="icon-list"></i><span>Category</span></a></li>
-                <li class="nav-item"><a class="nav-link footer-cart" href="/cart"><i class="icon-cart"></i><span class="badge bg-warning">3</span><span>Cart</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="/wishlist"><i class="icon-heart"></i><span>Wishlist</span></a></li>
+                <li class="nav-item"><a class="nav-link footer-cart" href="/cart"><i class="icon-cart"></i><span class="badge bg-warning cart-items-count"></span><span>Cart</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="/wishlist"><i class="icon-heart"></i><span class="badge bg-warning wishlist-items-count"></span><span>Wishlist</span></a></li>
                 @auth
                 <li class="nav-item"><a class="nav-link" href="login-register.html"><i class="icon-user"></i><span>Account</span></a></li>
                 @endauth
@@ -498,6 +468,300 @@
     <script src="{{ asset('assets/plugins/nouislider.min.js') }}"></script>
     <!-- custom code-->
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script src="{{ asset('assets/js/notify.min.js') }}"></script>
+    <script>
+        let fetchDetailedCart = '{{ request()->route()->getName() ?? null }}' === 'cart';
+        let fetchDetailedWishList = '{{ request()->route()->getName() ?? null }}' === 'wishlist';
+        fetchCart();
+        fetchWishlist();
+        function addToCart(id, qty = 1) {
+            if (qty < 1) return;
+            $.ajax({
+                url: `/add-to-cart/${id}`,
+                type: 'POST',
+                headers: {'X-CSRF-Token': '{{ csrf_token() }}' },
+                data: { quantity: qty },
+                dataType: 'json',
+                success: function (data) {
+                    $.notify("Item added to cart", "success");
+                    updateCartView(data);
+                    if (fetchDetailedCart) updateDetailedCartView(data);
+                },
+                error: function (res) {
+                    $.notify("There was an error adding item to cart", "error");
+                }
+            });
+        }
+
+        function addToWishlist(id) {
+            $.ajax({
+                url: `/wishlist/add/${id}`,
+                type: 'POST',
+                headers: {'X-CSRF-Token': '{{ csrf_token() }}' },
+                dataType: 'json',
+                success: function (data) {
+                    $.notify("Item wishlisted", "success");
+                    updateWishlistView(data);
+                    if (fetchDetailedWishList) updateDetailedWishlistView(data);
+                },
+                error: function (res) {
+                    $.notify("There was an error wishlisting item", "error");
+                }
+            });
+        }
+
+        function updateCart(id, qty) {
+            if (qty < 1) return;
+            $.ajax({
+                url: `/update-cart/${id}`,
+                type: 'POST',
+                headers: {'X-CSRF-Token': '{{ csrf_token() }}' },
+                data: { quantity: qty },
+                dataType: 'json',
+                success: function (data) {
+                    $.notify("Cart item updated", "success");
+                    updateCartView(data);
+                    if (fetchDetailedCart) updateDetailedCartView(data);
+                },
+                error: function (res) {
+                    $.notify("There was an error updating cart", "error");
+                }
+            });
+        }
+
+        function clearCart() {
+            $.ajax({
+                url: `/clear-cart`,
+                type: 'POST',
+                headers: {'X-CSRF-Token': '{{ csrf_token() }}' },
+                dataType: 'json',
+                success: function (data) {
+                    $.notify("Cart has been cleared", "success");
+                    updateCartView(data);
+                    if (fetchDetailedCart) updateDetailedCartView(data);
+                },
+                error: function (res) {
+                    $.notify("There was an error clearing cart", "error");
+                }
+            });
+        }
+
+        function removeFromCart(id) {
+            $.ajax({
+                url: `/remove-from-cart/${id}`,
+                type: 'POST',
+                headers: {'X-CSRF-Token': '{{ csrf_token() }}' },
+                dataType: 'json',
+                success: function (data) {
+                    $.notify("Item removed from cart", "success");
+                    if (!fetchDetailedCart) $('.mini-cart').addClass('open');
+                    updateCartView(data);
+                    if (fetchDetailedCart) updateDetailedCartView(data);
+                },
+                error: function (res) {
+                    $('.mini-cart').addClass('open');
+                    $.notify("There was an error removing item from cart", "error");
+                }
+            });
+        }
+
+        function removeFromWishlist(id) {
+            $.ajax({
+                url: `/wishlist/remove/${id}`,
+                type: 'POST',
+                headers: {'X-CSRF-Token': '{{ csrf_token() }}' },
+                dataType: 'json',
+                success: function (data) {
+                    $.notify("Item removed from wishlist", "success");
+                    updateWishlistView(data);
+                    if (fetchDetailedWishList) updateDetailedWishlistView(data);
+                },
+                error: function (res) {
+                    $.notify("Error removing item from wishlist", "error");
+                }
+            });
+        }
+
+        function addToCartAndRemoveFromWishlist(id) {
+            addToCart(id);
+            removeFromWishlist(id);
+        }
+
+        function fetchCart() {
+            $.ajax({
+                url: `/cart/fetch`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    updateCartView(data);
+                    if (fetchDetailedCart) updateDetailedCartView(data);
+                },
+                error: function (res) {
+                    $.notify("There was an error fetching your cart", "error");
+                }
+            });
+        }
+
+        function fetchWishlist() {
+            $.ajax({
+                url: `/wishlist/fetch`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    updateWishlistView(data);
+                    if (fetchDetailedWishList) updateDetailedWishlistView(data);
+                },
+                error: function (res) {
+                    $.notify("There was an error fetching your wishlist", "error");
+                }
+            });
+        }
+
+
+        function updateCartView(data) {
+            let html = '';
+            let cartTotal = $('.cart-total-amount');
+            let cartItemsCount = $('.cart-items-count');
+            let cartItemsCountAlt = $('.cart-items-count-alt');
+            data.items.forEach(item => {
+                html += `<li class="cart-item">
+                            <div class="ps-product--mini-cart">
+                                <a href="product-default.html">
+                                    <img class="ps-product__thumbnail" src="${item.product.media[0]}" alt="alt" />
+                                </a>
+                                <div class="ps-product__content"><a class="ps-product__name" href="/product/${item.product.code}/details">${item.product.name}</a>
+                                    <p class="ps-product__unit">${item.product.weight} Kg</p>
+                                    <p class="ps-product__meta"> <span class="ps-product__price">₦${numberFormat(item.product.price)}</span><span class="ps-product__quantity">(x${item.quantity})</span>
+                                    </p>
+                                </div>
+                                <div onclick="removeFromCart(${item.product.id})" class="ps-product__remove"><i class="icon-trash2"></i></div>
+                            </div>
+                        </li>`;
+            });
+            cartTotal.text(`₦${numberFormat(data.total)}`);
+            if (data.items.length < 1){
+                cartItemsCount.hide();
+                $('.list-cart').html(`<li class="cart-item text-center">Cart is empty<li>`);
+            } else {
+                cartItemsCount.show();
+                $('.list-cart').html(html);
+            };
+            cartItemsCount.text(data.items.length);
+            cartItemsCountAlt.text(data.items.length);
+        }
+
+        function updateWishlistView(data)
+        {
+            let wishlistItemsCount = $('.wishlist-items-count');
+            wishlistItemsCount.text(data.length);
+            if (data.length > 0) {
+                wishlistItemsCount.show();
+            } else {
+                wishlistItemsCount.hide();
+            }
+        }
+
+        function updateDetailedCartView(data) {
+            let html = '';
+            data.items.forEach(item => {
+                html += ` <div class="shopping-cart-row">
+                            <div class="cart-product">
+                                <div class="ps-product--mini-cart"><a href="/product/${item.product.code}/details"><img class="ps-product__thumbnail" src="${item.product.media[0]}" alt="alt" /></a>
+                                    <div class="ps-product__content">
+                                        <h5><a class="ps-product__name" href="/product/${item.product.code}/details">${item.product.name}</a></h5>
+                                        <p class="ps-product__unit">${item.product.weight} Kg</p>
+                                        <p class="ps-product__meta">Price: <span class="ps-product__price">₦${numberFormat(item.product.price)}</span></p>
+                                        <div class="def-number-input number-input safari_only">
+                                            <button class="minus" onclick="updateCart(${item.product.id}, (parseInt(this.parentNode.querySelector('input[type=number]').value) - 1))"><i class="icon-minus"></i></button>
+                                            <input class="quantity" min="0" name="quantity" value="${item.quantity}" type="number" />
+                                            <button class="plus" onclick="updateCart(${item.product.id}, (parseInt(this.parentNode.querySelector('input[type=number]').value) + 1))"><i class="icon-plus"></i></button>
+                                        </div><span class="ps-product__total">Total: <span>₦${numberFormat(item.product.price * item.quantity)}</span></span>
+                                    </div>
+                                    <div onclick="removeFromCart(${item.product.id})" class="ps-product__remove"><i class="icon-trash2"></i></div>
+                                </div>
+                            </div>
+                            <div class="cart-price"><span class="ps-product__price">₦${numberFormat(item.product.price)}</span>
+                            </div>
+                            <div class="cart-quantity">
+                                <div class="def-number-input number-input safari_only">
+                                    <button class="minus" onclick="updateCart(${item.product.id}, (parseInt(this.parentNode.querySelector('input[type=number]').value) - 1))"><i class="icon-minus"></i></button>
+                                    <input class="quantity" min="0" name="quantity" value="${item.quantity}" type="number" />
+                                    <button class="plus" onclick="updateCart(${item.product.id}, (parseInt(this.parentNode.querySelector('input[type=number]').value) + 1))"><i class="icon-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="cart-total"> <span class="ps-product__total">₦${numberFormat(item.product.price * item.quantity)}</span>
+                            </div>
+                            <div onclick="removeFromCart(${item.product.id})" class="cart-action"><i class="icon-trash2"></i></div>
+                        </div>`;
+            });
+            if (data.items.length < 1){
+                $('.shopping-cart-body').html(`<div class="cart-item text-center py-3">Cart is empty<div>`);
+            } else {
+                $('.shopping-cart-body').html(html);
+            };
+        }
+
+        function updateDetailedWishlistView(data) {
+            let html = '';
+            let htmlMobile = '';
+            data.forEach(item => {
+                html += `<tr>
+                            <td>
+                                <div onclick="removeFromWishlist(${item.id})" class="wishlist__trash"><i class="icon-trash2"></i></div>
+                            </td>
+                            <td>
+                                <div class="ps-product--vertical"><a href="/product/${item.code}/details"><img class="ps-product__thumbnail" src="${item.media[0]}" alt="alt" /></a>
+                                    <div class="ps-product__content">
+                                        <h5><a class="ps-product__name" href="/product/${item.code}/details">${item.name}</a></h5>
+                                        <p class="ps-product__unit">${item.weight}Kg</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="ps-product__price-sale">₦${numberFormat(item.price)}</span><span class="ps-product__is-sale mx-1">₦${numberFormat(item.actualPrice)}</span>
+                            </td>
+                            <td><span class="ps-product__${item.inStock ? 'instock' : 'ofstock'}">${item.inStock ? 'In stock' : 'Out of stock'}</span>
+                            </td>
+                            <td>
+                                <button onclick="addToCartAndRemoveFromWishlist(${item.id})" class="btn wishlist__btn add-cart"><i class="icon-cart"></i>Add to cart</button>
+                            </td>
+                        </tr>`;
+                htmlMobile += `<div class="col-6 col-md-4 p-0">
+                                <div class="ps-product--standard"><a class="ps-product__trash" onclick="removeFromWishlist(${item.id})" href="javascript:void(0);"><i class="icon-trash2"></i></a><a href="/product/${item.code}/details"><img class="ps-product__thumbnail" src="${item.media[0]}" alt="alt" /></a>
+                                    <div class="ps-product__content">
+                                        <p class="ps-product__${item.inStock ? 'instock' : 'ofstock'}">${item.inStock ? 'In stock' : 'Out of stock'}</p><a href="/product/${item.code}/details">
+                                            <h5 class="ps-product__name">${item.name}</h5>
+                                        </a>
+                                        <p class="ps-product__unit">${item.weight}Kg</p>
+                                        <p class="ps-product__meta"><span class="ps-product__price">₦${numberFormat(item.price)}</span></p>
+                                    </div>
+                                    <div class="ps-product__footer">
+                                        <button onclick="addToCartAndRemoveFromWishlist(${item.id})" class="ps-product__addcart">Add to cart</button>
+                                    </div>
+                                </div>
+                            </div>`;
+            });
+            if (data.length < 1){
+                $('.wishlist__tbody').html(`<tr class="cart-item text-center py-3"><td colspan="5">Wishlist is empty</td><tr>`);
+                $('.wishlist__product--mobile-products').html(`<div class="col-12 text-center py-3">Wishlist is empty<div>`);
+            } else {
+                $('.wishlist__tbody').html(html);
+                $('.wishlist__product--mobile-products').html(htmlMobile);
+            };
+        }
+
+        function numberFormat(amount, decimal = ".", thousands = ",") {
+            try {
+                amount = Number.parseFloat(amount);
+                let decimalCount = Number.isInteger(amount) ? 0 : amount.toString().split('.')[1].length;
+                const negativeSign = amount < 0 ? "-" : "";
+                let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+                let j = (i.length > 3) ? i.length % 3 : 0;
+                return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    </script>
     @yield('scripts')
 </body>
 </html>

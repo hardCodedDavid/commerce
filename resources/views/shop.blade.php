@@ -184,13 +184,15 @@
         function slidePriceWidget() {
             const min = parseFloat({{ $min }});
             const max = parseFloat({{ $max }});
+            const from = randomIntFromInterval(min, max);
+            const to = randomIntFromInterval(from, max);
             var rangeSlider = document.getElementById('slide-price');
             if (rangeSlider) {
                 var input0 = document.getElementById('input-with-keypress-0');
                 var input1 = document.getElementById('input-with-keypress-1');
                 var inputs = [input0, input1];
                 noUiSlider.create(rangeSlider, {
-                    start: [min, max],
+                    start: [from, to],
                     connect: true,
                     step: 1,
                     range: {
@@ -267,6 +269,10 @@
                     });
                 });
             }
+        }
+
+        function randomIntFromInterval(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min)
         }
     </script>
 @endsection

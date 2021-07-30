@@ -10,14 +10,6 @@
 
 @section('content')
 <main class="no-main">
-    <div class="ps-breadcrumb">
-        <div class="container">
-            <ul class="ps-breadcrumb__list">
-                <li class="active"><a href="index.html">Home</a></li>
-                <li><a href="javascript:void(0);">{{ $category['name'] }}</a></li>
-            </ul>
-        </div>
-    </div>
     <section class="section-shop shop-categories--default">
         <div class="container">
             <div class="row">

@@ -37,7 +37,18 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function getDisplayName() {
+    public function getDisplayName(): string
+    {
         return explode(' ', $this['name'])[0];
+    }
+
+    public function cart(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    public function wishlistItems(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(WishlistItem::class);
     }
 }

@@ -4,13 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Product;
-use App\Models\Category;
-use App\Models\SubCategory;
-use App\Models\Brand;
-use App\Models\VariationItem;
-use App\Models\Media;
-use App\Models\SaleItem;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
@@ -57,7 +50,7 @@ class Product extends Model
 
     public static function getCode()
     {
-        $last_item = Product::latest()->first();
+        $last_item = static::latest()->first();
         if ($last_item) $num = $last_item['id'] + 1;
         else $num = 1;
         return self::generateUniqueCode($num);
@@ -79,6 +72,11 @@ class Product extends Model
     public function getFormattedDiscountedPrice()
     {
         return number_format($this->sell_price - $this->discount);
+    }
+
+    public function getDiscountedPrice()
+    {
+        return $this->sell_price - $this->discount;
     }
 
     public function getDiscountedPercent()

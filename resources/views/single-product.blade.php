@@ -24,9 +24,9 @@
                 <input class="quantity" min="0" name="quantity" value="1" type="number" />
                 <button class="plus" onclick="this.parentNode.querySelector('input[type=number]').stepUp()"><i class="icon-plus"></i></button>
             </div>
-            <button class="mt-5 ps-product__addcart" data-toggle="modal" data-target="#popupAddToCart"><i class="icon-cart"></i>Add to cart</button>
+            <button onclick="addToCart({{ $product['id'] }}, this.parentNode.querySelector('input[type=number]').value)" class="mt-5 ps-product__addcart" data-toggle="modal" data-target="#popupAddToCart"><i class="icon-cart"></i>Add to cart</button>
             <div class="ps-product__box">
-                <a class="ps-product__wishlist" href="wishlist.html">Wishlist</a>
+                <a class="ps-product__wishlist" onclick="addToWishlist({{ $product['id'] }})" href="javascript:void(0);">Wishlist</a>
             </div>
         </div>
     </div>

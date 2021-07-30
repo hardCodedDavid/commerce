@@ -38,6 +38,10 @@ class HomeController extends Controller
             $products->whereHas('variationItems', function ($q) use ($variations) {
                 $q->whereIn('variation_items.id', $variations);
             });
+        if ($brands)
+            $products->whereHas('brands', function ($q) use ($brands) {
+                $q->whereIn('brands.id', $brands);
+            });
         $products = $products->paginate(24);
         return view('shop', compact('products'));
     }
@@ -59,6 +63,12 @@ class HomeController extends Controller
 
     public function productDetail(Product $product)
     {
-        return view('product-detail', compact('product'));
+        $categories = $product->categories()->get()->map(function($category){
+            return $category['id'];
+        });
+        $related = Product::whereHas('categories', function($q) use ($categories) {
+            $q->whereIn('categories.id', $categories);
+        })->where('id', '!=', $product['id'])->get();
+        return view('product-detail', compact('product', 'related'));
     }
 }

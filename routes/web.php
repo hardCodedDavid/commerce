@@ -38,3 +38,13 @@ Route::get('/product/{product:code}/details', [App\Http\Controllers\HomeControll
 Route::get('/deals/{category?}', [App\Http\Controllers\ProductController::class, 'deals'])->name('deals');
 Route::get('/top-selling/{category?}', [App\Http\Controllers\ProductController::class, 'topSelling'])->name('topSelling');
 Route::get('/categories/{category:name}/products/{subcategory?}', [App\Http\Controllers\CategoryController::class, 'getProducts'])->name('category.products');
+
+// Ajax routes
+Route::get('/cart/fetch', [App\Http\Controllers\CartController::class, 'getCart'])->name('cart.fetch');
+Route::post('/add-to-cart/{product}', [App\Http\Controllers\CartController::class, 'addToCart'])->name('add-to-cart');
+Route::post('/remove-from-cart/{product}', [App\Http\Controllers\CartController::class, 'removeFromCart'])->name('remove-from-cart');
+Route::post('/clear-cart', [App\Http\Controllers\CartController::class, 'clearCart'])->name('clear-cart');
+Route::post('/update-cart/{product}', [App\Http\Controllers\CartController::class, 'updateCartItem'])->name('update-cart');
+Route::get('/wishlist/fetch', [App\Http\Controllers\WishlistController::class, 'getWishList'])->name('wishlist.fetch');
+Route::post('/wishlist/add/{product}', [App\Http\Controllers\WishlistController::class, 'wishListProduct'])->name('wishlist.add');
+Route::post('/wishlist/remove/{product}', [App\Http\Controllers\WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');

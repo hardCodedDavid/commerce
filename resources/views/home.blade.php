@@ -72,7 +72,7 @@
                 <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="10000" data-owl-gap="0" data-owl-nav="false" data-owl-dots="true" data-owl-item="1" data-owl-item-xs="1" data-owl-item-sm="1" data-owl-item-md="1" data-owl-item-lg="1" data-owl-duration="1000" data-owl-mousedrag="on">
                     <div class="product-slide">
                         @foreach($categories->take(8) as $category)
-                            <a class="ps-product--vertical" href="#"><img class="ps-product__thumbnail" src="/assets/img/products/02-FoodCupboard/02_19a.jpg" alt="alt" />
+                            <a class="ps-product--vertical" href="#">
                                 <div class="ps-product__content">
                                     <h5 class="ps-product__name">{{ $category['name'] }}</h5>
                                     <p class="ps-product__quantity">{{ $category->products()->count() }} items</p>

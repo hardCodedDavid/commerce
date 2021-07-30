@@ -301,7 +301,10 @@
         });
 
         $('.btn-cart-header').on('click', function(e) {
-            $('.mini-cart').toggleClass('open');
+            let cartProducts = document.querySelector('.mini-cart__products');
+            if (!e.target.contains(cartProducts) ) {
+                $('.mini-cart').toggleClass('open');
+            }
         });
         $('.mini-cart').on('mouseleave', function (e) {
             $(this).removeClass('open');
@@ -361,9 +364,9 @@
                 $('.categories--floating').removeClass('floating-sticky');
             }
 
-            if ($("#freshFoodBlock").length > 0) {
-                setActiveFloatingCategory();
-            }
+            // if ($("#freshFoodBlock").length > 0) {
+            //     setActiveFloatingCategory();
+            // }
         });
 
         $('.scroll-top').on('click', function (e) {
@@ -385,9 +388,9 @@
             $('.ps-mobile-result').slideToggle();
         });
 
-        if ($("#freshFoodBlock").length > 0) {
-            setActiveFloatingCategory();
-        }
+        // if ($("#freshFoodBlock").length > 0) {
+        //     setActiveFloatingCategory();
+        // }
     }
 
     function setActiveFloatingCategory() {
