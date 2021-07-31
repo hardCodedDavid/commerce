@@ -17,7 +17,7 @@ class ProductResource extends JsonResource
         return [
             'id' => $this['id'],
             'code' => $this['code'],
-            'name' => $this['name'],
+            'name' => ucwords($this['name']),
             'weight' => $this['weight'],
             'price' => $this->getDiscountedPrice(),
             'actualPrice' => $this['sell_price'],

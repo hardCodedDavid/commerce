@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Http\Controllers\CartController;
+use App\Http\Resources\ProductResource;
 
 class HomeController extends Controller
 {
@@ -53,6 +55,9 @@ class HomeController extends Controller
 
     public function checkout()
     {
+        $cart = CartController::getUserCartAsArray();
+        if (count($cart['items'])  < 1)
+            return redirect('/cart');
         return view('checkout');
     }
 
@@ -61,14 +66,32 @@ class HomeController extends Controller
         return view('wishlist');
     }
 
+    public function account()
+    {
+        return view('account');
+    }
+
+    public function orders()
+    {
+        return view('orders');
+    }
+
     public function productDetail(Product $product)
     {
         $categories = $product->categories()->get()->map(function($category){
             return $category['id'];
         });
-        $related = Product::whereHas('categories', function($q) use ($categories) {
+        $related = Product::where('is_listed', 1)->whereHas('categories', function($q) use ($categories) {
             $q->whereIn('categories.id', $categories);
         })->where('id', '!=', $product['id'])->get();
         return view('product-detail', compact('product', 'related'));
+    }
+
+    public function searchProduct($val)
+    {
+        $products = Product::where('is_listed', 1)->where(function ($q) use ($val) {
+            $q->where('name', 'LIKE', '%'.$val.'%')->orWhere('description', 'LIKE', '%'.$val.'%');
+        })->get();
+        return response()->json(ProductResource::collection($products));
     }
 }

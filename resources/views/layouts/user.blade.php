@@ -13,6 +13,7 @@
     <meta name="keywords" content="">
     <meta name="description" content="">
     <title>{{ getenv('APP_NAME') }} - @yield('title')</title>
+    @yield('styles')
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700&amp;amp;subset=latin-ext" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/fonts/Linearicons/Font/demo-files/demo.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/nouislider.css') }}">
@@ -50,8 +51,8 @@
                                         <div class="account__content">
                                             <ul class="account-list">
                                                 <li class="title-item"><a href="javascript:void(0);">My Account</a></li>
-                                                <li><a href="#">Profile</a></li>
-                                                <li><a href="/cart">Orders</a></li>
+                                                <li><a href="/account">Profile</a></li>
+                                                <li><a href="/orders">Orders</a></li>
                                                 <li><a href="/wishlist">Wishlist</a></li>
                                             </ul>
                                             <hr><a class="account-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" href="javascript:void(0)"><i class="icon-exit-left"></i>Log out</a>
@@ -129,62 +130,13 @@
                                     </ul>
                                 </div><i class="icon-magnifier search"></i>
                             </div>
-                            <input class="form-control input-search" placeholder="I'm searching for...">
+                            <input oninput="searchProduct(this.value)" class="form-control input-search" placeholder="I'm searching for...">
                             <div class="input-group-append">
                                 <button class="btn">Search</button>
                             </div>
                         </div>
                         <div class="result-search">
-                            <ul class="list-result">
-                                <li class="cart-item">
-                                    <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_18a.jpg" alt="alt" /></a>
-                                        <div class="ps-product__content"><a class="ps-product__name" href="product-default.html"><u>Organic</u> Large Green Bell Pepper</a>
-                                            <p class="ps-product__meta"> <span class="ps-product__price">$6.90</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="cart-item">
-                                    <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_16a.jpg" alt="alt" /></a>
-                                        <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Avocado <u>Organic</u> Hass Large</a>
-                                            <p class="ps-product__meta"> <span class="ps-product__price">$12.90</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="cart-item">
-                                    <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_32a.jpg" alt="alt" /></a>
-                                        <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Tailgater Ham <u>Organic</u> Sandwich</a>
-                                            <p class="ps-product__meta"> <span class="ps-product__price">$33.49</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="cart-item">
-                                    <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_6a.jpg" alt="alt" /></a>
-                                        <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Extreme <u>Organic</u> Light Can</a>
-                                            <p class="ps-product__rating">
-                                                <select class="rating-stars">
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4" selected="selected">4</option>
-                                                    <option value="5">5</option>
-                                                </select><span>(16)</span>
-                                            </p>
-                                            <p class="ps-product__meta"> <span class="ps-product__price-sale">$4.99</span><span class="ps-product__is-sale">$8.99</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="cart-item">
-                                    <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_22a.jpg" alt="alt" /></a>
-                                        <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Extreme <u>Organic</u> Light Can</a>
-                                            <p class="ps-product__meta"> <span class="ps-product__price">$12.99</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
+                            <ul class="list-result web">
                             </ul>
                         </div>
                     </div>
@@ -239,7 +191,7 @@
                 <div class="mobile-search__header">
                     <div class="mobile-search-box">
                         <div class="input-group">
-                            <input class="form-control" placeholder="I'm shopping for..." id="inputSearchMobile">
+                            <input class="form-control" oninput="searchProduct(this.value)" placeholder="I'm shopping for..." id="inputSearchMobile">
                             <div class="input-group-append">
                                 <button class="btn"> <i class="icon-magnifier"></i></button>
                             </div>
@@ -248,66 +200,8 @@
                     </div>
                 </div>
                 <div class="mobile-search__result">
-                    <h5> <span class="number-result">5</span>search result</h5>
-                    <ul class="list-result">
-                        <li class="cart-item">
-                            <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_18a.jpg" alt="alt" /></a>
-                                <div class="ps-product__content"><a class="ps-product__name" href="product-default.html"><u>Organic</u> Large Green Bell Pepper</a>
-                                    <p class="ps-product__rating">
-                                        <select class="rating-stars">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3" selected="selected">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select><span>(5)</span>
-                                    </p>
-                                    <p class="ps-product__meta"> <span class="ps-product__price">$6.90</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="cart-item">
-                            <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_16a.jpg" alt="alt" /></a>
-                                <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Avocado <u>Organic</u> Hass Large</a>
-                                    <p class="ps-product__meta"> <span class="ps-product__price">$12.90</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="cart-item">
-                            <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_32a.jpg" alt="alt" /></a>
-                                <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Tailgater Ham <u>Organic</u> Sandwich</a>
-                                    <p class="ps-product__meta"> <span class="ps-product__price">$33.49</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="cart-item">
-                            <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_6a.jpg" alt="alt" /></a>
-                                <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Extreme <u>Organic</u> Light Can</a>
-                                    <p class="ps-product__rating">
-                                        <select class="rating-stars">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4" selected="selected">4</option>
-                                            <option value="5">5</option>
-                                        </select><span>(16)</span>
-                                    </p>
-                                    <p class="ps-product__meta"> <span class="ps-product__price-sale">$4.99</span><span class="ps-product__is-sale">$8.99</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="cart-item">
-                            <div class="ps-product--mini-cart"><a href="product-default.html"><img class="ps-product__thumbnail" src="/assets/img/products/01-Fresh/01_22a.jpg" alt="alt" /></a>
-                                <div class="ps-product__content"><a class="ps-product__name" href="product-default.html">Extreme <u>Organic</u> Light Can</a>
-                                    <p class="ps-product__meta"> <span class="ps-product__price">$12.99</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
+                    <h5> <span class="number-result"></span>search result</h5>
+                    <ul class="list-result mobile">
                     </ul>
                 </div>
             </div>
@@ -382,7 +276,7 @@
                 <li class="nav-item"><a class="nav-link footer-cart" href="/cart"><i class="icon-cart"></i><span class="badge bg-warning cart-items-count"></span><span>Cart</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="/wishlist"><i class="icon-heart"></i><span class="badge bg-warning wishlist-items-count"></span><span>Wishlist</span></a></li>
                 @auth
-                <li class="nav-item"><a class="nav-link" href="login-register.html"><i class="icon-user"></i><span>Account</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="/account"><i class="icon-user"></i><span>Account</span></a></li>
                 @endauth
             </ul>
         </div>
@@ -428,9 +322,8 @@
                         <span class="account">{{ auth()->user()->getDisplayName() }}</span>
                         <a class="dropdown-user" href="#" id="dropdownAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-chevron-down"></i></a>
                         <div class="dropdown-menu" aria-labelledby="dropdownAccount">
-                            <a class="dropdown-item" href="#"><b>My Account</b></a>
-                            <a class="dropdown-item" href="#">Profile</a>
-                            <a class="dropdown-item" href="#">Orders</a>
+                            <a class="dropdown-item" href="/account"><b>My Account</b></a>
+                            <a class="dropdown-item" href="/orders">Orders</a>
                             <a class="dropdown-item" href="/wishlist">Wishlist</a>
                             <a class="dropdown-divider"></a>
                             <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" href="javascript:void(0);"><i class="icon-exit-left"></i>Log out</a>
@@ -602,6 +495,51 @@
             });
         }
 
+        function searchProduct(val) {
+            $('.result-search').addClass('open');
+            if (val.length < 2) {
+                $('.list-result').html('<li class="cart-item text-center">Enter Search value</li>');
+                $('.number-result').text('0');
+                return;
+            };
+            $.ajax({
+                url: `/product/search/${val}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    let html = '';
+                    let htmlMobile = '';
+                    data.forEach(item => {
+                        html += `<li class="cart-item">
+                                    <div class="ps-product--mini-cart"><a href="/product/${item.code}/details"><img class="ps-product__thumbnail" src="${item.media[0]}" /></a>
+                                        <div class="ps-product__content"><a class="ps-product__name" href="/product/${item.code}/details"><u>Organic</u> ${item.name}</a>
+                                            <p class="ps-product__meta"> <span class="ps-product__price">₦${numberFormat(item.price)}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>`;
+                        htmlMobile += `<li class="cart-item">
+                                    <div class="ps-product--mini-cart"><a href="/product/${item.code}/details"><img class="ps-product__thumbnail" src="${item.media[0]}" alt="alt" /></a>
+                                        <div class="ps-product__content"><a class="ps-product__name" href="/product/${item.code}/details">Avocado <u>Organic</u> ${item.name}</a>
+                                            <p class="ps-product__meta"> <span class="ps-product__price">₦${numberFormat(item.price)}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>`;
+                    });
+                    if (data.length === 0)
+                        html = htmlMobile = '<li class="cart-item text-center">No products found</li>';
+                    $('.list-result.web').html(html);
+                    $('.list-result.mobile').html(htmlMobile);
+                    $('.number-result').text(data.length);
+                },
+                error: function (res) {
+                    $.notify("There was an error fetching products", "error");
+                }
+            });
+        }
+
         function fetchWishlist() {
             $.ajax({
                 url: `/wishlist/fetch`,
@@ -623,7 +561,9 @@
             let cartTotal = $('.cart-total-amount');
             let cartItemsCount = $('.cart-items-count');
             let cartItemsCountAlt = $('.cart-items-count-alt');
+            let count = 0;
             data.items.forEach(item => {
+                count += item.quantity;
                 html += `<li class="cart-item">
                             <div class="ps-product--mini-cart">
                                 <a href="product-default.html">
@@ -646,8 +586,8 @@
                 cartItemsCount.show();
                 $('.list-cart').html(html);
             };
-            cartItemsCount.text(data.items.length);
-            cartItemsCountAlt.text(data.items.length);
+            cartItemsCount.text(count);
+            cartItemsCountAlt.text(count);
         }
 
         function updateWishlistView(data)
