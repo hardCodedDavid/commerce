@@ -33,13 +33,17 @@ Route::get('/shop', [App\Http\Controllers\HomeController::class, 'shop'])->name(
 Route::post('/shop/filter', [App\Http\Controllers\HomeController::class, 'filterShop'])->name('shop.filter');
 Route::get('/cart', [App\Http\Controllers\HomeController::class, 'cart'])->name('cart');
 Route::get('/checkout', [App\Http\Controllers\HomeController::class, 'checkout'])->name('checkout');
+Route::post('/checkout', [App\Http\Controllers\HomeController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/wishlist', [App\Http\Controllers\HomeController::class, 'wishlist'])->name('wishlist');
 Route::get('/account', [App\Http\Controllers\HomeController::class, 'account'])->name('account')->middleware('auth');
+Route::post('/account/update', [App\Http\Controllers\HomeController::class, 'updateAccount'])->name('account.update')->middleware('auth');
+Route::put('/password/custom/update', [App\Http\Controllers\HomeController::class, 'changePassword'])->name('password.custom.update')->middleware('auth');
 Route::get('/orders', [App\Http\Controllers\HomeController::class, 'orders'])->name('orders')->middleware('auth');
 Route::get('/product/{product:code}/details', [App\Http\Controllers\HomeController::class, 'productDetail'])->name('product.detail');
 Route::get('/deals/{category?}', [App\Http\Controllers\ProductController::class, 'deals'])->name('deals');
 Route::get('/top-selling/{category?}', [App\Http\Controllers\ProductController::class, 'topSelling'])->name('topSelling');
 Route::get('/categories/{category:name}/products/{subcategory?}', [App\Http\Controllers\CategoryController::class, 'getProducts'])->name('category.products');
+Route::get('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'handlePaymentCallback'])->name('payment.callback');
 
 // Ajax routes
 Route::get('/product/search/{val}', [App\Http\Controllers\HomeController::class, 'searchProduct'])->name('product.search');

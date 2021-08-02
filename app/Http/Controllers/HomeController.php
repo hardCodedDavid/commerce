@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Http\Controllers\CartController;
 use App\Http\Resources\ProductResource;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -61,6 +64,40 @@ class HomeController extends Controller
         return view('checkout');
     }
 
+    public function processCheckout()
+    {
+        $this->validate(request(), [
+            'name' => 'required',
+            'country' => 'required',
+            'state' => 'required',
+            'address' => 'required',
+            'city' => 'required',
+            'phone' => 'required',
+            'email' => 'required_if:create_account,yes|unique',
+            'password' => 'required_if:create_account,true|confirmed|min:8',
+            'shipping_country' => 'required_if:ship_to_new_address,yes',
+            'shipping_state' => 'required_if:ship_to_new_address,yes',
+            'shipping_address' => 'required_if:ship_to_new_address,yes',
+            'shipping_city' => 'required_if:ship_to_new_address,yes',
+        ]);
+        if (request('create_account') == 'yes') {
+            $user = User::create([
+                'name' => request('name'),
+                'email' => request('email'),
+                'password' => Hash::make(request('password')),
+            ]);
+            event(new Registered($user));
+        }
+        $data = request()->only('name', 'country', 'state', 'address', 'city', 'phone', 'email', 'note');
+        if (auth()->user())
+            if (request('ship_to_new_address'))
+                $data = request()->only('shipping_country', 'shipping_state', 'shipping_address', 'shipping_postcode', 'eshipping_citymail', 'note');
+        $data['auth'] = !is_null(auth()->user());
+        $data['email'] = auth()->user()['email'] ?? request('email');
+        $cart = CartController::getUserCartAsArray();
+        return PaymentController::initializeTransaction($cart['total'], $data);
+    }
+
     public function wishlist()
     {
         return view('wishlist');
@@ -69,6 +106,36 @@ class HomeController extends Controller
     public function account()
     {
         return view('account');
+    }
+
+    public function updateAccount()
+    {
+        $this->validate(request(), [
+            'name' => 'required',
+            'country' => 'required',
+            'state' => 'required',
+            'city' => 'required',
+            'address' => 'required',
+            'phone' => 'required',
+        ]);
+
+        $data = request()->only('name', 'country', 'state', 'city', 'address', 'phone', 'postcode');
+        auth()->user()->update($data);
+        return back()->with('success', 'Profile updated successfully');
+    }
+
+    public function changePassword()
+    {
+        $this->validate(request(), [
+            'old_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+        if (!Hash::check(request('old_password'), auth()->user()['password']))
+            return back()->with('error', 'Old password incorrect');
+        auth()->user()->update([
+            'password' => Hash::make(request('new_password'))
+        ]);
+        return back()->with('success', 'Password changed successfully');
     }
 
     public function orders()

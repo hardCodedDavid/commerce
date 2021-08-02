@@ -363,6 +363,20 @@
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="{{ asset('assets/js/notify.min.js') }}"></script>
     <script>
+        const success = {!! json_encode(session('success')) !!};
+        const error = {!! json_encode(session('error')) !!};
+        const warning = {!! json_encode(session('warning')) !!};
+        const errors = {!! json_encode($errors->any()) !!}
+        if (success)
+            $.notify(success, 'success');
+        if (errors)
+            $.notify('Invalid input data', 'error');
+
+        if (error)
+            $.notify(error, 'error');
+        if (warning)
+            $.notify(warning, 'warning');
+
         let fetchDetailedCart = '{{ request()->route()->getName() ?? null }}' === 'cart';
         let fetchDetailedWishList = '{{ request()->route()->getName() ?? null }}' === 'wishlist';
         fetchCart();
