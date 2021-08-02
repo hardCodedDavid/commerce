@@ -26,6 +26,7 @@ class CreateProductsTable extends Migration
             $table->integer('quantity');
             $table->decimal('weight')->nullable();
             $table->text('note')->nullable();
+            $table->integer('sold')->default(0);
             $table->boolean('is_listed')->default(false);
             $table->softDeletes();
             $table->timestamps();
