@@ -33,7 +33,7 @@ Route::get('/shop', [App\Http\Controllers\HomeController::class, 'shop'])->name(
 Route::post('/shop/filter', [App\Http\Controllers\HomeController::class, 'filterShop'])->name('shop.filter');
 Route::get('/cart', [App\Http\Controllers\HomeController::class, 'cart'])->name('cart');
 Route::get('/checkout', [App\Http\Controllers\HomeController::class, 'checkout'])->name('checkout');
-Route::post('/checkout', [App\Http\Controllers\HomeController::class, 'processCheckout'])->name('checkout.process');
+// Route::post('/checkout', [App\Http\Controllers\HomeController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/wishlist', [App\Http\Controllers\HomeController::class, 'wishlist'])->name('wishlist');
 Route::get('/account', [App\Http\Controllers\HomeController::class, 'account'])->name('account')->middleware('auth');
 Route::post('/account/update', [App\Http\Controllers\HomeController::class, 'updateAccount'])->name('account.update')->middleware('auth');
