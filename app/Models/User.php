@@ -47,6 +47,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Cart::class);
     }
 
+    public function orders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function wishlistItems(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(WishlistItem::class);

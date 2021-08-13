@@ -124,6 +124,17 @@ class CartController extends Controller
         }
     }
 
+
+    public static function clearUserCart()
+    {
+        if (auth()->user()) {
+            $cart = auth()->user()->cart()->with(['items', 'items.product'])->first();
+            $cart->items()->delete();
+        }else {
+            session(['cartItems' => null]);
+        }
+    }
+
     public static function fetchSessionCartAsJSON(): JsonResponse
     {
         return response()->json(self::fetchSessionCartAsArray());

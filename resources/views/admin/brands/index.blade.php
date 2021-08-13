@@ -28,11 +28,13 @@
                     </ol>
                 </div>
             </div>
+            @can('Add Brands')
             <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
                     <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#brand-modal"><i class="ri-add-fill mr-2"></i>New Brand</button>
                 </div>
             </div>
+            @endcan
         </div>
     </div>
 @endsection
@@ -73,12 +75,16 @@
                                                         Action <i class="icon-lg fa fa-angle-down"></i>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                                                        <button onclick="populateEditModal({{ $brand['id'] }}, '{{ $brand['name'] }}')" data-toggle="modal" data-target="#edit-brand-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
+                                                        @can('Edit Brands')
+                                                            <button onclick="populateEditModal({{ $brand['id'] }}, '{{ $brand['name'] }}')" data-toggle="modal" data-target="#edit-brand-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
+                                                        @endcan
+                                                        @can('Delete Brands')
                                                         <button onclick="event.preventDefault(); confirmSubmission('deleteForm{{ $brand['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
                                                         <form method="POST" id="deleteForm{{ $brand['id'] }}" action="{{ route('admin.brands.destroy', $brand) }}">
                                                             @csrf
                                                             @method('DELETE')
                                                         </form>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </td>

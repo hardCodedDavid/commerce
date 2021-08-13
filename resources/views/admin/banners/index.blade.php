@@ -28,11 +28,13 @@
                     </ol>
                 </div>
             </div>
+            @can('Add Banners')
             <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
                     <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#banner-modal"><i class="ri-add-fill mr-2"></i>New Banner</button>
                 </div>
             </div>
+            @endcan
         </div>
     </div>
 @endsection
@@ -73,12 +75,16 @@
                                                         Action <i class="icon-lg fa fa-angle-down"></i>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                                                        <button onclick="populateEditModal({{ $banner['id'] }}, '{{ $banner['position'] }}')" data-toggle="modal" data-target="#edit-banner-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
-                                                        <button onclick="event.preventDefault(); confirmSubmission('deleteForm{{ $banner['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
-                                                        <form method="POST" id="deleteForm{{ $banner['id'] }}" action="{{ route('admin.banners.destroy', $banner) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                        </form>
+                                                        @can('Add Banners')
+                                                            <button onclick="populateEditModal({{ $banner['id'] }}, '{{ $banner['position'] }}')" data-toggle="modal" data-target="#edit-banner-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
+                                                        @endcan
+                                                        @can('Add Banners')
+                                                            <button onclick="event.preventDefault(); confirmSubmission('deleteForm{{ $banner['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
+                                                            <form method="POST" id="deleteForm{{ $banner['id'] }}" action="{{ route('admin.banners.destroy', $banner) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                            </form>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </td>

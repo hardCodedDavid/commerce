@@ -3,11 +3,20 @@
 @section('title', 'New Sale')
 
 @section('style')
-<link href="{{ asset('admin/assets/plugins/datepicker/datepicker.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/plugins/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('admin/assets/plugins/datatables/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('admin/assets/css/icons.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('admin/assets/css/flag-icon.min.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('admin/assets/css/style.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/plugins/datepicker/datepicker.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/css/icons.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/css/flag-icon.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/css/style.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput-typeahead.css') }}" rel="stylesheet" type="text/css">
 @endsection
 
 @section('breadcrumbs')
@@ -44,7 +53,7 @@
                             <div class="col-md-6 my-1">
                                 <label class="col-form-label">Name</label>
                                 <div>
-                                    <input type="text" name="customer_name" class="form-control">
+                                    <input type="text" value="{{ old('customer_name') }}" name="customer_name" class="form-control">
                                 </div>
                                 @error('customer_name')
                                     <span class="text-danger small" role="alert">
@@ -55,19 +64,19 @@
                             <div class="col-md-6 my-1">
                                 <label class="col-form-label">Email</label>
                                 <div>
-                                    <input type="email" name="customer_email" class="form-control">
+                                    <input type="email" value="{{ old('customer_email') }}" name="customer_email" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-6 my-1">
                                 <label class="col-form-label">Phone</label>
                                 <div>
-                                    <input type="text" name="customer_phone" class="form-control">
+                                    <input type="text" value="{{ old('customer_phone') }}" name="customer_phone" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-6 my-1">
                                 <label class="col-form-label">Address</label>
                                 <div>
-                                    <input type="text" name="customer_address" class="form-control">
+                                    <input type="text" value="{{ old('customer_address') }}" name="customer_address" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -88,7 +97,7 @@
                                                 <div class="form-group row d-flex align-items-end">
                                                     <div class="col-sm-4 my-2">
                                                         <label class="form-label">Product</label>
-                                                        <select name="products[0][product]" required class="form-control item-name">
+                                                        <select name="products[0][product]" required class="form-control select2-single item-name">
                                                             <option value="">Select Product</option>
                                                             @foreach ($products as $product)
                                                                 <option @if ($currentProduct['product'] == $product['id'])
@@ -125,7 +134,7 @@
 
                                                     <div class="col-sm-3 my-2 item-brand">
                                                         <label class="form-label">Brand</label>
-                                                        <select name="products[0][brand]" class="form-control">
+                                                        <select name="products[0][brand]" class="select2-single form-control">
                                                             <option value="">Select Brand</option>
                                                         </select>
                                                     </div><!--end col-->
@@ -133,7 +142,7 @@
                                                     @foreach ($variations as $variation)
                                                         <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
                                                             <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
-                                                            <select name="products[0][{{ $variation['name'] }}]" class="form-control">
+                                                            <select name="products[0][{{ $variation['name'] }}]" class="select2-single form-control">
                                                                 <option value="">Select {{ $variation['name'] }}</option>
                                                             </select>
                                                         </div><!--end col-->
@@ -153,7 +162,7 @@
                                             <div class="form-group row d-flex align-items-end">
                                                 <div class="col-sm-4 my-2">
                                                     <label class="form-label">Product</label>
-                                                    <select name="products[0][product]" required class="form-control item-name">
+                                                    <select name="products[0][product]" required class="select2-single form-control item-name">
                                                         <option value="">Select Product</option>
                                                         @foreach ($products as $product)
                                                             <option value="{{ $product['id'] }}">{{ $product['name'] }}</option>
@@ -173,7 +182,7 @@
 
                                                 <div class="col-sm-3 my-2 item-brand">
                                                     <label class="form-label">Brand</label>
-                                                    <select name="products[0][brand]" class="form-control">
+                                                    <select name="products[0][brand]" class="select2-single form-control">
                                                         <option value="">Select Brand</option>
                                                     </select>
                                                 </div><!--end col-->
@@ -181,7 +190,7 @@
                                                 @foreach ($variations as $variation)
                                                     <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
                                                         <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
-                                                        <select name="products[0][{{ $variation['name'] }}]" class="form-control">
+                                                        <select name="products[0][{{ $variation['name'] }}]" class="select2-single form-control">
                                                             <option value="">Select {{ $variation['name'] }}</option>
                                                         </select>
                                                     </div><!--end col-->
@@ -199,7 +208,7 @@
                                     </div><!--end repet-list-->
                                     <div class="form-group mb-0 row">
                                         <div class="col-sm-12">
-                                            <span data-repeater-create class="btn btn-outline-secondary">
+                                            <span data-repeater-create onclick="reInitializeSingleSelect()" class="btn btn-outline-secondary">
                                                 <span class="fa fa-plus"></span> Add Product
                                             </span>
                                         </div><!--end col-->
@@ -290,6 +299,8 @@
     <script src="{{ asset('admin/assets/plugins/datepicker/datepicker.min.js') }}"></script>
     <script src="{{ asset('admin/assets/plugins/datepicker/i18n/datepicker.en.js') }}"></script>
     <script src="{{ asset('admin/assets/js/custom/custom-form-datepicker.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/custom/custom-form-select.js') }}"></script>
     <script>
         const variationList = {!! json_encode($variations) !!};
         const productsList = $('#productsList');
@@ -303,6 +314,9 @@
             fetchProductDetailsAndComputeSubTotal($(this));
         })
 
+        function reInitializeSingleSelect() {
+            setTimeout(() => $('.select2-single').select2(), 10)
+        }
 
         additionalFee.on('input', computeSubTotal);
 

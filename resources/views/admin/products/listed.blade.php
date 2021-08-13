@@ -29,11 +29,13 @@
                     </ol>
                 </div>
             </div>
-            <div class="col-md-4 col-lg-4">
-                <div class="widgetbar">
-                    <a href="{{ route('admin.products.create') }}" class="btn btn-primary"><i class="ri-add-fill mr-2"></i>New Product</a>
+            @can('Add Products')
+                <div class="col-md-4 col-lg-4">
+                    <div class="widgetbar">
+                        <a href="{{ route('admin.products.create') }}" class="btn btn-primary"><i class="ri-add-fill mr-2"></i>New Product</a>
+                    </div>
                 </div>
-            </div>
+            @endcan
         </div>
     </div>
 @endsection
@@ -47,6 +49,7 @@
             <div class="card m-b-30">
                 <div class="card-header d-sm-flex d-block justify-content-between align-content-center">
                     <h5 class="card-title my-1">Listed Products</h5>
+                    @can('Export Products')
                     <form method="POST" action="{{ route('admin.products.export') }}" class="d-sm-flex d-block my-1">
                         @csrf
                         <input type="hidden" name="type" value="listed">
@@ -57,6 +60,7 @@
                             <button class="btn btn-primary"><i class="ri-download-line mr-2"></i>Download CSV</button>
                         </div>
                     </form>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -64,7 +68,7 @@
                             <thead>
                             <tr>
                                 <th><i class="fa fa-list-ul"></i></th>
-                                <th>Code</th>
+                                <th>Item Number</th>
                                 <th>Name</th>
                                 <th>Buy Price</th>
                                 <th>Sell Price</th>
@@ -118,7 +122,7 @@
                 },
                 "columns": [
                     { "data": "sn" },
-                    { "data": "code" },
+                    { "data": "item_number" },
                     { "data": "name" },
                     { "data": "buy_price" },
                     { "data": "sell_price" },

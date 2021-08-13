@@ -13,7 +13,7 @@ class AuthorizationController extends Controller
     public function index()
     {
         return view('admin.authorization.index', [
-            'roles' => Role::with('permissions')->get(),
+            'roles' => Role::where('name', '!=', 'Super Admin')->with('permissions')->get(),
             'permissions' => Permission::all()
         ]);
     }

@@ -92,34 +92,7 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md-12">
                                                     <label for="address">Address</label>
-                                                    <textarea disabled class="form-control" id="address" rows="2"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="form-row mt-4">
-                                                <div class="col-12">
-                                                    <h5>Delivery Information</h5>
-                                                </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="form-group col-md-6">
-                                                    <label for="country">Country</label>
-                                                    <input disabled value="{{ $user['country'] }}" type="text" class="form-control" id="country">
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label for="state">State</label>
-                                                    <input disabled value="{{ $user['state'] }}" type="text" class="form-control" id="state">
-                                                </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="form-group col-md-12">
-                                                    <label for="city">City</label>
-                                                    <input disabled value="{{ $user['city'] }}" type="text" class="form-control" id="city">
-                                                </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="form-group col-md-12">
-                                                    <label for="address">Address</label>
-                                                    <textarea disabled class="form-control" id="address" rows="2"></textarea>
+                                                    <textarea disabled class="form-control" id="address" rows="2">{{ $user['address'] }}</textarea>
                                                 </div>
                                             </div>
                                         </form>
@@ -137,108 +110,75 @@
                                 <h5 class="card-title mb-0">My Orders</h5>
                             </div>
                             <div class="card-body">
-                                <div class="order-box">
-                                    <div class="card border m-b-30">
-                                        <div class="card-header">
-                                            <div class="row align-items-center">
-                                                <div class="col-sm-6">
-                                                    <h5>ID : #O2101</h5>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <h6 class="mb-0">Total : <strong>$500</strong></h6>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-borderless">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">#</th>
-                                                            <th scope="col">Photo</th>
-                                                            <th scope="col">Product</th>
-                                                            <th scope="col">Qty</th>
-                                                            <th scope="col">Price</th>
-                                                            <th scope="col" class="text-right">Total</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <th scope="row">1</th>
-                                                            <td><img src="{{ asset('admin/assets/images/ecommerce/product_01.svg') }}" class="img-fluid" width="35" alt="product"></td>
-                                                            <td>Apple Watch</td>
-                                                            <td>1</td>
-                                                            <td>$100</td>
-                                                            <td class="text-right">$100</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">2</th>
-                                                            <td><img src="{{ asset('admin/assets/images/ecommerce/product_02.svg') }}" class="img-fluid" width="35" alt="product"></td>
-                                                            <td>Apple iPhone</td>
-                                                            <td>2</td>
-                                                            <td>$200</td>
-                                                            <td class="text-right">$400</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <div class="row align-items-center">
-                                                <div class="col-sm-6">
-                                                    <h5>Status : <span class="badge badge-info-inverse font-14">Shipped</span></h5>
+                            @php
+                                $orders = $user->orders()->latest()->get();
+                            @endphp
+                                @if (count($orders) > 0)
+                                    @foreach ($orders as $order)
+                                    <div class="order-box">
+                                        <div class="card border m-b-30">
+                                            <div class="card-header">
+                                                <div class="row align-items-center">
+                                                    <div class="col-sm-6">
+                                                        <h5>ID : #{{ $order['code'] }}</h5>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <h6 class="mb-0">Total : <strong>₦{{ number_format($order['total'], 2) }}</strong></h6>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="order-box">
-                                    <div class="card border m-b-30">
-                                        <div class="card-header">
-                                            <div class="row align-items-center">
-                                                <div class="col-sm-6">
-                                                    <h5>ID : #O2102</h5>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <h6 class="mb-0">Total : <strong>$100</strong></h6>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-borderless">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">#</th>
+                                                                <th scope="col">Product</th>
+                                                                <th scope="col">Qty</th>
+                                                                <th scope="col">Price</th>
+                                                                <th scope="col" class="text-right">Total</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($order->items()->get() as $key=>$item)
+                                                                <tr>
+                                                                    <td scope="row">{{ $key + 1 }}</td>
+                                                                    <td>
+                                                                        <a href="{{ route('product.detail', $item['product']['code']) }}">
+                                                                            <img width="50px" src="{{ asset($item['product']['media'][0]['url']) }}"/>
+                                                                            <p class="my-1">{{ $item['product']['name'] }}</p>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>₦{{ number_format($item['price'], 2) }}</td>
+                                                                    <td>{{ $item['quantity'] }}</td>
+                                                                    <td class="text-right">₦{{ number_format($item['price'] * $item['quantity'], 2) }}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-borderless">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">#</th>
-                                                            <th scope="col">Photo</th>
-                                                            <th scope="col">Product</th>
-                                                            <th scope="col">Qty</th>
-                                                            <th scope="col">Price</th>
-                                                            <th scope="col" class="text-right">Total</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <th scope="row">1</th>
-                                                            <td><img src="{{ asset('admin/assets/images/ecommerce/product_01.svg') }}" class="img-fluid" width="35" alt="product"></td>
-                                                            <td>Apple iPad</td>
-                                                            <td>1</td>
-                                                            <td>$100</td>
-                                                            <td class="text-right">$100</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <div class="row align-items-center">
-                                                <div class="col-sm-6">
-                                                    <h5>Status : <span class="badge badge-primary-inverse font-14">Delivered</span></h5>
+                                            <div class="card-footer">
+                                                <div class="row align-items-center">
+                                                    <div class="col-sm-6">
+                                                        <h5>Status :
+                                                            @if ($order['status'] == 'pending')
+                                                                <span class="badge badge-warning-inverse">pending</span>
+                                                            @elseif ($order['status'] == 'processing')
+                                                                <span class="badge badge-primary-inverse">processing</span>
+                                                            @elseif ($order['status'] == 'delivered')
+                                                                <span class="badge badge-success-inverse">delivered</span>
+                                                            @elseif ($order['status'] == 'cancelled')
+                                                                <span class="badge badge-danger-inverse">cancelled</span>
+                                                            @endif
+                                                        </h5>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>

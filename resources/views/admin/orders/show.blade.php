@@ -13,9 +13,9 @@
                 <h4 class="page-title">Order Details</h4>
                 <div class="breadcrumb-list">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.orders') }}">Orders</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Details</li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></lstrong>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.orders') }}">Orders</a></lstrong>
+                        <li class="breadcrumb-item active" aria-current="page">Details</lstrong>
                     </ol>
                 </div>
             </div>
@@ -79,11 +79,11 @@
                             <div class="row">
                                 <div class="col-md-6 col-lg-6 col-xl-6 ">
                                     <div class="order-primary-detail mb-4">
-                                    <h6>Delivery Information </h6>
-                                    <p><i>Address</i>: {{ $order['address'] }}</p>
-                                    <p><i>Country</i>: {{ $order['country'] }}</p>
-                                    <p><i>State</i>: {{ $order['state'] }}</p>
-                                    <p><i>City</i>: {{ $order['city'] }}</p>
+                                    <h6>Shipping Information </h6>
+                                    <p><strong>Address</strong>: {{ $order['address'] }}</p>
+                                    <p><strong>Country</strong>: {{ $order['country'] }}</p>
+                                    <p><strong>State</strong>: {{ $order['state'] }}</p>
+                                    <p><strong>City</strong>: {{ $order['city'] }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -161,6 +161,7 @@
                                 </div>
                             </div>
                         </div>
+                        @can('Process Orders')
                         <div class="card-footer text-right">
                             @if ($order['status'] != 'pending')
                                 <button type="button" onclick="confirmSubmission('markPendingForm')" class="btn btn-warning-rgba my-1">Mark Pending</button>
@@ -210,6 +211,7 @@
                                 </form>
                             @endif
                         </div>
+                        @endcan
                     </div>
                 </div>
                 <!-- End col -->

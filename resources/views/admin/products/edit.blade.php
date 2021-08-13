@@ -205,7 +205,18 @@
                                         <div class="form-group row">
                                             <label for="purchaseNote" class="col-sm-3 col-form-label">Purchase note</label>
                                             <div class="col-sm-9">
-                                                <textarea class="form-control" name="note" id="purchaseNote" rows="3" placeholder="Purchase note">{{ old('note') }}</textarea>
+                                                <textarea class="form-control" name="note" id="purchaseNote" rows="3" placeholder="Purchase note">{{ old('note') ?? $product['note'] }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="item_number" class="col-sm-3 col-form-label">Item/Part Number</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" value="{{ old('item_number') ?? $product['item_number'] }}" name="item_number" class="form-control" id="item_number" placeholder="Item Number">
+                                                @error('item_number')
+                                                    <span class="text-danger small" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
@@ -244,8 +255,8 @@
                                         @if ($currentCategory['id'] == $category['id'])
                                             checked
                                         @endif
-                                    @endforeach value="{{ $category['id'] }}" id="{{ $category['name'] }}">
-                                    <label class="custom-control-label" for="{{ $category['name'] }}">{{ $category['name'] }}</label>
+                                    @endforeach value="{{ $category['id'] }}" id="cat-{{ $category['name'] }}">
+                                    <label class="custom-control-label" for="cat-{{ $category['name'] }}">{{ $category['name'] }}</label>
                                 </div>
                             @endforeach
                             @error('categories')
@@ -270,8 +281,8 @@
                                         @if ($currentBrand['id'] == $brand['id'])
                                             checked
                                         @endif
-                                    @endforeach value="{{ $brand['id'] }}" id="{{ $brand['name'] }}">
-                                    <label class="custom-control-label" for="{{ $brand['name'] }}">{{ $brand['name'] }}</label>
+                                    @endforeach value="{{ $brand['id'] }}" id="brand-{{ $brand['name'] }}">
+                                    <label class="custom-control-label" for="brand-{{ $brand['name'] }}">{{ $brand['name'] }}</label>
                                 </div>
                             @endforeach
                         </div>
@@ -290,8 +301,8 @@
                                         @if ($currentSubCategory['id'] == $subCategory['id'])
                                             checked
                                         @endif
-                                    @endforeach value="{{ $subCategory['id'] }}" id="{{ $subCategory['name'] }}">
-                                    <label class="custom-control-label" for="{{ $subCategory['name'] }}">{{ $subCategory['name'] }}</label>
+                                    @endforeach value="{{ $subCategory['id'] }}" id="subCat-{{ $subCategory['name'] }}">
+                                    <label class="custom-control-label" for="subCat-{{ $subCategory['name'] }}">{{ $subCategory['name'] }}</label>
                                 </div>
                                 @endforeach
                             @endforeach
@@ -313,8 +324,8 @@
                                             @if ($currentVariation['id'] == $item['id'])
                                                 checked
                                             @endif
-                                        @endforeach class="custom-control-input" value="{{ $item['id'] }}" id="{{ $item['name'] }}">
-                                        <label class="custom-control-label" for="{{ $item['name'] }}">{{ $item['name'] }}</label>
+                                        @endforeach class="custom-control-input" value="{{ $item['id'] }}" id="var-{{ $currentVariation['name'] }}-{{ $item['name'] }}">
+                                        <label class="custom-control-label" for="var-{{ $currentVariation['name'] }}-{{ $item['name'] }}">{{ $item['name'] }}</label>
                                     </div>
                                 @endforeach
                             </div>
@@ -336,6 +347,7 @@
     <script src="{{ asset('admin/assets/plugins/repeater/jquery.repeater.min.js') }}"></script>
     <script src="{{ asset('admin/assets/pages/jquery.form-repeater.js') }}"></script>
     <script>
+            const exisitingSubcategories = {!! json_encode($product->subCategories->map(function($item) { return $item['id']; })) !!};
             const subCategoriesContainer = $('#subCategoriesContainer');
             const addImageFieldButton = $('#addImageFieldButton');
             const imageFileFields = $('#imageFileFields');
@@ -403,10 +415,12 @@
                     success: function (data) {
                         html = '';
                         if (data.length > 0) {
+                            let checked;
                             data.forEach(res => {
+                                checked = exisitingSubcategories.includes(res.id) ? 'checked' : '';
                                 html += `<div class="custom-control custom-checkbox">
-                                            <input type="checkbox" name="subcategories[]" class="custom-control-input" value="${res.id}" id="${res.name}">
-                                            <label class="custom-control-label" for="${res.name}">${res.name}</label>
+                                            <input type="checkbox" name="subcategories[]" ${checked} class="custom-control-input" value="${res.id}" id="subCat-${res.name}">
+                                            <label class="custom-control-label" for="subCat-${res.name}">${res.name}</label>
                                         </div>`;
                             })
                         }else {

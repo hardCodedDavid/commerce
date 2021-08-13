@@ -39,6 +39,28 @@ class OrderController extends Controller
             'state' => ['required', 'in:pending,processing,delivered,cancelled']
         ]);
         $order->update(['status' => request('state')]);
+        switch (request('state')) {
+            case 'pending':
+                $type = 'Order Pending';
+                $message = 'Your order is pending processing';
+                break;
+            case 'processing':
+                $type = 'Order Processing';
+                $message = 'Your order is being processed and will be delivered soon';
+                break;
+            case 'delivered':
+                $type = 'Order Delivered';
+                $message = 'Your order has been delivered to your shipping address';
+                break;
+            case 'cancelled':
+                $type = 'Order Cancelled';
+                $message = 'Your order has been cancelled, and a refund has/will be issued';
+                break;
+        }
+        $order->activities()->create([
+            'type' => $type,
+            'message' => $message
+        ]);
         $msg = 'Order marked as '.request('state').' successfully';
         return back()->with('success', $msg);
     }
@@ -122,12 +144,14 @@ class OrderController extends Controller
                             $icon = '<i style="font-size: 13px" class="text-secondary icon-sm mr-2 fa fa-times"></i>';
                             break;
                     }
-                    $action .= '<button onclick="event.preventDefault(); confirmSubmission(\'actionForm'.$currentStatus.$order['id'].'\')" class="dropdown-item d-flex align-items-center">'.$icon.'<span class="">Mark '.$currentStatus.'</span></button>
-                    <form method="POST" id="actionForm'.$currentStatus.$order['id'].'" action="'. route('admin.orders.state.change', $order) .'">
-                        <input type="hidden" name="_token" value="'. csrf_token() .'" />
-                        <input type="hidden" name="state" value="'.$currentStatus.'" />
-                        <input type="hidden" name="_method" value="PUT" />
-                    </form>';
+                    if (auth()->user()->can('Process Orders')) {
+                        $action .= '<button onclick="event.preventDefault(); confirmSubmission(\'actionForm'.$currentStatus.$order['id'].'\')" class="dropdown-item d-flex align-items-center">'.$icon.'<span class="">Mark '.$currentStatus.'</span></button>
+                        <form method="POST" id="actionForm'.$currentStatus.$order['id'].'" action="'. route('admin.orders.state.change', $order) .'">
+                            <input type="hidden" name="_token" value="'. csrf_token() .'" />
+                            <input type="hidden" name="state" value="'.$currentStatus.'" />
+                            <input type="hidden" name="_method" value="PUT" />
+                        </form>';
+                    }
                 }
             }
 

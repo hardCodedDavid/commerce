@@ -3,11 +3,20 @@
 @section('title', 'Edit Sale')
 
 @section('style')
-<link href="{{ asset('admin/assets/plugins/datepicker/datepicker.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/plugins/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('admin/assets/plugins/datatables/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('admin/assets/css/icons.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('admin/assets/css/flag-icon.min.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('admin/assets/css/style.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/plugins/datepicker/datepicker.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/css/icons.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/css/flag-icon.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/css/style.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('admin/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput-typeahead.css') }}" rel="stylesheet" type="text/css">
 @endsection
 
 @section('breadcrumbs')
@@ -91,7 +100,7 @@
                                                         <div class="col-sm-4 my-2">
                                                             <input type="hidden" name="products[0][saleItemId]" value="{{ $currentProduct['saleItemId'] }}">
                                                             <label class="form-label">Product</label>
-                                                            <select name="products[0][product]" required class="form-control item-name">
+                                                            <select name="products[0][product]" required class="form-control item-name select2-single">
                                                                 <option value="">Select Product</option>
                                                                 @foreach ($products as $product)
                                                                     <option @if ($currentProduct['product'] == $product['id'])
@@ -132,7 +141,7 @@
 
                                                         <div class="col-sm-3 my-2 item-brand">
                                                             <label class="form-label">Brand</label>
-                                                            <select name="products[0][brand]" class="form-control">
+                                                            <select name="products[0][brand]" class="form-control select2-single">
                                                                 <option value="">Select Brand</option>
                                                                 @if($currentProduct['saleItemId'])
                                                                     @foreach ($saleItem->product->brands()->get() as $brand)
@@ -147,7 +156,7 @@
                                                         @foreach ($variations as $variation)
                                                             <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
                                                                 <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
-                                                                <select name="products[0][{{ $variation['name'] }}]" class="form-control">
+                                                                <select name="products[0][{{ $variation['name'] }}]" class="form-control select2-single">
                                                                     <option value="">Select {{ $variation['name'] }}</option>
                                                                     @if($currentProduct['saleItemId'])
                                                                         @foreach ($saleItem->variationItems()->where('variation_id', $variation['id'])->get() as $currentItem)
@@ -175,7 +184,7 @@
                                                     <div class="col-sm-4 my-2">
                                                         <label class="form-label">Product</label>
                                                         <input type="hidden" name="products[0][saleItemId]">
-                                                        <select name="products[0][product]" required class="form-control item-name">
+                                                        <select name="products[0][product]" required class="form-control item-name select2-single">
                                                             <option value="">Select Product</option>
                                                             @foreach ($products as $product)
                                                                 <option value="{{ $product['id'] }}">{{ $product['name'] }}</option>
@@ -195,7 +204,7 @@
 
                                                     <div class="col-sm-3 my-2 item-brand">
                                                         <label class="form-label">Brand</label>
-                                                        <select name="products[0][brand]" class="form-control">
+                                                        <select name="products[0][brand]" class="form-control select2-single">
                                                             <option value="">Select Brand</option>
                                                         </select>
                                                     </div><!--end col-->
@@ -203,7 +212,7 @@
                                                     @foreach ($variations as $variation)
                                                         <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
                                                             <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
-                                                            <select name="products[0][{{ $variation['name'] }}]" class="form-control">
+                                                            <select name="products[0][{{ $variation['name'] }}]" class="form-control select2-single">
                                                                 <option value="">Select {{ $variation['name'] }}</option>
                                                             </select>
                                                         </div><!--end col-->
@@ -229,7 +238,7 @@
                                                 <div class="col-sm-4 my-2">
                                                     <input type="hidden" name="products[0][saleItemId]" value="{{ $currentProduct['id'] }}">
                                                     <label class="form-label">Product</label>
-                                                    <select name="products[0][product]" required class="form-control item-name">
+                                                    <select name="products[0][product]" required class="form-control item-name select2-single">
                                                         <option value="">Select Product</option>
                                                         @foreach ($products as $product)
                                                             <option @if ($currentProduct['product_id'] == $product['id'])
@@ -266,7 +275,7 @@
 
                                                 <div class="col-sm-3 my-2 item-brand">
                                                     <label class="form-label">Brand</label>
-                                                    <select name="products[0][brand]" class="form-control">
+                                                    <select name="products[0][brand]" class="form-control select2-single">
                                                         <option value="">Select Brand</option>
                                                         @foreach ($currentProduct->product->brands()->get() as $brand)
                                                             <option @if ($brand['id'] == $currentProduct['brand_id'])
@@ -279,7 +288,7 @@
                                                 @foreach ($variations as $variation)
                                                     <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
                                                         <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
-                                                        <select name="products[0][{{ $variation['name'] }}]" class="form-control">
+                                                        <select name="products[0][{{ $variation['name'] }}]" class="form-control select2-single">
                                                             <option value="">Select {{ $variation['name'] }}</option>
                                                             @foreach ($currentProduct->product->variationItems()->where('variation_id', $variation['id'])->get() as $currentItem)
                                                                 <option @if (in_array($currentItem['id'], $currentProduct->getVariationItemsIdToArray()))
@@ -305,7 +314,7 @@
                                                 <div class="col-sm-4 my-2">
                                                     <label class="form-label">Product</label>
                                                     <input type="hidden" name="products[0][saleItemId]">
-                                                    <select name="products[0][product]" required class="form-control item-name">
+                                                    <select name="products[0][product]" required class="form-control item-name select2-single">
                                                         <option value="">Select Product</option>
                                                         @foreach ($products as $product)
                                                             <option value="{{ $product['id'] }}">{{ $product['name'] }}</option>
@@ -325,7 +334,7 @@
 
                                                 <div class="col-sm-3 my-2 item-brand">
                                                     <label class="form-label">Brand</label>
-                                                    <select name="products[0][brand]" class="form-control">
+                                                    <select name="products[0][brand]" class="form-control select2-single">
                                                         <option value="">Select Brand</option>
                                                     </select>
                                                 </div><!--end col-->
@@ -333,7 +342,7 @@
                                                 @foreach ($variations as $variation)
                                                     <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
                                                         <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
-                                                        <select name="products[0][{{ $variation['name'] }}]" class="form-control">
+                                                        <select name="products[0][{{ $variation['name'] }}]" class="form-control select2-single">
                                                             <option value="">Select {{ $variation['name'] }}</option>
                                                         </select>
                                                     </div><!--end col-->
@@ -352,7 +361,7 @@
                                     </div><!--end repet-list-->
                                     <div class="form-group mb-0 row">
                                         <div class="col-sm-12">
-                                            <span data-repeater-create class="btn btn-outline-secondary">
+                                            <span data-repeater-create onclick="reInitializeSingleSelect()" class="btn btn-outline-secondary">
                                                 <span class="fa fa-plus"></span> Add Product
                                             </span>
                                         </div><!--end col-->
@@ -443,6 +452,8 @@
     <script src="{{ asset('admin/assets/plugins/datepicker/datepicker.min.js') }}"></script>
     <script src="{{ asset('admin/assets/plugins/datepicker/i18n/datepicker.en.js') }}"></script>
     <script src="{{ asset('admin/assets/js/custom/custom-form-datepicker.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/custom/custom-form-select.js') }}"></script>
     <script>
         const variationList = {!! json_encode($variations) !!};
         const productsList = $('#productsList');
@@ -462,6 +473,10 @@
 
         productsList.on('input', 'div div div.item-quantity input', computeSubTotal);
 
+        function reInitializeSingleSelect() {
+            setTimeout(() => $('.select2-single').select2(), 10)
+        }
+
         function fetchProductDetailsAndComputeSubTotal(selected) {
             if (selected.val()) {
                 fetchProductDetails(selected);
@@ -473,6 +488,10 @@
             brands.forEach(brand => {
                 el.parent().parent().find('.item-brand select').append(`<option value="${brand.id}">${brand.name}</option>`);
             });
+        }
+
+        function setPrice(el, price){
+            el.parent().parent().find('.item-unit-price input').val(Math.round(price));
         }
 
         function clearBrands(el){
@@ -525,6 +544,7 @@
                     clearBrands(el);
                     clearVariations(el);
                     setBrands(el, data.brands);
+                    setPrice(el, data.sell_price);
                     setVariations(el, data.variations);
                 },
                 error: function(err) {

@@ -28,11 +28,13 @@
                     </ol>
                 </div>
             </div>
+            @can('Add Administrators')
             <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
                     <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#administrator-modal"><i class="ri-add-fill mr-2"></i>New Administrator</button>
                 </div>
             </div>
+            @endcan
         </div>
     </div>
 @endsection
@@ -68,18 +70,22 @@
                                             <td>{{ $admin['email'] }}</td>
                                             <td>{{ $admin->roles()->first()['name'] ?? '---' }}</td>
                                             <td>
-                                                @if ($admin['id'] != 1)
+                                                @if ($admin['id'] != \App\Models\Admin::whereHas('roles', function($q) { $q->where('name', 'Super Admin'); })->first()['id'])
                                                 <div class="dropdown">
                                                     <button style="white-space: nowrap" class="btn small btn-sm btn-primary" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         Action <i class="icon-lg fa fa-angle-down"></i>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                                                        @can('Edit Administrators')
                                                         <button onclick="populateEditModal({{ $admin['id'] }}, '{{ $admin['name'] }}', '{{ $admin['email'] }}', '{{ $admin->roles()->first()['id'] }}')" data-toggle="modal" data-target="#edit-administrator-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
+                                                        @endcan
+                                                        @can('Delete Administrators')
                                                         <button onclick="event.preventDefault(); confirmSubmission('deleteForm{{ $admin['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
                                                         <form method="POST" id="deleteForm{{ $admin['id'] }}" action="{{ route('admin.admins.destroy', $admin) }}">
                                                             @csrf
                                                             @method('DELETE')
                                                         </form>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                                 @endif

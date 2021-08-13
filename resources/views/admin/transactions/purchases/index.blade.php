@@ -29,11 +29,13 @@
                     </ol>
                 </div>
             </div>
+            @can('Add Purchases')
             <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
                     <a href="{{ route('admin.transactions.purchases.create') }}" class="btn btn-primary"><i class="ri-add-fill mr-2"></i>New Purchase</a>
                 </div>
             </div>
+            @endcan
         </div>
     </div>
 @endsection
@@ -47,6 +49,7 @@
             <div class="card m-b-30">
                 <div class="card-header d-sm-flex d-block justify-content-between align-content-center">
                     <h5 class="card-title my-1">Purchases</h5>
+                    @can('Export Purchases')
                     <form method="POST" action="{{ route('admin.purchases.export') }}" class="d-sm-flex d-block my-1">
                         @csrf
                         <div>
@@ -56,6 +59,7 @@
                             <button class="btn btn-primary"><i class="ri-download-line mr-2"></i>Download CSV</button>
                         </div>
                     </form>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

@@ -29,11 +29,13 @@
                     </ol>
                 </div>
             </div>
+            @can('Add Sales')
             <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
                     <a href="{{ route('admin.transactions.sales.create') }}" class="btn btn-primary"><i class="ri-add-fill mr-2"></i>New Sale</a>
                 </div>
             </div>
+            @endcan
         </div>
     </div>
 @endsection
@@ -47,6 +49,7 @@
             <div class="card m-b-30">
                 <div class="card-header d-sm-flex d-block justify-content-between align-content-center">
                     <h5 class="card-title my-1">Sales</h5>
+                    @can('Add Sales')
                     <form method="POST" action="{{ route('admin.sales.export') }}" class="d-sm-flex d-block my-1">
                         @csrf
                         <input type="hidden" name="type" @if(request()->offsetExists('online'))
@@ -63,6 +66,7 @@
                             <button class="btn btn-primary"><i class="ri-download-line mr-2"></i>Download CSV</button>
                         </div>
                     </form>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

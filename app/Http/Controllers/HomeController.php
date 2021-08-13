@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Order;
 use App\Http\Controllers\CartController;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Hash;
@@ -66,20 +67,25 @@ class HomeController extends Controller
 
     public function processCheckout()
     {
-        $this->validate(request(), [
+        $rules = [
             'name' => 'required',
             'country' => 'required',
             'state' => 'required',
             'address' => 'required',
             'city' => 'required',
             'phone' => 'required',
-            'email' => 'required_if:create_account,yes|unique',
-            'password' => 'required_if:create_account,true|confirmed|min:8',
             'shipping_country' => 'required_if:ship_to_new_address,yes',
             'shipping_state' => 'required_if:ship_to_new_address,yes',
             'shipping_address' => 'required_if:ship_to_new_address,yes',
             'shipping_city' => 'required_if:ship_to_new_address,yes',
-        ]);
+        ];
+        if (!auth()->user()) {
+            if (request('create_account') == 'yes'){
+                $rules['email'] = 'required|unique:users';
+                $rules['password'] = 'required|confirmed|min:8';
+            }else $rules['email'] = 'required';
+        }
+        $this->validate(request(), $rules);
         if (request('create_account') == 'yes') {
             $user = User::create([
                 'name' => request('name'),
@@ -95,6 +101,7 @@ class HomeController extends Controller
         $data['auth'] = !is_null(auth()->user());
         $data['email'] = auth()->user()['email'] ?? request('email');
         $cart = CartController::getUserCartAsArray();
+        $data['cart'] = $cart;
         return PaymentController::initializeTransaction($cart['total'], $data);
     }
 
@@ -106,6 +113,34 @@ class HomeController extends Controller
     public function account()
     {
         return view('account');
+    }
+
+    public function faq()
+    {
+        return view('faq');
+    }
+
+    public function orderTracking()
+    {
+        return view('order-tracking');
+    }
+
+    public function orderSuccessful(Order $order)
+    {
+        return view('order-successful', compact('order'));
+    }
+
+    public function trackOrder()
+    {
+        $this->validate(request(), [
+            'order_id' => 'required',
+            'email' => 'required|email',
+        ]);
+        $order = Order::where('email', request('email'))->where('code', request('order_id'))->first();
+        if (!$order) {
+            return back()->with('error', 'We couldn\'t find an order with this ID and email address');
+        }
+        return view('order-tracker', compact('order'));
     }
 
     public function updateAccount()
@@ -141,6 +176,11 @@ class HomeController extends Controller
     public function orders()
     {
         return view('orders');
+    }
+
+    public function showOrder(Order $order)
+    {
+        return view('order-detail', compact('order'));
     }
 
     public function productDetail(Product $product)

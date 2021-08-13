@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -9,6 +10,7 @@ use App\Models\Category;
 use App\Models\Variation;
 use App\Models\Brand;
 use App\Models\Product;
+use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
@@ -38,9 +40,9 @@ class ProductController extends Controller
         ]);
     }
 
-    public function show()
+    public function show(Product $product)
     {
-        return view('admin.products.show');
+        return view('admin.products.show', ['product' => $product]);
     }
 
     public function edit(Product $product)
@@ -58,7 +60,6 @@ class ProductController extends Controller
 
     public function store()
     {
-        // return request()->all();
         // Validate request
         $this->validate(request(), [
             'name' => ['required', 'string', 'unique:products,name'],
@@ -68,6 +69,7 @@ class ProductController extends Controller
             'discount' => ['required', 'numeric'],
             'in_stock' => ['required', 'string'],
             'quantity' => ['required', 'numeric'],
+            'item_number' => ['required', 'unique:products,item_number'],
             'weight' => ['numeric'],
             'categories' => ['required', 'array'],
             'media' => ['required', 'array', 'max:5'],
@@ -75,7 +77,7 @@ class ProductController extends Controller
         ]);
 
         // Create Product
-        $data = request()->only('name', 'description', 'buy_price', 'sell_price', 'discount', 'sku', 'quantity', 'weight', 'note');
+        $data = request()->only('name', 'description', 'buy_price', 'sell_price', 'discount', 'sku', 'quantity', 'weight', 'item_number', 'note');
         $data['code'] = Product::getCode();
         $data['in_stock'] = request('in_stock') == 'instock';
         $data['is_listed'] = request('feature') == 'feature';
@@ -95,7 +97,7 @@ class ProductController extends Controller
 
         // Save Media
         foreach (request('media') as $key=>$file){
-            $path = $this->saveFileAndReturnPath($file, $product['code'].$key);
+            $path = self::saveFileAndReturnPath($file, $product['code'].$key);
             $product->media()->create(['url' => $path]);
         }
         return redirect()->route('admin.products')->with('success', 'Product created successfully');
@@ -157,13 +159,14 @@ class ProductController extends Controller
     {
         // Validate request
         $this->validate(request(), [
-            'name' => ['required', 'string', Rule::unique('users')->ignore($product->id)],
+            'name' => ['required', 'string', Rule::unique('products')->ignore($product->id)],
             'description' => ['required'],
             'buy_price' => ['required', 'numeric'],
             'sell_price' => ['required', 'numeric', 'gte:buy_price'],
             'discount' => ['required', 'numeric'],
             'in_stock' => ['required', 'string'],
             'quantity' => ['required', 'numeric'],
+            'item_number' => ['required', Rule::unique('products')->ignore($product->id)],
             'weight' => ['numeric'],
             'categories' => ['required', 'array'],
             'media' => ['sometimes', 'array', 'max:'.(5 - $product->media()->count())],
@@ -171,7 +174,7 @@ class ProductController extends Controller
         ]);
 
         // Create Product
-        $data = request()->only('name', 'description', 'buy_price', 'sell_price', 'discount', 'sku', 'quantity', 'weight', 'note');
+        $data = request()->only('name', 'description', 'buy_price', 'sell_price', 'discount', 'sku', 'quantity', 'weight', 'item_number', 'note');
         $data['in_stock'] = request('in_stock') == 'instock';
         $data['is_listed'] = request('feature') == 'feature';
         $product->update($data);
@@ -191,7 +194,7 @@ class ProductController extends Controller
         // Save Media
         if (request('media')){
             foreach (request('media') as $key=>$file){
-                $path = $this->saveFileAndReturnPath($file, $product['code'].$key);
+                $path = self::saveFileAndReturnPath($file, $product['code'].$key);
                 $product->media()->create(['url' => $path]);
             }
         }
@@ -203,7 +206,7 @@ class ProductController extends Controller
     {
         //   Define all column names
         $columns = [
-            'id', 'code', 'name', 'buy_price', 'sell_price', 'discount', 'sku', 'in_stock', 'quantity', 'weight', 'id', 'id', 'id'
+            'id', 'item_number', 'name', 'buy_price', 'sell_price', 'discount', 'sku', 'in_stock', 'quantity', 'weight', 'id', 'id', 'id'
         ];
         //    Find data based on page
         if (request('type') == 'listed'){
@@ -230,6 +233,9 @@ class ProductController extends Controller
             $products = $products->where('code','LIKE',"%{$search}%")
                 ->orWhereHas('variationItems',function ($q) use ($search) { $q->where('name', 'LIKE',"%{$search}%"); })
                 ->orWhereHas('brands',function ($q) use ($search) { $q->where('name', 'LIKE',"%{$search}%"); })
+                ->orWhere('item_number', 'LIKE',"%{$search}%")
+                ->orWhere('name', 'LIKE',"%{$search}%")
+                ->orWhere('description', 'LIKE',"%{$search}%")
                 ->orWhere('buy_price', 'LIKE',"%{$search}%")
                 ->orWhere('sell_price', 'LIKE',"%{$search}%")
                 ->orWhere('discount', 'LIKE',"%{$search}%")
@@ -254,22 +260,33 @@ class ProductController extends Controller
             foreach ($product->brands()->get() as $brand) {
                 $brands .= '<span class="small badge badge-secondary-inverse mx-1">'. $brand['name'] .'</span>';
             }
+            $edit = $delete = $action = '';
             if ($product['is_listed'] == 0){
-                $action = '<button onclick="event.preventDefault(); confirmSubmission(\'featureForm'.$product['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-rocket mr-2"></i> <span class="">Feature</span></button>
-                            <form method="POST" id="featureForm'.$product['id'].'" action="'. route('admin.products.feature', $product) .'">
-                                <input type="hidden" name="_token" value="'. csrf_token() .'" />
+                if (auth()->user()->can("Unlist Products")) {
+                    $action = '<button onclick="event.preventDefault(); confirmSubmission(\'featureForm' . $product['id'] . '\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-rocket mr-2"></i> <span class="">Feature</span></button>
+                            <form method="POST" id="featureForm' . $product['id'] . '" action="' . route('admin.products.feature', $product) . '">
+                                <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                 <input type="hidden" name="_method" value="PUT" />
                             </form>';
+                }
             }else{
-                $action = '<button onclick="event.preventDefault(); confirmSubmission(\'unlistForm'.$product['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-reply mr-2"></i> <span class="">Unlist</span></button>
-                            <form method="POST" id="unlistForm'.$product['id'].'" action="'. route('admin.products.unlist', $product) .'">
-                                <input type="hidden" name="_token" value="'. csrf_token() .'" />
+                if (auth()->user()->can("List Products")) {
+                    $action = '<button onclick="event.preventDefault(); confirmSubmission(\'unlistForm' . $product['id'] . '\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-reply mr-2"></i> <span class="">Unlist</span></button>
+                            <form method="POST" id="unlistForm' . $product['id'] . '" action="' . route('admin.products.unlist', $product) . '">
+                                <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                 <input type="hidden" name="_method" value="PUT" />
                             </form>';
+                }
+            }
+            if (auth()->user()->can("Edit Products")) {
+                $edit = '<a class="dropdown-item d-flex align-items-center" href="'. route('admin.products.edit', $product) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></a>';
+            }
+            if (auth()->user()->can("Delete Products")) {
+                $delete = '<button onclick="event.preventDefault(); confirmSubmission(\'deleteForm'.$product['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>';
             }
 
             $datum['sn'] = $key;
-            $datum['code'] = '<a href="'. route('admin.products.edit', $product) .'">'. $product['code'] .'</a>';
+            $datum['item_number'] = '<a class="font-weight-bold" href="'. route('admin.products.show', $product) .'">'. $product['item_number'] .'</a>';
             $datum['name'] = $product['name'];
             $datum['buy_price'] = $product['buy_price'];
             $datum['sell_price'] = $product['sell_price'];
@@ -286,8 +303,9 @@ class ProductController extends Controller
                                         Action <i class="icon-lg fa fa-angle-down"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                                        <a class="dropdown-item d-flex align-items-center" href="'. route('admin.products.edit', $product) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></a>
-                                        <button onclick="event.preventDefault(); confirmSubmission(\'deleteForm'.$product['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
+                                        <a class="dropdown-item d-flex align-items-center" href="'. route('admin.products.show', $product) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-eye mr-2"></i> <span class="">View</span></a>
+                                        '.$edit.'
+                                        '.$delete.'
                                         '.$action.'
                                         <form method="POST" id="deleteForm'.$product['id'].'" action="'. route('admin.products.destroy', $product) .'">
                                             <input type="hidden" name="_token" value="'. csrf_token() .'" />
@@ -308,11 +326,13 @@ class ProductController extends Controller
         echo json_encode($res);
     }
 
-    protected function saveFileAndReturnPath($file, $code)
+    public static function saveFileAndReturnPath($file, $code)
     {
         $destination = 'media';
         $transferFile = $code.'-'.time().'.'.$file->getClientOriginalExtension();
-        $file->move($destination, $transferFile);
-        return $destination.'/'.$transferFile;
+        if (!file_exists($destination)) File::makeDirectory($destination);
+        $image = Image::make($file);
+        $image->save($destination . '/' . $transferFile, 60);
+        return $destination . '/' . $transferFile;
     }
 }

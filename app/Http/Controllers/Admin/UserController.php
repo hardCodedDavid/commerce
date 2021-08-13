@@ -98,25 +98,29 @@ class UserController extends Controller
         $key = $start + 1;
         foreach ($users as $user)
         {
-            $action = null;
+            $action = '';
             if ($user['active'] == 1){
-                $action = '<button onclick="event.preventDefault(); confirmSubmission(\'actionForm'.$user['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-user-times mr-2"></i> <span class="">Block</span></button>
-                <form method="POST" id="actionForm'.$user['id'].'" action="'. route('admin.users.block', $user) .'">
-                    <input type="hidden" name="_token" value="'. csrf_token() .'" />
-                    <input type="hidden" name="_method" value="PUT" />
-                </form>';
+                if (auth()->user()->can('Block Users')) {
+                    $action = '<button onclick="event.preventDefault(); confirmSubmission(\'actionForm'.$user['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-user-times mr-2"></i> <span class="">Block</span></button>
+                    <form method="POST" id="actionForm'.$user['id'].'" action="'. route('admin.users.block', $user) .'">
+                        <input type="hidden" name="_token" value="'. csrf_token() .'" />
+                        <input type="hidden" name="_method" value="PUT" />
+                    </form>';
+                }
             }else {
-                $action = '<button onclick="event.preventDefault(); confirmSubmission(\'actionForm'.$user['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-user-plus mr-2"></i> <span class="">Unblock</span></button>
-                <form method="POST" id="actionForm'.$user['id'].'" action="'. route('admin.users.unblock', $user) .'">
-                    <input type="hidden" name="_token" value="'. csrf_token() .'" />
-                    <input type="hidden" name="_method" value="PUT" />
-                </form>';
+                if (auth()->user()->can('Unblock Users')) {
+                    $action = '<button onclick="event.preventDefault(); confirmSubmission(\'actionForm'.$user['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-user-plus mr-2"></i> <span class="">Unblock</span></button>
+                    <form method="POST" id="actionForm'.$user['id'].'" action="'. route('admin.users.unblock', $user) .'">
+                        <input type="hidden" name="_token" value="'. csrf_token() .'" />
+                        <input type="hidden" name="_method" value="PUT" />
+                    </form>';
+                }
             }
 
             $datum['sn'] = $key;
             $datum['name'] = '<a href="'. route('admin.users.show', $user) .'">'. $user['name'] .'</a>';
             $datum['email'] = $user['email'];
-            $datum['phone'] = $user['phone'];
+            $datum['phone'] = $user['phone'] ?? '---';
             $datum['orders'] = 1;
             $datum['ver_status'] = $user['email_verified_at'] ? '<span class="badge badge-success-inverse">Verified</span>' : '<span class="badge badge-danger-inverse">Unverified</span>';
             $datum['status'] = $user['active'] == 1 ? '<span class="badge badge-success-inverse">Active</span>' : '<span class="badge badge-danger-inverse">Blocked</span>';

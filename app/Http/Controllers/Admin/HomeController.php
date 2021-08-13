@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Admin;
@@ -14,6 +17,7 @@ use App\Models\Supplier;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
 use App\Models\SaleItem;
+use App\Models\Setting;
 
 class HomeController extends Controller
 {
@@ -95,8 +99,90 @@ class HomeController extends Controller
         ]);
     }
 
-    public function analytics()
+    public function profile()
     {
+        return view('admin.profile');
+    }
 
+    public function settings()
+    {
+        try {
+            $banks = json_decode(Http::get('https://api.paystack.co/bank')->getBody(), true)['data'];
+        }catch (\Exception $exception){
+            $banks = [];
+        }
+        $settings = Setting::first();
+        return view('admin.settings', compact('settings', 'banks'));
+    }
+
+    public function updateBusiness()
+    {
+        // Validate request
+        $this->validate(request(), [
+            'name' => ['required'],
+            'email' => ['required'],
+            'phone_1' => ['required'],
+            'address' => ['required'],
+            'logo' => ['sometimes', 'mimes:jpg,jpeg,png,svg,gif', 'file', 'max:2048']
+        ]);
+        $settings = Setting::first();
+        if (request('logo')) {
+            $path = ProductController::saveFileAndReturnPath(request('logo'), Str::random(8));
+            if ($settings && $settings['logo']) unlink($settings['logo']);
+        }
+        $data = request()->only('name', 'email', 'phone_1', 'phone_2', 'address', 'facebook', 'instagram', 'twitter', 'youtube');
+        if (isset($path)) $data['logo'] = $path;
+        if ($settings) $settings->update($data);
+        else Setting::create($data);
+        return back()->with('success', 'Business profile updated successfully');
+    }
+
+    public function updateBank()
+    {
+        // Validate request
+        $this->validate(request(), [
+            'account_name' => ['required'],
+            'account_number' => ['required'],
+            'bank_name' => ['required']
+        ]);
+        $data = request()->only('account_name', 'account_number', 'bank_name');
+        if ($settings = Setting::first()) $settings->update($data);
+        else Setting::create($data);
+        return back()->with('success', 'Bank details updated successfully');
+    }
+
+    public function updateProfile()
+    {
+        // Validate request
+        $this->validate(request(), [
+            'name' => ['required'],
+            'phone' => ['required']
+        ]);
+
+        auth()->user()->update([
+            'name' => request('name'),
+            'phone' => request('phone')
+        ]);
+
+        return back()->with('success', 'Profile updated successfully');
+    }
+
+    public function changePasssword()
+    {
+        // Validate request
+        $this->validate(request(), [
+            'old_password' => ['required'],
+            'new_password' => ['required', 'confirmed', 'min:8']
+        ]);
+
+        if (!Hash::check(request('old_password'), auth()->user()['password'])) {
+            return back()->with('error', 'Old password is incorrect');
+        }
+
+        auth()->user()->update([
+            'password' => Hash::make(request('new_password')),
+        ]);
+
+        return back()->with('success', 'Profile updated successfully');
     }
 }

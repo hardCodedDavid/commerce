@@ -398,6 +398,13 @@ class TransactionController extends Controller
         $key = $start + 1;
         foreach ($purchases as $purchase)
         {
+            $edit = $delete = '';
+            if (auth()->user()->can("Edit Purchases")) {
+                $edit = '<a class="dropdown-item d-flex align-items-center" href="'. route('admin.transactions.purchases.edit', $purchase) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></a>';
+            }
+            if (auth()->user()->can("Delete Purchases")) {
+                $delete = '<button onclick="event.preventDefault(); confirmSubmission(\'deleteForm'.$purchase['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>';
+            }
             $datum['sn'] = $key;
             $datum['code'] = '<a href="'. route('admin.transactions.purchases.edit', $purchase) .'">'. $purchase['code'] .'</a>';
             $datum['supplier'] = $purchase['supplier']['name'];
@@ -413,9 +420,9 @@ class TransactionController extends Controller
                                         Action <i class="icon-lg fa fa-angle-down"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                                        <a class="dropdown-item d-flex align-items-center" href="'. route('admin.transactions.purchases.edit', $purchase) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></a>
+                                        '.$edit.'
                                         <a class="dropdown-item d-flex align-items-center" href="'. route('admin.transactions.purchases.invoice', $purchase) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-list-alt mr-2"></i> <span class="">Invoice</span></a>
-                                        <button onclick="event.preventDefault(); confirmSubmission(\'deleteForm'.$purchase['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
+                                        '.$delete.'
                                         <form method="POST" id="deleteForm'.$purchase['id'].'" action="'. route('admin.transactions.purchases.destroy', $purchase) .'">
                                             <input type="hidden" name="_token" value="'. csrf_token() .'" />
                                             <input type="hidden" name="_method" value="DELETE" />
@@ -487,14 +494,18 @@ class TransactionController extends Controller
         $key = $start + 1;
         foreach ($sales as $sale)
         {
-            $edit = $delete = null;
+            $edit = $delete = '';
             if ($sale['type'] == 'offline'){
-                $edit = '<a class="dropdown-item d-flex align-items-center" href="'. route('admin.transactions.sales.edit', $sale) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></a>';
-                $delete = '<button onclick="event.preventDefault(); confirmSubmission(\'deleteForm'.$sale['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
-                <form method="POST" id="deleteForm'.$sale['id'].'" action="'. route('admin.transactions.sales.destroy', $sale) .'">
-                    <input type="hidden" name="_token" value="'. csrf_token() .'" />
-                    <input type="hidden" name="_method" value="DELETE" />
-                </form>';
+                if (auth()->user()->can("Edit Sales")) {
+                    $edit = '<a class="dropdown-item d-flex align-items-center" href="'. route('admin.transactions.sales.edit', $sale) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></a>';
+                }
+                if (auth()->user()->can("Delete Sales")) {
+                    $delete = '<button onclick="event.preventDefault(); confirmSubmission(\'deleteForm'.$sale['id'].'\')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
+                    <form method="POST" id="deleteForm'.$sale['id'].'" action="'. route('admin.transactions.sales.destroy', $sale) .'">
+                        <input type="hidden" name="_token" value="'. csrf_token() .'" />
+                        <input type="hidden" name="_method" value="DELETE" />
+                    </form>';
+                }
             }
 
             $datum['sn'] = $key;

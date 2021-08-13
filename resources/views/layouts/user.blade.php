@@ -29,6 +29,11 @@
 
 @php
     $categories = \App\Models\Category::with('subCategories')->get();
+    $topSellingSubCategories = \App\Models\SubCategory::with(['products', 'category'])->get()->sortBy(function($subCategory)
+    {
+        return $subCategory->products->count();
+    })->take(5);
+    $settings = App\Models\Setting::first();
 @endphp
 
 <body>
@@ -36,10 +41,15 @@
         <div class="ps-top-bar">
             <div class="container">
                 <div class="top-bar">
+                    <div class="top-bar__left">
+                        <ul class="nav-top">
+                            <li class="nav-top-item"><a class="nav-top-link" href="#">Marksot: No 1 automobile part store in Nigeria.</a></li>
+                        </ul>
+                    </div>
                     <div class="top-bar__right">
                         <ul class="nav-top">
-                            <li class="nav-top-item contact"><a class="nav-top-link" href="tel:970978-6290"> <i class="icon-telephone"></i><span>Hotline:</span><span class="text-success font-bold">970 978-6290</span></a></li>
-                            <li class="nav-top-item"><a class="nav-top-link" href="order-tracking.html">Order Tracking</a></li>
+                            @if ($settings['phone_1'])<li class="nav-top-item contact"><a class="nav-top-link" href="tel:{{ $settings['phone_1'] }}"> <i class="icon-telephone"></i><span>Hotline:</span><span class="text-success font-bold">{{ $settings['phone_1'] }}</span></a></li>@endif
+                            <li class="nav-top-item"><a class="nav-top-link" href="/order-tracking">Order Tracking</a></li>
                             @guest
                                 <li class="nav-top-item"><a class="nav-top-link pr-1" href="/login"><i class="icon-user"></i> Login</a><a class="nav-top-link px-0" href="/register"> / Register</a> </li>
                             @else
@@ -135,6 +145,16 @@
                                 <button class="btn">Search</button>
                             </div>
                         </div>
+                        @if (count($topSellingSubCategories) > 0)
+                        <div class="trending-search">
+                            <ul class="list-trending">
+                                <li class="title"><a>Top selling subcategories: </a></li>
+                                @foreach ($topSellingSubCategories as $topSellingSubCategory)
+                                <li class="trending-item"><a href="{{ route('category.products', ['category' => $topSellingSubCategory->category, 'subcategory' => $topSellingSubCategory['name']]) }}">{{ $topSellingSubCategory['name'] }}</a></li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
                         <div class="result-search">
                             <ul class="list-result web">
                             </ul>
@@ -181,8 +201,8 @@
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/shop">Shop</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/top-selling">Top Selling</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/deals">Discounted Deals</a></li>
-                    <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">About Us</a></li>
-                    <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">Contact Us</a></li>
+                    {{-- <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">About Us</a></li>
+                    <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">Contact Us</a></li> --}}
                 </ul>
             </div>
         </nav>
@@ -217,9 +237,9 @@
                     <div class="col-12 col-lg-6">
                         <p class="contact__title">Contact Us</p>
                         <p><b><i class="icon-telephone"> </i>Hotline: </b><span>(7:00 - 21:30)</span></p>
-                        <p class="telephone">097 978-6290<br>097 343-8888</p>
-                        <p> <b>Head office: </b>8049 High Ridge St. Saint Joseph, MI 49085</p>
-                        <p> <b>Email us: </b><a href="http://nouthemes.net/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b5c6c0c5c5dac7c1f5d3d4c7d8d4c7c19bd6dad8">[email&#160;protected]</a></p>
+                        <p class="telephone">{{ $settings['phone_1'] }}<br>{{ $settings['phone_2'] }}</p>
+                        <p> <b>Head office: </b>{{ $settings['address'] }}</p>
+                        <p> <b>Email us: </b><a href="mailto:{{ $settings['email'] }}" >{{ $settings['email'] }}</a></p>
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="row">
@@ -228,10 +248,10 @@
                                 <ul class="footer-list">
                                     <li><a href="/">Home</a></li>
                                     <li><a href="/shop">Shop</a></li>
-                                    <li><a href="#">About Us</a></li>
+                                    {{-- <li><a href="#">About Us</a></li>
                                     <li><a href="#">Contact Us</a></li>
-                                    <li><a href="#">Policy</a></li>
-                                    <li><a href="#">FAQs</a></li>
+                                    <li><a href="#">Policy</a></li> --}}
+                                    <li><a href="/faqs">FAQs</a></li>
                                 </ul>
                                 <hr>
                             </div>
@@ -240,10 +260,10 @@
                                 <ul class="footer-list">
                                     <li><a href="/top-selling">Top Selling</a></li>
                                     <li><a href="/deals">Discounted Deals</a></li>
-                                    <li><a href="#">New Arrivals</a></li>
+                                    {{-- <li><a href="#">New Arrivals</a></li>
                                     <li><a href="#">Careers</a></li>
                                     <li><a href="#">Our Suppliers</a></li>
-                                    <li><a href="#">Accessibility</a></li>
+                                    <li><a href="#">Accessibility</a></li> --}}
                                 </ul>
                                 <hr>
                             </div>
@@ -263,8 +283,19 @@
                 @endforeach
             </div>
             <div class="row ps-footer__copyright">
-                <div class="col-12 col-lg-6 ps-footer__text">&copy; {{ date('Y') }} {{ env('APP_NAME') }} All Rights Reversed.</div>
-                <div class="col-12 col-lg-6 ps-footer__social"> <a class="icon_social facebook" href="#"><i class="fa fa-facebook-f"></i></a><a class="icon_social twitter" href="#"><i class="fa fa-twitter"></i></a><a class="icon_social google" href="#"><i class="fa fa-google-plus"></i></a><a class="icon_social youtube" href="#"><i class="fa fa-youtube"></i></a><a class="icon_social wifi" href="#"><i class="fa fa-wifi"></i></a></div>
+                <div class="col-12 col-lg-6">
+                    <div>&copy; {{ date('Y') }} {{ env('APP_NAME') }} All Rights Reversed.</div>
+                </div>
+                <div class="col-12 col-lg-6 text-lg-right text-left">
+                    <div>Powered by <a target="_blank" class="font-weight-bold" href="https://www.softwebdigital.com">Soft-Web Digital</a></div>
+                </div>
+                <div class="mt-3 col-12 ml-auto ps-footer__social">
+                    <a class="icon_social facebook" href="{{ $settings['facebook'] ?? '#' }}"><i class="fa fa-facebook-f"></i></a>
+                    <a class="icon_social twitter" href="{{ $settings['twitter'] ?? '#' }}"><i class="fa fa-twitter"></i></a>
+                    <a class="icon_social google" href="mailto:{{ $settings['email'] ?? '#' }}"><i class="fa fa-google-plus"></i></a>
+                    <a class="icon_social youtube" href="{{ $settings['youtube'] ?? '#' }}"><i class="fa fa-youtube"></i></a>
+                    <a class="icon_social google" href="{{ $settings['instagram'] ?? '#' }}"><i class="fa fa-instagram"></i></a>
+                </div>
             </div>
         </div>
     </footer>
@@ -338,14 +369,8 @@
                     <li class="menu-item-has-children"><a class="nav-link" href="/shop">Shop</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="/top-selling">Top Selling</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="/deals">Discounted Deals</a></li>
-                    <li class="menu-item-has-children"><a class="nav-link" href="#">About Us</a></li>
-                    <li class="menu-item-has-children"><a class="nav-link" href="#">Contact Us</a></li>
-            </ul>
-        </div>
-        <div class="navigation__footer">
-            <ul class="menu--icon">
-                <li class="footer-item"><a class="footer-link" href="#"><i class="icon-question-circle"></i><span>Help & Contact</span></a></li>
-                <li class="footer-item"><a class="footer-link" href="#"><i class="icon-telephone"></i><span>HOTLINE: <span class='text-success'>(+1) 970 978-6290</span> (Free)</span></a></li>
+                    {{-- <li class="menu-item-has-children"><a class="nav-link" href="#">About Us</a></li>
+                    <li class="menu-item-has-children"><a class="nav-link" href="#">Contact Us</a></li> --}}
             </ul>
         </div>
     </nav>
@@ -366,6 +391,7 @@
         const success = {!! json_encode(session('success')) !!};
         const error = {!! json_encode(session('error')) !!};
         const warning = {!! json_encode(session('warning')) !!};
+        const info = {!! json_encode(session('info')) !!};
         const errors = {!! json_encode($errors->any()) !!}
         if (success)
             $.notify(success, 'success');
@@ -376,6 +402,8 @@
             $.notify(error, 'error');
         if (warning)
             $.notify(warning, 'warning');
+        if (info)
+            $.notify(info, 'info');
 
         let fetchDetailedCart = '{{ request()->route()->getName() ?? null }}' === 'cart';
         let fetchDetailedWishList = '{{ request()->route()->getName() ?? null }}' === 'wishlist';

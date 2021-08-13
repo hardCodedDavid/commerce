@@ -87,7 +87,7 @@
                                             <label for="regularPrice" class="col-sm-4 col-form-label">Buy Price(₦)</label>
                                             <div class="col-sm-8">
                                                 <input type="number" step="any" value="{{ old('buy_price') }}" name="buy_price" class="form-control" id="regularPrice" placeholder="100">
-                                                @error('price')
+                                                @error('buy_price')
                                                     <span class="text-danger small" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -98,7 +98,7 @@
                                             <label for="sellPrice" class="col-sm-4 col-form-label">Sell Price(₦)</label>
                                             <div class="col-sm-8">
                                                 <input type="number" step="any" value="{{ old('sell_price') }}" name="sell_price" class="form-control" id="sellPrice" placeholder="100">
-                                                @error('price')
+                                                @error('sell_price')
                                                     <span class="text-danger small" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -108,8 +108,8 @@
                                         <div class="form-group row mb-0">
                                             <label for="salePrice" class="col-sm-4 col-form-label">Discount(₦)</label>
                                             <div class="col-sm-8">
-                                                <input type="number" step="any" value="{{ old('discount') }}" name="discount" class="form-control" id="salePrice" placeholder="50">
-                                                @error('sale_price')
+                                                <input type="number" step="any" value="{{ old('discount') ?? 0 }}" name="discount" class="form-control" id="salePrice" placeholder="50">
+                                                @error('discount')
                                                     <span class="text-danger small" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -194,6 +194,17 @@
                                                 <textarea class="form-control" name="note" id="purchaseNote" rows="3" placeholder="Purchase note">{{ old('note') }}</textarea>
                                             </div>
                                         </div>
+                                        <div class="form-group row">
+                                            <label for="item_number" class="col-sm-3 col-form-label">Item/Part Number</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" value="{{ old('item_number') }}" name="item_number" class="form-control" id="item_number" placeholder="Item Number">
+                                                @error('item_number')
+                                                    <span class="text-danger small" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
                                         <div class="form-group row mb-0">
                                             <label for="feature" class="col-sm-3 col-form-label">Website Feature?</label>
                                             <div class="col-sm-9">
@@ -228,8 +239,8 @@
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" name="categories[]" @if (old('categories') && in_array($category['id'], old('categories')))
                                         checked
-                                    @endif class="category-item custom-control-input" value="{{ $category['id'] }}" id="{{ $category['name'] }}">
-                                    <label class="custom-control-label" for="{{ $category['name'] }}">{{ $category['name'] }}</label>
+                                    @endif class="category-item custom-control-input" value="{{ $category['id'] }}" id="cat-{{ $category['name'] }}">
+                                    <label class="custom-control-label" for="cat-{{ $category['name'] }}">{{ $category['name'] }}</label>
                                 </div>
                             @endforeach
                             @error('categories')
@@ -252,10 +263,10 @@
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" name="brands[]" @if (old('brands') && in_array($brand['id'], old('brands')))
                                         checked
-                                    @endif class="custom-control-input" value="{{ $brand['id'] }}" id="{{ $brand['name'] }}">
-                                    <label class="custom-control-label" for="{{ $brand['name'] }}">{{ $brand['name'] }}</label>
+                                    @endif class="custom-control-input" value="{{ $brand['id'] }}" id="brand-{{ $brand['name'] }}">
+                                    <label class="custom-control-label" for="brand-{{ $brand['name'] }}">{{ $brand['name'] }}</label>
                                 </div>
-                            @endforeach 
+                            @endforeach
                         </div>
                     </div>
                 @endif
@@ -278,8 +289,8 @@
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" name="variations[]" @if (old('variations') && in_array($item['id'], old('variations')))
                                             checked
-                                        @endif class="custom-control-input" value="{{ $item['id'] }}" id="{{ $item['name'] }}">
-                                        <label class="custom-control-label" for="{{ $item['name'] }}">{{ $item['name'] }}</label>
+                                        @endif class="custom-control-input" value="{{ $item['id'] }}" id="var-{{ $variation['name'] }}-{{ $item['name'] }}">
+                                        <label class="custom-control-label" for="var-{{ $variation['name'] }}-{{ $item['name'] }}">{{ $item['name'] }}</label>
                                     </div>
                                 @endforeach
                             </div>
@@ -342,7 +353,6 @@
                         fetchRequiredSubCategories(selectedCategories);
                     else
                         subCategoriesContainer.html('<div>Select a category</div>');
-                    console.log(selectedCategories);
                 });
             });
 
@@ -368,8 +378,8 @@
                         if (data.length > 0) {
                             data.forEach(res => {
                                 html += `<div class="custom-control custom-checkbox">
-                                            <input type="checkbox" name="subcategories[]" class="custom-control-input" value="${res.id}" id="${res.name}">
-                                            <label class="custom-control-label" for="${res.name}">${res.name}</label>
+                                            <input type="checkbox" name="subcategories[]" class="custom-control-input" value="${res.id}" id="subCat-${res.name}">
+                                            <label class="custom-control-label" for="subCat-${res.name}">${res.name}</label>
                                         </div>`;
                             })
                         }else {

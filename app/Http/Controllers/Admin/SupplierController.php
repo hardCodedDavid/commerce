@@ -53,4 +53,10 @@ class SupplierController extends Controller
         $supplier->delete();
         return back()->with('success', 'Supplier deleted successfully');
     }
+
+    public function getSupplierDetails(Supplier $supplier)
+    {
+        $supplier['transactions'] = '₦'.number_format($supplier->getTotalTransactions());
+        return response()->json($supplier);
+    }
 }

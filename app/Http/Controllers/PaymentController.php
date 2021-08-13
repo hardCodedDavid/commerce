@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Unicodeveloper\Paystack\Facades\Paystack;
@@ -15,7 +16,7 @@ class PaymentController extends Controller
             'reference' => Paystack::genTranxRef(),
             'email' => $data['email'],
             'currency' => 'NGN',
-            'metadata' => json_encode($data)
+            'metadata' => json_encode(collect($data)->except(['cart', 'note']))
         ];
         Payment::create([
             'user_id' => auth()->user()['id'] ?? null,
@@ -31,7 +32,7 @@ class PaymentController extends Controller
         }
     }
 
-    public function handlePaymentCallback(): \Illuminate\Http\RedirectResponse
+    public function handlePaymentCallback()
     {
         $paymentDetails = Paystack::getPaymentData();
         $res = $paymentDetails['data'];
@@ -40,16 +41,47 @@ class PaymentController extends Controller
             if (isset($paymentDetails['status'])) {
                 if (isset($res)) {
                     if ($res["status"] == 'success') {
-
-                    } else {
-
+                        if ($payment && $payment['status'] == 'pending') {
+                            $meta = json_decode($payment['meta'], true);
+                            $order = Order::create([
+                                'user_id' => auth()->user()['id'] ?? null,
+                                'code' => Order::getCode(),
+                                'name' => $meta['name'],
+                                'email' => $meta['email'],
+                                'phone' => $meta['phone'],
+                                'country' => $meta['country'],
+                                'state' => $meta['state'],
+                                'city' => $meta['city'],
+                                'address' => $meta['address'],
+                                'note' => $meta['note'],
+                                'total' => $meta['cart']['total']
+                            ]);
+                            foreach ($meta['cart']['items'] as $item) {
+                                $order->items()->create([
+                                    'product_id' => $item['product']['id'],
+                                    'quantity' => $item['quantity'],
+                                    'price' => $item['product']['price'],
+                                ]);
+                            }
+                            $order->activities()->create([
+                                'type' => 'Order Created',
+                                'message' => 'Your order was placed successfully',
+                            ]);
+                        }
+                        CartController::clearUserCart();
+                        $payment->update([
+                            'order_id' => $order['id'],
+                            'status' => 'successful'
+                        ]);
+                        return redirect()->route('orderSuccessful', $order)->with('success', 'Your payment was successful');
                     }
                 }
             }
         } catch (\Exception $e) {
             $payment->update(['status' => 'failed']);
-            return redirect()->route('transactions')->with('error', 'Transaction failed');
+            return redirect('/checkout')->with('error', 'Payment not successful');
         }
-        return redirect()->route('transactions')->with('error', 'Error completing transaction');
+        $payment->update(['status' => 'failed']);
+        return redirect('/checkout')->with('error', 'Payment not successful');
     }
 }

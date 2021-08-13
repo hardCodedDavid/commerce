@@ -31,11 +31,13 @@
                     </ol>
                 </div>
             </div>
+            @can('Add Roles')
             <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
                     <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#role-modal"><i class="ri-add-fill mr-2"></i>New Role</button>
                 </div>
             </div>
+            @endcan
         </div>
     </div>
 @endsection
@@ -76,12 +78,16 @@
                                                         Action <i class="icon-lg fa fa-angle-down"></i>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                                                        @can('Edit Roles')
                                                         <button onclick="populateEditModal({{ $role['id'] }}, '{{ $role['name'] }}', '{{ $role->permissions()->get()->map(function($sub){ return ['id' => $sub['id'],'name' => $sub['name']]; }); }}')" data-toggle="modal" data-target="#edit-role-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
+                                                        @endcan
+                                                        @can('Delete Roles')
                                                         <button onclick="event.preventDefault(); confirmSubmission('deleteForm{{ $role['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
                                                         <form method="POST" id="deleteForm{{ $role['id'] }}" action="{{ route('admin.authorization.role.destroy', $role) }}">
                                                             @csrf
                                                             @method('DELETE')
                                                         </form>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </td>

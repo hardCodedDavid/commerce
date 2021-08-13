@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Order;
-use App\Models\OrderItem;
 
 class Order extends Model
 {
@@ -17,6 +15,12 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function activities()
+    {
+        return $this->hasMany(OrderActivity::class);
+    }
+
 
     public function getTotalQuantity()
     {
@@ -38,19 +42,11 @@ class Order extends Model
         return $this->getSubTotal() + $shipping;
     }
 
-    public static function getCode()
+    public static function getCode(): int
     {
-        $last_item = Order::latest()->first();
-        if ($last_item) $num = $last_item['id'] + 1;
-        else $num = 1;
-        return self::generateUniqueCode($num);
-    }
-
-    protected static function generateUniqueCode($num)
-    {
-        while (strlen($num) < 6){
-            $num = '0'.$num;
-        }
-        return 'SL'.$num;
+        do {
+            $key = mt_rand(1000000, 9999999);
+        } while (static::query()->where('code', $key)->count() > 0);
+        return $key;
     }
 }

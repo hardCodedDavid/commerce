@@ -45,12 +45,13 @@
                                     <div class="ps-product__avai alert__success">Availability: <span>{{ number_format($product['quantity']) }} in stock</span>
                                     </div>
                                     <div class="ps-product__info">
-                                        <ul class="ps-list--rectangle">
+                                        <ul class="list-items">
                                             <div class="mb-2">{{ $product['description'] }}</div>
                                             @if ($product->brands()->count() > 0)
-                                            <li> <span><i class="icon-square"></i></span>Brands: @foreach ($product->brands()->get() as $brand)
+                                            <li class="list-item"> <span><i class="icon-square"></i></span>Brands: @foreach ($product->brands()->get() as $brand)
                                                 <span style="font-size: 12px" class="mx-1 bg-light">{{ $brand['name'] }}</span>
                                             @endforeach</li>
+                                            @endif
                                             @foreach ($variations as $variation)
                                                 @if ($product->variationItems()->where('variation_id', $variation['id'])->count() > 0)
                                                     <li> <span><i class="icon-square"></i></span>{{ $variation['name'] }}: @foreach ($product->variationItems()->where('variation_id', $variation['id'])->get() as $item)
@@ -58,7 +59,6 @@
                                                     @endforeach</li>
                                                 @endif
                                             @endforeach
-                                            @endif
                                         </ul>
                                     </div>
                                     <div class="ps-product__shopping">
@@ -70,9 +70,15 @@
                                                 <button class="plus" onclick="this.parentNode.querySelector('input[type=number]').stepUp()"><i class="icon-plus"></i></button>
                                             </div>
                                         </div>
+                                            @if ($product['in_stock'])
                                             <a onclick="addToCart({{ $product['id'] }}, this.parentNode.querySelector('input[type=number]').value)" class="ps-product__addcart ps-button">
                                                 <i class="icon-cart"></i>Add to cart
                                             </a>
+                                            @else
+                                            <a style="background: #e91313" class="ps-product__addcart ps-button">
+                                                <i class="icon-cart"></i>Out of Stock
+                                            </a>
+                                            @endif
                                             <a class="ps-product__icon" onclick="addToWishlist({{ $product['id'] }})" href="javaScript:void(0);"><i class="icon-heart"></i></a>
                                     </div>
                                     <div class="ps-product__category">
@@ -84,7 +90,11 @@
                                     </div>
                                     <div class="ps-product__footer">
                                         <a class="ps-product__shop" href="/shop"><i class="icon-store"></i><span>Shop</span></a>
-                                        <a class="ps-product__addcart ps-button" onclick="addToCart({{ $product['id'] }}, document.querySelector('#singleProductQty').value)"><i class="icon-cart"></i>Add to cart</a>
+                                        @if ($product['in_stock'])
+                                            <a class="ps-product__addcart ps-button" onclick="addToCart({{ $product['id'] }}, document.querySelector('#singleProductQty').value)"><i class="icon-cart"></i>Add to cart</a>
+                                        @else
+                                            <a class="ps-product__addcart ps-button" style="background: #e91313"><i class="icon-cart"></i>Out of Stock</a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

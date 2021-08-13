@@ -30,11 +30,13 @@
                     </ol>
                 </div>
             </div>
+            @can('Add Variations')
             <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
                     <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#variation-modal"><i class="ri-add-fill mr-2"></i>New Variation</button>
                 </div>
             </div>
+            @endcan
         </div>
     </div>
 @endsection
@@ -85,12 +87,16 @@
                                                         Action <i class="icon-lg fa fa-angle-down"></i>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                                                        @can('Edit Variations')
                                                         <button onclick="populateEditModal({{ $variation['id'] }}, '{{ $variation['name'] }}', '{{ $variation->items->map(function($sub){ return ['id' => $sub['id'],'name' => $sub['name']]; }); }}')" data-toggle="modal" data-target="#edit-variation-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
+                                                        @endcan
+                                                        @can('Delete Variations')
                                                         <button onclick="event.preventDefault(); confirmSubmission('deleteForm{{ $variation['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
                                                         <form method="POST" id="deleteForm{{ $variation['id'] }}" action="{{ route('admin.variations.destroy', $variation) }}">
                                                             @csrf
                                                             @method('DELETE')
                                                         </form>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </td>

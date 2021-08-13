@@ -29,6 +29,7 @@
 @endsection
 
 @section('content')
+@can ('View Dashboard')
 <div class="contentbar">
     <!-- Start row -->
     <div class="row">
@@ -308,6 +309,30 @@
     </div>
     <!-- End row -->
 </div>
+@else
+<div class="contentbar">
+    <!-- Start row -->
+    <div class="row">
+        <!-- Start col -->
+        <div class="col-lg-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-4">
+                            <div class="thankyou-content text-center my-5">
+                                <img src="/admin/assets/images/ecommerce/home.svg" class="img-fluid mb-5" alt="thankyou">
+                                <p class="my-4">You don't have permission to view this page</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End col -->
+    </div>
+    <!-- End row -->
+</div>
+@endcan
 @endsection
 
 @section('script')

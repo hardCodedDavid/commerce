@@ -17,7 +17,7 @@ class AdminController extends Controller
     {
         return view('admin.admins.index',[
             'admins' => Admin::all(),
-            'roles' => Role::all()
+            'roles' => Role::where('name', '!=', 'Super Admin')->get()
         ]);
     }
 

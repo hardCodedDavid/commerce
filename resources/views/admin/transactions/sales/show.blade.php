@@ -35,13 +35,15 @@
                         <div class="invoice">
                             <div class="invoice-head">
                                 <div class="row">
+                                    @php
+                                        $settings = App\Models\Setting::first();
+                                    @endphp
                                     <div class="col-12 col-md-7 col-lg-7">
                                         <div class="invoice-logo">
-                                            <img src="{{ asset('admin/assets/images/logo.svg') }}" class="img-fluid" alt="invoice-logo">
+                                            <img src="{{ asset($settings['logo'] ?? 'admin/assets/images/logo.svg') }}" class="img-fluid" alt="invoice-logo">
                                         </div>
-                                        <h4>Olian Design Inc.</h4>
-                                        <p>The Complete Web Solutions Partner</p>
-                                        <p class="mb-0">21st Street, Titanium Tower, Times Square, Nevada Campus, New Jersey - 55986 USA.</p>
+                                        <h4>{{ $settings['name'] ?? env('APP_NAME') }}</h4>
+                                        <p class="mb-0">{{ $settings['address'] }}</p>
                                     </div>
                                     <div class="col-12 col-md-5 col-lg-5">
                                         <div class="invoice-name">
@@ -54,9 +56,9 @@
                             </div>
                             <div class="invoice-billing">
                                 <div class="row">
-                                    <div class="col-sm-6 col-md-4 col-lg-4">
+                                    <div class="col-md-6">
                                         <div class="invoice-address">
-                                            <h6 class="mb-3">Cust Details</h6>
+                                            <h6 class="mb-3">Customer Details</h6>
                                             <h6 class="text-muted">{{ $sale['customer_name'] }}</h6>
                                             <ul class="list-unstyled">
                                                 <li>{{ $sale['customer_address'] }}</li>
@@ -65,6 +67,16 @@
                                             </ul>
                                         </div>
                                     </div>
+                                    @if ($sale['note'])
+                                    <div class="col-md-6">
+                                        <div class="invoice-address">
+                                            <h6 class="mb-3">Sale Note</h6>
+                                            <ul class="list-unstyled">
+                                                <li>{{ $sale['note'] }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="invoice-summary">

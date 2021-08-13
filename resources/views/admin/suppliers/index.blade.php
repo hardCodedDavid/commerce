@@ -28,11 +28,13 @@
                     </ol>
                 </div>
             </div>
-            <div class="col-md-4 col-lg-4">
-                <div class="widgetbar">
-                    <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#supplier-modal"><i class="ri-add-fill mr-2"></i>New Supplier</button>
+            @can('View Suppliers')
+                <div class="col-md-4 col-lg-4">
+                    <div class="widgetbar">
+                        <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#supplier-modal"><i class="ri-add-fill mr-2"></i>New Supplier</button>
+                    </div>
                 </div>
-            </div>
+            @endcan
         </div>
     </div>
 @endsection
@@ -81,12 +83,17 @@
                                                         Action <i class="icon-lg fa fa-angle-down"></i>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                                                        <button onclick="populateEditModal({{ $supplier['id'] }}, '{{ $supplier['name'] }}', '{{ $supplier['email'] }}', '{{ $supplier['phone'] }}', '{{ $supplier['address'] }}')" data-toggle="modal" data-target="#edit-supplier-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
-                                                        <button onclick="event.preventDefault(); confirmSubmission('deleteForm{{ $supplier['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
-                                                        <form method="POST" id="deleteForm{{ $supplier['id'] }}" action="{{ route('admin.suppliers.destroy', $supplier) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                        </form>
+                                                        <button onclick="populateShowModal({{ $supplier['id'] }}, '{{ $supplier['name'] }}', '{{ $supplier['email'] }}', '{{ $supplier['phone'] }}', '{{ $supplier['address'] }}', '₦{{ number_format($supplier->getTotalTransactions()) }}')" data-toggle="modal" data-target="#show-supplier-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">View</span></button>
+                                                        @can('Edit Suppliers')
+                                                            <button onclick="populateEditModal({{ $supplier['id'] }}, '{{ $supplier['name'] }}', '{{ $supplier['email'] }}', '{{ $supplier['phone'] }}', '{{ $supplier['address'] }}')" data-toggle="modal" data-target="#edit-supplier-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
+                                                        @endcan
+                                                        @can('Delete Suppliers')
+                                                            <button onclick="event.preventDefault(); confirmSubmission('deleteForm{{ $supplier['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
+                                                            <form method="POST" id="deleteForm{{ $supplier['id'] }}" action="{{ route('admin.suppliers.destroy', $supplier) }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                            </form>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </td>
@@ -192,6 +199,43 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="show-supplier-modal" tabindex="-1" role="dialog" aria-labelledby="show-supplier-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="show-supplier-modal-label">Supplier Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="form-group">
+                            <label for="currentname" class="col-form-label">Name: <span class="text-danger">*</span></label>
+                            <input disabled type="text" name="name" class="form-control" id="currentname">
+                        </div>
+                        <div class="form-group">
+                            <label for="currentemail" class="col-form-label">Email:</label>
+                            <input disabled type="email" name="email" class="form-control" id="currentemail">
+                        </div>
+                        <div class="form-group">
+                            <label for="currentphone" class="col-form-label">Phone:</label>
+                            <input disabled type="tel" name="phone" class="form-control" id="currentphone">
+                        </div>
+                        <div class="form-group">
+                            <label for="currenttransactions" class="col-form-label">Transactions:</label>
+                            <input disabled type="tel" name="transactions" class="form-control" id="currenttransactions">
+                        </div>
+                        <div class="form-group">
+                            <label for="currentaddress" class="col-form-label">Address:</label>
+                            <textarea disabled name="address" class="form-control" id="currentaddress"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('script')
@@ -216,6 +260,14 @@
         $('#updatedphone').val(phone);
         $('#updatedaddress').val(address);
         $('#updateSupplierForm').prop('action', `/admin/suppliers/${id}/update`);
+    }
+
+    function populateShowModal(id, name, email, phone, address, transactions) {
+        $('#currentname').val(name);
+        $('#currentemail').val(email);
+        $('#currentphone').val(phone);
+        $('#currentaddress').val(address);
+        $('#currenttransactions').val(transactions);
     }
 </script>
 @endsection
