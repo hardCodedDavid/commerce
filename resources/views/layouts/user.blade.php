@@ -12,7 +12,7 @@
     <meta name="author" content="">
     <meta name="keywords" content="">
     <meta name="description" content="">
-    <title>{{ getenv('APP_NAME') }} - @yield('title')</title>
+    <title>{{ env('APP_NAME') }} - @yield('title')</title>
     @yield('styles')
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700&amp;amp;subset=latin-ext" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/fonts/Linearicons/Font/demo-files/demo.css') }}">
