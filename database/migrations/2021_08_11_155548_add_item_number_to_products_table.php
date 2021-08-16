@@ -14,7 +14,7 @@ class AddItemNumberToProductsTable extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->string('item_number');
+            $table->string('item_number')->unique();
         });
     }
 
