@@ -101,7 +101,7 @@ class PaymentController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            return $e;
+            // return $e;
             $payment->update(['status' => 'failed']);
             return redirect('/checkout')->with('error', 'Payment not successful');
         }
