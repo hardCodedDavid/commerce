@@ -4,7 +4,9 @@
 @if (trim($slot) === 'Laravel')
 <img src="https://laravel.com/img/notification-logo.png" class="logo" alt="Laravel Logo">
 @else
-{{ $slot }}
+<a href="{{ url('/') }}" style="text-decoration: none">
+    <img src="{{ asset('logo/7.png') }}" style="width: 165px" alt="Marksot Logo">
+</a>
 @endif
 </a>
 </td>
