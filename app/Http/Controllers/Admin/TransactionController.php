@@ -10,6 +10,7 @@ use App\Models\Variation;
 use App\Models\Purchase;
 use App\Models\Sale;
 use App\Models\Brand;
+use Twilio\Rest\Client;
 
 class TransactionController extends Controller
 {
@@ -206,6 +207,7 @@ class TransactionController extends Controller
                 }
             }
         }
+        self::sendSaleSMS($sale);
         return redirect()->route('admin.transactions.sales')->with('success', 'Sale created successfully');
     }
 
@@ -494,7 +496,7 @@ class TransactionController extends Controller
         $key = $start + 1;
         foreach ($sales as $sale)
         {
-            $edit = $delete = '';
+            $edit = $delete = $show = '';
             if ($sale['type'] == 'offline'){
                 if (auth()->user()->can("Edit Sales")) {
                     $edit = '<a class="dropdown-item d-flex align-items-center" href="'. route('admin.transactions.sales.edit', $sale) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></a>';
@@ -506,6 +508,9 @@ class TransactionController extends Controller
                         <input type="hidden" name="_method" value="DELETE" />
                     </form>';
                 }
+                $show = '<a class="dropdown-item d-flex align-items-center" href="'. route('admin.transactions.sales.invoice', $sale) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-list-alt mr-2"></i> <span class="">Invoice</span></a>';
+            } else {
+                $show = '<a class="dropdown-item d-flex align-items-center" href="'. route('admin.orders.show', $sale['order']['id']) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-list-alt mr-2"></i> <span class="">View</span></a>';
             }
 
             $datum['sn'] = $key;
@@ -525,7 +530,7 @@ class TransactionController extends Controller
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
                                         '.$edit.'
-                                        <a class="dropdown-item d-flex align-items-center" href="'. route('admin.transactions.sales.invoice', $sale) .'"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-list-alt mr-2"></i> <span class="">Invoice</span></a>
+                                        '.$show.'
                                         '.$delete.'
                                     </div>
                                 </div>';
@@ -540,5 +545,24 @@ class TransactionController extends Controller
             "data"            => $data
         );
         echo json_encode($res);
+    }
+
+    public static function sendSaleSMS($sale) {
+        if ($phone = $sale['customer_phone']) {
+            $sid = env('TWILIO_ACCOUNT_ID');
+            $token = env('TWILIO_AUTH_TOKEN');
+            try {
+                $client = new Client($sid, $token);
+                $client->messages->create(
+                    $phone,
+                    [
+                        'from' => 'EmeraldFarm',
+                        'body' => 'Your purchase from '.env('APP_NAME').' was successful, your transaction ID is '.$sale['code']
+                    ]
+                );
+            }catch (\Exception $e) {
+                $error = $e;
+            }
+        }
     }
 }

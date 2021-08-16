@@ -41,26 +41,28 @@ class OrderController extends Controller
         $order->update(['status' => request('state')]);
         switch (request('state')) {
             case 'pending':
-                $type = 'Order Pending';
+                $type = 'Pending';
                 $message = 'Your order is pending processing';
                 break;
             case 'processing':
-                $type = 'Order Processing';
+                $type = 'Processing';
                 $message = 'Your order is being processed and will be delivered soon';
                 break;
             case 'delivered':
-                $type = 'Order Delivered';
+                $type = 'Delivered';
                 $message = 'Your order has been delivered to your shipping address';
                 break;
             case 'cancelled':
-                $type = 'Order Cancelled';
+                $type = 'Cancelled';
                 $message = 'Your order has been cancelled, and a refund has/will be issued';
                 break;
         }
-        $order->activities()->create([
-            'type' => $type,
+        $activity = $order->activities()->create([
+            'type' => 'Order '.$type,
             'message' => $message
         ]);
+        $activity['type'] = $type;
+        \App\Http\Controllers\NotificationController::sendOrderActivityNotification($order, $activity);
         $msg = 'Order marked as '.request('state').' successfully';
         return back()->with('success', $msg);
     }

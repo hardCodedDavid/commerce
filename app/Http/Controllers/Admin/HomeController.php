@@ -185,4 +185,19 @@ class HomeController extends Controller
 
         return back()->with('success', 'Profile updated successfully');
     }
+
+    public function sendInvoiceLinkToMail($type, $code): \Illuminate\Http\RedirectResponse
+    {
+        if ($type == "sales") {
+            $sale = Sale::where('code', $code)->first();
+            $email = $sale['customer_email'];
+        }
+        else if ($type == "purchases") {
+            $purchase = Purchase::where('code', $code)->first();
+            $email = $purchase['supplier']['email'];
+        }
+        else return back()->with('error', 'Invoice type not Supported');
+        \App\Http\Controllers\NotificationController::sendInvoiceLinkNotification($email, route('invoice.get', ['type' => $type, 'code' => $code]));
+        return back()->with('success', 'Invoice sent successfully');
+    }
 }

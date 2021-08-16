@@ -7,9 +7,13 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\Sale;
+use App\Models\Purchase;
+use App\Models\Variation;
 use App\Http\Controllers\CartController;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HomeController extends Controller
 {
@@ -200,5 +204,15 @@ class HomeController extends Controller
             $q->where('name', 'LIKE', '%'.$val.'%')->orWhere('description', 'LIKE', '%'.$val.'%');
         })->get();
         return response()->json(ProductResource::collection($products));
+    }
+
+    public function getInvoice($type, $code)
+    {
+        if ($type == "sales") $data = Sale::where('code', $code)->first();
+        else if ($type == "purchases") $data = Purchase::where('code', $code)->first();
+        else throw new NotFoundHttpException;
+        if (!$data) throw new NotFoundHttpException;
+        $variations = Variation::all();
+        return view('invoice', compact('type', 'data', 'variations'));
     }
 }

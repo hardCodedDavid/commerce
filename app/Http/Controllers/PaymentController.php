@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Sale;
 use Illuminate\Http\Request;
 use Unicodeveloper\Paystack\Facades\Paystack;
 
@@ -67,17 +68,40 @@ class PaymentController extends Controller
                                 'type' => 'Order Created',
                                 'message' => 'Your order was placed successfully',
                             ]);
+                            $sale = $order->sale()->create([
+                                'code' => Sale::getCode(),
+                                'customer_name' => $order['name'],
+                                'customer_email' => $order['email'],
+                                'customer_phone' => $order['phone'],
+                                'customer_address' => $order['address'],
+                                'date' => now()->format('Y-m-d'),
+                                'note' => $order['note'],
+                                'type' => 'online',
+                                'shipping_fee' => $order['shipping']
+                            ]);
+
+                            foreach ($order->items()->with('product')->get() as $item) {
+                                $sale->items()->create([
+                                    'product_id' => $item['product']['id'],
+                                    'quantity' => $item['quantity'],
+                                    'price' => $item['price'],
+                                    'profit' => $item['product']->getProfit()
+                                ]);
+                            }
+
+                            CartController::clearUserCart();
+                            $payment->update([
+                                'order_id' => $order['id'],
+                                'status' => 'successful'
+                            ]);
+                            NotificationController::sendOrderSuccessNotification($order);
+                            return redirect()->route('orderSuccessful', $order)->with('success', 'Your payment was successful');
                         }
-                        CartController::clearUserCart();
-                        $payment->update([
-                            'order_id' => $order['id'],
-                            'status' => 'successful'
-                        ]);
-                        return redirect()->route('orderSuccessful', $order)->with('success', 'Your payment was successful');
                     }
                 }
             }
         } catch (\Exception $e) {
+            return $e;
             $payment->update(['status' => 'failed']);
             return redirect('/checkout')->with('error', 'Payment not successful');
         }

@@ -1,15 +1,4 @@
 <?php return array (
-  'barryvdh/laravel-dompdf' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'PDF' => 'Barryvdh\\DomPDF\\Facade',
-    ),
-  ),
   'facade/ignition' => 
   array (
     'providers' => 
@@ -76,6 +65,17 @@
     'aliases' => 
     array (
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+    ),
+  ),
+  'nahidulhasan/html2pdf' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'NahidulHasan\\Html2pdf\\Html2pdfServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Pdf' => 'NahidulHasan\\Html2pdf\\Facades\\Pdf',
     ),
   ),
   'nesbot/carbon' => 

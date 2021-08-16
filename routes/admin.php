@@ -139,4 +139,5 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/profile', [HomeController::class, 'profile'])->name('profile');
     Route::post('/profile/update', [HomeController::class, 'updateProfile'])->name('profile.update');
     Route::post('/password/custom/change', [HomeController::class, 'changePasssword'])->name('password.custom.update');
+    Route::get('/{type}/{code}/invoice/send', [HomeController::class, 'sendInvoiceLinkToMail'])->name('invoice.send');
 });

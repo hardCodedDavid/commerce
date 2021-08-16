@@ -24,8 +24,8 @@
 @endsection
 
 @section('content')
-       <!-- Start Contentbar -->
-       <div class="contentbar">
+    <!-- Start Contentbar -->
+    <div class="contentbar">
         <!-- End row -->
         <div class="row justify-content-center">
             <!-- Start col -->
@@ -149,10 +149,15 @@
                             </div>
                             <div class="invoice-footer">
                                 <div class="row align-items-center">
-                                    <div class="offset-md-6 col-md-6">
+                                    <div class="offset-md-4 col-md-8 d-flex justify-content-end">
+                                        <div class="invoice-footer-btn mx-2">
+                                            <a href="{{ route('admin.invoice.send', ['type' => 'sales', 'code' => $sale['code']]) }}" class="btn btn-primary py-1 font-16"><i class="ri-printer-line mr-2"></i>Send To Customer</a>
+                                        </div>
+                                        @can('Print Sale Invoice')
                                         <div class="invoice-footer-btn">
                                             <a href="javascript:window.print()" class="btn btn-primary py-1 font-16"><i class="ri-printer-line mr-2"></i>Print</a>
                                         </div>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>

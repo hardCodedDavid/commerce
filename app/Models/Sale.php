@@ -28,6 +28,11 @@ class Sale extends Model
         return $this->items()->sum('quantity');
     }
 
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+
     public function getSubTotal()
     {
         $sum = 0;

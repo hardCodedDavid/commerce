@@ -29,7 +29,7 @@
                                         <th><strong>Action</strong></th>
                                     </tr>
                                     @php
-                                       $orders = auth()->user()->orders()->get();
+                                       $orders = auth()->user()->orders()->latest()->get();
                                     @endphp
                                     @if (count($orders))
                                         @foreach ($orders as $key=>$order)

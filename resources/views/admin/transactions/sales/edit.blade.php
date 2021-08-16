@@ -71,7 +71,7 @@
                             <div class="col-md-6 my-1">
                                 <label class="col-form-label">Phone</label>
                                 <div>
-                                    <input type="text" value="{{ old('customer_phone') ?? $sale['customer_phone'] }}" name="customer_phone" class="form-control">
+                                    <input type="text" value="{{ old('customer_phone') ?? $sale['customer_phone'] }}"  placeholder="2349000000000" name="customer_phone" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-6 my-1">
