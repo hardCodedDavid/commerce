@@ -150,7 +150,7 @@ class CartController extends Controller
             $product = Product::find($item['product_id']);
             if ($product) {
                 $updatedCartItem[] = $item;
-                $total += $product['sell_price'] * $item['quantity'];
+                $total += $product->getDiscountedPrice() * $item['quantity'];
                 $items[] = [
                     'product' => new ProductResource($product),
                     'quantity' => $item['quantity']

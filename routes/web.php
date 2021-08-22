@@ -14,14 +14,8 @@ use Illuminate\Http\Request;
 |
 */
 
-use Barryvdh\DomPDF\Facade as PDF;
-//use  PDF;
 Auth::routes();
-Route::get('test', function () {
-    $pdf = PDF::loadView('pdf.sales.invoice');
-    return  $pdf->download('invoice.pdf');
-    return view('pdf.sales.invoice');
-});
+
 Route::get('/email/verify', [App\Http\Controllers\VerificationController::class, 'verifyEmail'])
     ->middleware('auth')
     ->name('verification.notice');

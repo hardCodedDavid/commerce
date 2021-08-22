@@ -24,7 +24,7 @@ class LoginSuccessful
 
     public function handle(Login $event)
     {
-        if (!Auth::guard('admin')) {
+        if (!Auth::guard('admin')->check()) {
             CartController::moveSessionCartToDatabase();
             WishlistController::moveSessionWishlistToDatabase();
         }

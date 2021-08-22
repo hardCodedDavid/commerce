@@ -25,7 +25,7 @@ class Cart extends Model
     {
         $sum = 0;
         foreach ($this->items()->get() as $item) {
-            $sum += ($item['product']['sell_price'] - $item['product']['discount']) * $item['quantity'];
+            $sum += $item['product']->getDiscountedPrice() * $item['quantity'];
         }
         $this->update([
             'total' => $sum
