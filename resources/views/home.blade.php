@@ -60,7 +60,7 @@
                 @endphp
                 <div class="featured__first text-center">
                     <div class="ps-product--vertical">
-                        <a href="{{ route('category.products', $cat) }}"><img class="ps-product__thumbnail" src="{{ asset($cat->products()->first()->media()->first()['url'] ?? null) }}" alt="alt" /></a>
+                        <a href="{{ route('category.products', $cat) }}"><img class="ps-product__thumbnail" src="{{ asset($cat->products()->first() ? ($cat->products()->first()->media()->first()['url'] ?? null) : null) }}" alt="alt" /></a>
                         <div class="ps-product__content">
                             <a class="ps-product__name" href="{{ route('category.products', $cat) }}">{{ $cat['name'] }}</a>
                             <p class="ps-product__quantity">{{ $cat->products()->count() }} item(s)</p>
@@ -72,7 +72,7 @@
                         @foreach($categories->take(8) as $key => $category)
                             <div class="col-3 p-0">
                                 <div class="ps-product--vertical">
-                                    <a href="{{ route('category.products', $category) }}"><img class="ps-product__thumbnail" src="{{ asset($cat->products()->first()->media()->first()['url'] ?? null) }}" alt="alt" /></a>
+                                    <a href="{{ route('category.products', $category) }}"><img class="ps-product__thumbnail" src="{{ asset($cat->products()->first() ? ($cat->products()->first()->media()->first()['url'] ?? null) : null) }}" alt="alt" /></a>
                                     <div class="ps-product__content">
                                         <a class="ps-product__name" href="{{ route('category.products', $category) }}">{{ $category['name'] }}</a>
                                         <p class="ps-product__quantity">{{ $category->products()->count() }} item(s)</p>
@@ -87,7 +87,7 @@
                 <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="10000" data-owl-gap="0" data-owl-nav="false" data-owl-dots="true" data-owl-item="1" data-owl-item-xs="1" data-owl-item-sm="1" data-owl-item-md="1" data-owl-item-lg="1" data-owl-duration="1000" data-owl-mousedrag="on">
                     <div class="product-slide">
                         <a class="ps-product--vertical item-first" href="{{ route('category.products', $cat) }}">
-                            <img class="ps-product__thumbnail" src="{{ asset($cat->products()->first()->media()->first()['url'] ?? null) }}" alt="alt" />
+                            <img class="ps-product__thumbnail" src="{{ asset($cat->products()->first() ? ($cat->products()->first()->media()->first()['url'] ?? null) : null) }}" alt="alt" />
                             <div class="ps-product__content">
                                 <h5 class="ps-product__name">{{ $cat['name'] }}</h5>
                                 <p class="ps-product__quantity">{{ $cat->products()->count() }} item(s)</p>
@@ -95,7 +95,7 @@
                         </a>
                         @foreach($categories->take(8) as $category)
                             <a class="ps-product--vertical" href="#">
-                                <img class="ps-product__thumbnail" src="{{ asset($cat->products()->first()->media()->first()['url'] ?? null) }}" alt="alt" />
+                                <img class="ps-product__thumbnail" src="{{ asset($cat->products()->first() ? ($cat->products()->first()->media()->first()['url'] ?? null) : null) }}" alt="alt" />
                                 <div class="ps-product__content">
                                     <h5 class="ps-product__name">{{ $category['name'] }}</h5>
                                     <p class="ps-product__quantity">{{ $category->products()->count() }} items</p>
