@@ -1,7 +1,27 @@
-<div class="ps-product--standard"><a href="{{ route('product.detail', $product['code']) }}"><img class="ps-product__thumbnail" src="{{ asset($product->media->first()['url']) }}" alt="{{ $product['name'] }}" /></a>
+@php
+    $count = $product->reviews()->where('status', 'approved')->count();
+    $rating = $count > 0 ? $product->reviews()->where('status', 'approved')->sum('rating')/$count : 0;
+    $rate5 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 4.5)->count()/$count) * 100, 2) : 0;
+    $rate4 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 3.5)->where('rating', '<', 4.5)->count()/$count) * 100, 2) : 0;
+    $rate3 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 2.5)->where('rating', '<', 3.5)->count()/$count) * 100, 2) : 0;
+    $rate2 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 1.5)->where('rating', '<', 2.5)->count()/$count) * 100, 2) : 0;
+    $rate1 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '<', 1.5)->count()/$count) * 100, 2) : 0;
+@endphp
+
+<div class="ps-product--standard"><a href="{{ route('product.detail', $product['code']) }}"><img class="ps-product__thumbnail" style="height: 120px;" src="{{ asset($product->media->first()['url']) }}" alt="{{ $product['name'] }}" /></a>
     <div class="ps-product__content">
         <p class="ps-product-price-block"><span class="ps-product__sale">₦{{ $product->getFormattedDiscountedPrice() }}</span><span class="ps-product__price">₦{{ $product->getFormattedActualPrice() }}</span><span class="ps-product__off" style="font-size: 11px">{{ $product->getDiscountedPercent() }}% Off</span></p>
         <p class="ps-product__type"></p><a href="{{ route('product.detail', $product['code']) }}">
+            <div class="ps-product__rating">
+                <select class="rating-stars">
+                    <option value=""></option>
+                    <option value="1" {{ ($rating > 0 && $rating < 1.5) ? 'selected' : '' }}>1</option>
+                    <option value="2" {{ ($rating >= 1.5 && $rating < 2.5) ? 'selected' : '' }}>2</option>
+                    <option value="3" {{ ($rating >= 2.5 && $rating < 3.5) ? 'selected' : '' }}>3</option>
+                    <option value="4" {{ ($rating >= 3.5 && $rating < 4.5) ? 'selected' : '' }}>4</option>
+                    <option value="5" {{ $rating >= 4.5 ? 'selected' : '' }}>5</option>
+                </select><span>({{ $count }})</span>
+            </div>
             <h5 class="ps-product__name">{{ $product['name'] }}</h5>
         </a>
         <p class="ps-product__unit">

@@ -48,6 +48,11 @@ class Product extends Model
         return $this->hasMany(Media::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function getProfit()
     {
         return $this['sell_price'] - $this['buy_price'];

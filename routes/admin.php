@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Auth\AdminForgotPasswordController;
+use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\Auth\AdminResetPasswordController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\HomeController;
@@ -30,16 +34,16 @@ use App\Http\Controllers\Admin\ExportController;
 */
 
 Route::middleware(['guest:admin'])->group(function () {
-    Route::get('/login', [\App\Http\Controllers\Auth\AdminLoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [\App\Http\Controllers\Auth\AdminLoginController::class, 'login'])->name('login.submit');
-    Route::get('/password/reset', [\App\Http\Controllers\Auth\AdminForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('/password/reset', [\App\Http\Controllers\Auth\AdminForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::get('/password/reset/{token}', [\App\Http\Controllers\Auth\AdminResetPasswordController::class, 'showResetForm'])->name('password.change.show');
-    Route::post('/password/reset/change', [\App\Http\Controllers\Auth\AdminResetPasswordController::class, 'reset'])->name('password.update');
+    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AdminLoginController::class, 'login'])->name('login.submit');
+    Route::get('/password/reset', [AdminForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/password/reset', [AdminForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('/password/reset/{token}', [AdminResetPasswordController::class, 'showResetForm'])->name('password.change.show');
+    Route::post('/password/reset/change', [AdminResetPasswordController::class, 'reset'])->name('password.update');
 });
 
 Route::middleware(['auth:admin'])->group(function () {
-    Route::post('/logout', [\App\Http\Controllers\Auth\AdminLoginController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
     Route::get('/products', [ProductController::class, 'index'])->name('products')->middleware('permission:View Products');
     Route::get('/products/new', [ProductController::class, 'create'])->name('products.create')->middleware('permission:Add Products');
@@ -53,6 +57,9 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::delete('/products/{product:code}/media/remove', [ProductController::class, 'removeMedia'])->name('products.media.remove')->middleware('permission:Edit Products');
     Route::get('/products/listed', [ProductController::class, 'listed'])->name('products.listed')->middleware('permission:View Products');
     Route::get('/products/details', [ProductController::class, 'show'])->name('products.details')->middleware('permission:View Products');
+
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
+    Route::put('/reviews/{review}/{action}', [ReviewController::class, 'action'])->name('reviews.action');
 
     Route::get('/transactions/purchases', [TransactionController::class, 'purchases'])->name('transactions.purchases')->middleware('permission:View Purchases');
     Route::get('/transactions/purchases/new', [TransactionController::class, 'createPurchase'])->name('transactions.purchases.create')->middleware('permission:Add Purchases');
@@ -89,6 +96,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::put('/banners/{banner}/update', [BannerController::class, 'update'])->name('banners.update')->middleware('permission:Edit Banners');
     Route::delete('/banners/{banner}/delete', [BannerController::class, 'destroy'])->name('banners.destroy')->middleware('permission:Delete Banners');
 
+    Route::delete('/categories/banners/{categoryBanner}/delete', [CategoryController::class, 'destroyBanner'])->name('categories.banners.destroy')->middleware('permission:Edit Categories');
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories')->middleware('permission:View Categories');
     Route::post('/categories/store', [CategoryController::class, 'store'])->name('categories.store')->middleware('permission:Add Categories');
     Route::put('/categories/{category}/update', [CategoryController::class, 'update'])->name('categories.update')->middleware('permission:Edit Categories');

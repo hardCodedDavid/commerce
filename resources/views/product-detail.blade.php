@@ -6,13 +6,37 @@
 
 @php
     $variations = App\Models\Variation::all();
+
+    $count = $product->reviews()->where('status', 'approved')->count();
+    $rating = $count > 0 ? $product->reviews()->where('status', 'approved')->sum('rating')/$count : 0;
+    $rate5 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 4.5)->count()/$count) * 100, 2) : 0;
+    $rate4 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 3.5)->where('rating', '<', 4.5)->count()/$count) * 100, 2) : 0;
+    $rate3 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 2.5)->where('rating', '<', 3.5)->count()/$count) * 100, 2) : 0;
+    $rate2 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 1.5)->where('rating', '<', 2.5)->count()/$count) * 100, 2) : 0;
+    $rate1 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '<', 1.5)->count()/$count) * 100, 2) : 0;
 @endphp
+
 
 <main class="no-main">
     <section class="section--product-type section-product--default">
         <div class="container">
             <div class="product__header">
                 <h3 class="product__name">{{ $product['name'] }}</h3>
+                <div class="row">
+                    <div class="col-12 col-lg-7 product__code">
+                        <select class="rating-stars">
+                            <option value=""></option>
+                            <option value="1" {{ ($rating > 0 && $rating < 1.5) ? 'selected' : '' }}>1</option>
+                            <option value="2" {{ ($rating >= 1.5 && $rating < 2.5) ? 'selected' : '' }}>2</option>
+                            <option value="3" {{ ($rating >= 2.5 && $rating < 3.5) ? 'selected' : '' }}>3</option>
+                            <option value="4" {{ ($rating >= 3.5 && $rating < 4.5) ? 'selected' : '' }}>4</option>
+                            <option value="5" {{ $rating >= 4.5 ? 'selected' : '' }}>5</option>
+                        </select><span class="product__review">{{ $count }} Customer Review</span><span class="product__id">SKU: <span>{{ $product['sku'] ?? '------' }}</span></span>
+                    </div>
+                    <div class="col-12 col-lg-5">
+                        <div class="ps-social--share"><a class="ps-social__icon facebook" href="#"><i class="fa fa-thumbs-up"></i><span>Like</span><span class="ps-social__number">0</span></a><a class="ps-social__icon facebook" href="#"><i class="fa fa-facebook-square"></i><span>Like</span><span class="ps-social__number">0</span></a><a class="ps-social__icon twitter" href="#"><i class="fa fa-twitter"></i><span>Like</span></a><a class="ps-social__icon" href="#"><i class="fa fa-plus-square"></i><span>Like</span></a></div>
+                    </div>
+                </div>
             </div>
             <div class="product__detail">
                 <div class="row">
@@ -100,10 +124,165 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="ps-product--extention">
+                            <div class="extention__block">
+                                <div class="extention__item">
+                                    <div class="extention__icon"><i class="icon-truck"></i></div>
+                                    <div class="extention__content"> <b class="text-black">Free Shipping </b>apply to all orders over <span class="text-success">$100</span></div>
+                                </div>
+                            </div>
+                            <div class="extention__block">
+                                <div class="extention__item">
+                                    <div class="extention__icon"><i class="icon-leaf"></i></div>
+                                    <div class="extention__content">Guranteed <b class="text-black">100% Organic </b>from natural farmas </div>
+                                </div>
+                            </div>
+                            <div class="extention__block">
+                                <div class="extention__item border-none">
+                                    <div class="extention__icon"><i class="icon-repeat-one2"></i></div>
+                                    <div class="extention__content"> <b class="text-black">1 Day Returns </b>if you change your mind</div>
+                                </div>
+                            </div>
+                            <div class="extention__block extention__contact">
+                                <p> <span class="text-black">Hotline Order: </span>Free 7:00-21:30</p>
+                                <h4 class="extention__phone">970978-6290</h4>
+                                <h4 class="extention__phone">970343-8888</h4>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="container">
+            <div class="product__content">
+                <ul class="nav nav-pills" role="tablist" id="productTabDetail">
+                    <li class="nav-item"><a class="nav-link active" id="description-tab" data-toggle="tab" href="#description-content" role="tab" aria-controls="description-content" aria-selected="true">Description</a></li>
+                    <li class="nav-item"><a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews-content" role="tab" aria-controls="reviews-content" aria-selected="false">Reviews({{ $count }})</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="description-content" role="tabpanel" aria-labelledby="description-tab">
+                        @if($product->full_description)
+                            {!! $product->full_description !!}
+                        @else
+                            <h5>No Description</h5>
+                        @endif
+                    </div>
+
+                    <div class="tab-pane fade" id="reviews-content" role="tabpanel" aria-labelledby="reviews-tab">
+                        <div class="ps-product--reviews">
+                            <div class="row">
+                                <div class="col-12 col-lg-5">
+                                    <div class="review__box">
+                                        <div class="product__rate">{{ number_format((float) $rating, 2, '.', '') }}</div>
+                                        <select class="rating-stars">
+                                            <option value=""></option>
+                                            <option value="1" {{ ($rating > 0 && $rating < 1.5) ? 'selected' : '' }}>1</option>
+                                            <option value="2" {{ ($rating >= 1.5 && $rating < 2.5) ? 'selected' : '' }}>2</option>
+                                            <option value="3" {{ ($rating >= 2.5 && $rating < 3.5) ? 'selected' : '' }}>3</option>
+                                            <option value="4" {{ ($rating >= 3.5 && $rating < 4.5) ? 'selected' : '' }}>4</option>
+                                            <option value="5" {{ $rating >= 4.5 ? 'selected' : '' }}>5</option>
+                                        </select>
+                                        <p>Avg. Star Rating: <b class="text-black">({{ $count }} reviews)</b></p>
+                                        <div class="review__progress">
+                                            <div class="progress-item"><span class="star">5 Stars</span>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $rate5 }}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div><span class="percent">{{ $rate5 }}%</span>
+                                            </div>
+                                            <div class="progress-item"><span class="star">4 Stars</span>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $rate4 }}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div><span class="percent">{{ $rate4 }}%</span>
+                                            </div>
+                                            <div class="progress-item"><span class="star">3 Stars</span>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $rate3 }}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div><span class="percent">{{ $rate3 }}%</span>
+                                            </div>
+                                            <div class="progress-item"><span class="star">2 Stars</span>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $rate2 }}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div><span class="percent">{{ $rate2 }}%</span>
+                                            </div>
+                                            <div class="progress-item"><span class="star">1 Stars</span>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $rate1 }}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div><span class="percent">{{ $rate1 }}%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-7">
+                                    <div class="review__title">Add A Review</div>
+                                    <p class="mb-0">Your email will not be published. Required fields are marked <span class="text-danger">*</span></p>
+                                    <form method="post" action="{{ route('product.review', $product->id) }}">
+                                        @csrf
+                                        <div class="form-row">
+                                            <div class="col-12 form-group--block">
+                                                <div class="input__rating">
+                                                    <label>Your rating: <span>*</span></label>
+                                                    <select class="rating-stars" onchange="$('#rating').val($(this).val()); console.log($(this).val())">
+                                                        <option value="1" {{ !in_array(old('rating'), [2,3,4,5]) ? 'selected' : '' }}>1</option>
+                                                        <option value="2" {{ old('rating') == 2 ? 'selected' : '' }}>2</option>
+                                                        <option value="3" {{ old('rating') == 3 ? 'selected' : '' }}>3</option>
+                                                        <option value="4" {{ old('rating') == 4 ? 'selected' : '' }}>4</option>
+                                                        <option value="5" {{ old('rating') == 5 ? 'selected' : '' }}>5</option>
+                                                    </select>
+                                                    <input type="hidden" name="rating" id="rating" value="1">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 form-group--block">
+                                                <label for="review">Review: <span>*</span></label>
+                                                <textarea class="form-control" name="review" id="review" required>{{ old('review') }}</textarea>
+                                                @error('review') <span class="text-danger" role="alert">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div class="col-12 col-lg-6 form-group--block">
+                                                <label for="name">Name: <span>*</span></label>
+                                                <input class="form-control" type="text" name="name" id="name" value="{{ old('name') }}" required>
+                                                @error('name') <span class="text-danger" role="alert">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div class="col-12 col-lg-6 form-group--block">
+                                                <label for="email">Email:</label>
+                                                <input class="form-control" name="email" id="email" type="email" value="{{ old('email') }}">
+                                                @error('email') <span class="text-danger" role="alert">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div class="col-12 form-group--block">
+                                                <button class="btn ps-button ps-btn-submit">Submit Review</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="ps--comments">
+                                <h5 class="comment__title">{{ $count }} Comments</h5>
+                                <ul class="comment__list">
+                                    @foreach($product->reviews()->where('status', 'approved')->latest()->get()->take(5) as $comment)
+                                        <li class="comment__item">
+                                            <div class="item__avatar"><img src="{{ asset('assets/img/avatar.png') }}" style="border-radius: 100%;" alt="alt" /></div>
+                                            <div class="item__content">
+                                                <div class="item__name">{{ $comment->name }}</div>
+                                                <div class="item__date">- {{ \Carbon\Carbon::make($comment->created_at)->format('M d, Y') }}</div>
+{{--                                                <div class="item__check"> <i class="icon-checkmark-circle"></i>Verified Purchase</div>--}}
+                                                <div class="item__rate">
+                                                    <select class="rating-stars">
+                                                        <option value="1" {{ ($comment['rating'] > 0 && $comment['rating'] < 1.5) ? 'selected' : '' }}>1</option>
+                                                        <option value="2" {{ ($comment['rating'] >= 1.5 && $comment['rating'] < 2.5) ? 'selected' : '' }}>2</option>
+                                                        <option value="3" {{ ($comment['rating'] >= 2.5 && $comment['rating'] < 3.5) ? 'selected' : '' }}>3</option>
+                                                        <option value="4" {{ ($comment['rating'] >= 3.5 && $comment['rating'] < 4.5) ? 'selected' : '' }}>4</option>
+                                                        <option value="5" {{ $comment['rating'] >= 4.5 ? 'selected' : '' }}>5</option>
+                                                    </select>
+                                                </div>
+                                                <p class="item__des">{!! $comment['review'] !!}</p>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="product__related">
                 <h3 class="product__name">Related Products</h3>
                 <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="5000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="5" data-owl-item-xs="2" data-owl-item-sm="2" data-owl-item-md="3" data-owl-item-lg="5" data-owl-item-xl="5" data-owl-duration="1000" data-owl-mousedrag="on">

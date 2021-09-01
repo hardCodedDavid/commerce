@@ -64,6 +64,7 @@ class ProductController extends Controller
         $this->validate(request(), [
             'name' => ['required', 'string', 'unique:products,name'],
             'description' => ['required'],
+            'full_description' => ['required'],
             'buy_price' => ['required', 'numeric'],
             'sell_price' => ['required', 'numeric', 'gte:buy_price'],
             'discount' => ['required', 'numeric'],
@@ -77,7 +78,7 @@ class ProductController extends Controller
         ]);
 
         // Create Product
-        $data = request()->only('name', 'description', 'buy_price', 'sell_price', 'discount', 'sku', 'quantity', 'weight', 'item_number', 'note');
+        $data = request()->only('name', 'description', 'full_description', 'buy_price', 'sell_price', 'discount', 'sku', 'quantity', 'weight', 'item_number', 'note');
         $data['code'] = Product::getCode();
         $data['in_stock'] = request('in_stock') == 'instock';
         $data['is_listed'] = request('feature') == 'feature';
@@ -161,6 +162,7 @@ class ProductController extends Controller
         $this->validate(request(), [
             'name' => ['required', 'string', Rule::unique('products')->ignore($product->id)],
             'description' => ['required'],
+            'full_description' => ['required'],
             'buy_price' => ['required', 'numeric'],
             'sell_price' => ['required', 'numeric', 'gte:buy_price'],
             'discount' => ['required', 'numeric'],
@@ -174,7 +176,7 @@ class ProductController extends Controller
         ]);
 
         // Create Product
-        $data = request()->only('name', 'description', 'buy_price', 'sell_price', 'discount', 'sku', 'quantity', 'weight', 'item_number', 'note');
+        $data = request()->only('name', 'description', 'full_description', 'buy_price', 'sell_price', 'discount', 'sku', 'quantity', 'weight', 'item_number', 'note');
         $data['in_stock'] = request('in_stock') == 'instock';
         $data['is_listed'] = request('feature') == 'feature';
         $product->update($data);

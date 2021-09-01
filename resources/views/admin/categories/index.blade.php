@@ -88,7 +88,7 @@
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
                                                         @can('Edit Categories')
-                                                        <button onclick="populateEditModal({{ $category['id'] }}, '{{ $category['name'] }}', '{{ $category->subCategories->map(function($sub){ return ['id' => $sub['id'],'name' => $sub['name']]; }); }}')" data-toggle="modal" data-target="#edit-category-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
+                                                        <button onclick="populateEditModal({{ $category['id'] }}, '{{ $category['name'] }}', '{{ $category->subCategories->map(function($sub){ return ['id' => $sub['id'],'name' => $sub['name']]; }) }}', {{ json_encode($category->banners->map(function($banner){ return ['id' => $banner['id'],'url' => asset($banner['url'])]; })) }})" data-toggle="modal" data-target="#edit-category-modal" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-edit mr-2"></i> <span class="">Edit</span></button>
                                                         @endcan
                                                         @can('Delete Categories')
                                                         <button onclick="event.preventDefault(); confirmSubmission('deleteForm{{ $category['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-trash-o mr-2"></i> <span class="">Delete</span></button>
@@ -126,12 +126,21 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ route('admin.categories.store') }}" id="createCategoryForm">
+                    <form method="POST" action="{{ route('admin.categories.store') }}" id="createCategoryForm" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="name" class="col-form-label">Name: <span class="text-danger">*</span></label>
                             <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="name">
                             @error('name')
+                                <span class="text-danger small" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="banners" class="col-form-label">Banners: <span class="text-danger">*</span></label>
+                            <input type="file" name="banners[]" multiple class="form-control" id="banners" accept="image/jpeg,image/jpg,image/png">
+                            @error('banners')
                                 <span class="text-danger small" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -167,7 +176,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" id="updateCategoryForm">
+                    <form method="POST" id="updateCategoryForm" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="form-group">
@@ -185,7 +194,6 @@
                                 <div id="oldSubCategoriesList" data-repeater-list="subcategories">
                                     <div data-repeater-item="">
                                         <div class="form-group row d-flex align-items-end">
-
                                             <div class="col-10">
                                                 <input type="text" name="subcategories[0][name]" class="form-control">
                                                 <input type="hidden" name="subcategories[0][id]">
@@ -208,6 +216,20 @@
                                 </div><!--end row-->
                             </div> <!--end repeter-->
                             @error('subcategories')
+                                <span class="text-danger small" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="banners" class="col-form-label">Banners: <span class="text-danger">*</span></label>
+                            <div class="repeater-default">
+                                <div id="oldCategoryBannersList" data-repeater-list="banners">
+
+                                </div><!--end repet-list-->
+                            </div> <!--end repeter-->
+                            <input type="file" name="banners[]" multiple class="form-control" accept="image/jpeg,image/jpg,image/png">
+                            @error('banners')
                                 <span class="text-danger small" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -245,8 +267,32 @@
 <script src="{{ asset('admin/assets/plugins/repeater/jquery.repeater.min.js') }}"></script>
 <script src="{{ asset('admin/assets/pages/jquery.form-repeater.js') }}"></script>
 <script>
-    function populateEditModal(id, name, subCategories) {
+    function populateEditModal(id, name, subCategories, banners) {
         $('#updatedname').val(name);
+
+        $oldCategoryBannersList = $('#oldCategoryBannersList');
+        const formattedCategoryBanners = banners;
+        if (formattedCategoryBanners.length > 0) {
+            let newHtml = '';
+            formattedCategoryBanners.forEach((banner, index) => {
+                newHtml += ` <div data-repeater-item="" id="category-banner-${banner.id}">
+                                <div class="form-group row d-flex align-items-end">
+
+                                    <div class="col-10">
+                                        <span><img src="${banner.url}" alt="" height="80"></span>
+                                    </div>
+                                    <div class="col-2 align-content-center">
+                                        <span class="spinner-border text-danger d-none" id="spinner-${banner.id}"></span>
+                                        <span class="btn btn-outline-danger" id="delete-btn-${banner.id}" onclick="deleteBanner(${banner.id});">
+                                            <span class="fa fa-trash me-1"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>`;
+            });
+            $oldCategoryBannersList.html(newHtml);
+        }
+
         $oldSubCategoriesList = $('#oldSubCategoriesList');
         const formattedSubCategories = JSON.parse(subCategories);
         if (formattedSubCategories.length > 0) {
@@ -258,19 +304,51 @@
                                     <div class="col-10">
                                         <input type="text" name="subcategories[${index}][name]" value="${subCategory.name}" class="form-control">
                                         <input type="hidden" name="subcategories[${index}][id]" value="${subCategory.id}">
-                                    </div><!--end col-->
+                                    </div>
 
                                     <div class="col-2">
                                         <span data-repeater-delete="" class="btn btn-outline-danger">
                                             <span class="fa fa-trash me-1"></span>
                                         </span>
-                                    </div><!--end col-->
-                                </div><!--end row-->
-                            </div><!--end /div-->`;
+                                    </div>
+                                </div>
+                            </div>`;
             });
             $oldSubCategoriesList.html(newHtml);
         }
         $('#updateCategoryForm').prop('action', `/admin/categories/${id}/update`);
+    }
+
+    function deleteBanner(id) {
+        $.ajax({
+            url: `/admin/categories/banners/${id}/delete`,
+            type: 'DELETE',
+            headers: {'X-CSRF-TOKEN' : '{{ csrf_token() }}'},
+            beforeSend: function () {
+                $('#spinner-' + id).removeClass('d-none');
+                $('#delete-btn-' + id).addClass('d-none')
+            },
+            success: function (res) {
+                $('#spinner-' + id).addClass('d-none')
+                $('#delete-btn-' + id).removeClass('d-none')
+                if (res) {
+                    $('#category-banner-' + id).remove()
+                    new PNotify( {
+                        title: 'Success', text: 'Banner deleted', type: 'success'
+                    });
+                } else
+                    new PNotify( {
+                        title: 'Error', text: 'Unable to delete banner', type: 'error'
+                    });
+            },
+            error: function () {
+                $('#spinner-'+id).addClass('d-none')
+                $('#delete-btn-'+id).removeClass('d-none')
+                new PNotify( {
+                    title: 'Error', text: 'Unable to delete banner', type: 'error'
+                });
+            }
+        })
     }
 </script>
 @endsection

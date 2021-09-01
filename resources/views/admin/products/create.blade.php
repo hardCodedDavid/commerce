@@ -73,6 +73,7 @@
                                     <a class="nav-link mb-2 active" id="v-pills-general-tab" data-toggle="pill" href="#v-pills-general" role="tab" aria-controls="v-pills-general" aria-selected="true"><i class="ri-remixicon-line mr-2"></i>Pricing</a>
                                     <a class="nav-link mb-2" id="v-pills-gallery-tab" data-toggle="pill" href="#v-pills-gallery" role="tab" aria-controls="v-pills-gallery" aria-selected="false"><i class="ri-gallery-line mr-2"></i>Gallery</a>
                                     <a class="nav-link mb-2" id="v-pills-stock-tab" data-toggle="pill" href="#v-pills-stock" role="tab" aria-controls="v-pills-stock" aria-selected="false"><i class="ri-dropbox-line mr-2"></i>Stock</a>
+                                    <a class="nav-link mb-2" id="v-pills-full_description-tab" data-toggle="pill" href="#v-pills-full_description" role="tab" aria-controls="v-pills-full_description" aria-selected="false"><i class="ri-file-list-2-line mr-2"></i>Full Description</a>
                                     <a class="nav-link mb-2" id="v-pills-advanced-tab" data-toggle="pill" href="#v-pills-advanced" role="tab" aria-controls="v-pills-advanced" aria-selected="false"><i class="ri-settings-3-line mr-2"></i>Advanced</a>
                                 </div>
                             </div>
@@ -179,6 +180,17 @@
                                                     </span>
                                                 @enderror
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-full_description" role="tabpanel" aria-labelledby="v-pills-full_description-tab">
+                                        <div class="my-1">
+                                            <label for="ckeditor">Full Description <span class="text-danger">*</span></label>
+                                            <textarea name="full_description" id="ckeditor" class="ckeditor" cols="30" rows="10"></textarea>
+                                            @error('full_description')
+                                            <span class="text-danger small" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="v-pills-advanced" role="tabpanel" aria-labelledby="v-pills-advanced-tab">
@@ -311,8 +323,11 @@
 @section('script')
     <script src="{{ asset('admin/assets/plugins/repeater/jquery.repeater.min.js') }}"></script>
     <script src="{{ asset('admin/assets/pages/jquery.form-repeater.js') }}"></script>
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <script>
         $(document).ready(function() {
+            // $('.ckeditor').ckeditor()
+            CKEDITOR.replace( 'full_description' );
             const subCategoriesContainer = $('#subCategoriesContainer');
             const addImageFieldButton = $('#addImageFieldButton');
             const imageFileFields = $('#imageFileFields');

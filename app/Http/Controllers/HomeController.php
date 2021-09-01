@@ -24,7 +24,7 @@ class HomeController extends Controller
 
     public function shop()
     {
-        $products = Product::where('is_listed', 1);
+        $products = Product::where('is_listed', 1)->latest();
         if (request('sort') == 'sale')
             $products = $products->orderBy('sold');
         if (request('sort') == 'price')
@@ -37,7 +37,7 @@ class HomeController extends Controller
 
     public function filterShop()
     {
-        $products = Product::where('is_listed', 1);
+        $products = Product::where('is_listed', 1)->latest();
         $from = request('from');
         $to = request('to');
         $brands = request('brands');
@@ -196,6 +196,19 @@ class HomeController extends Controller
             $q->whereIn('categories.id', $categories);
         })->where('id', '!=', $product['id'])->get();
         return view('product-detail', compact('product', 'related'));
+    }
+
+    public function storeReview(Product $product)
+    {
+        $this->validate(request(), [
+            'review' => 'required',
+            'name' => 'required'
+        ]);
+        if (request('email'))
+            $this->validate(request(), ['email' => 'email']);
+
+        $product->reviews()->create(request()->only('name', 'email', 'rating', 'review'));
+        return back()->with('success', 'Review submitted');
     }
 
     public function searchProduct($val)

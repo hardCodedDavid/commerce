@@ -148,6 +148,15 @@
                                 </ul>
                             </li>
                         @endcan
+{{--                        @can('View Reviews')--}}
+                            <li @if (Route::is(['admin.reviews']))
+                                class="active"
+                                @endif>
+                                <a href="{{ route('admin.reviews') }}">
+                                    <i class="ri-file-list-2-line"></i><span>Reviews</span>
+                                </a>
+                            </li>
+{{--                        @endcan--}}
                         <li class="vertical-header">Others</li>
                         @can('View Categories')
                             <li @if (Route::is(['admin.categories']))

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CategoryBanner;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\SubCategory;
 use App\Models\Category;
+use Intervention\Image\Facades\Image;
 
 class CategoryController extends Controller
 {
@@ -21,8 +23,17 @@ class CategoryController extends Controller
     {
         // Validate request
         $this->validate(request(), [
-            'name' => ['required', Rule::unique('categories')]
+            'name' => ['required', Rule::unique('categories')],
+            'banners' => ['required', 'array'],
+            'banners.*' => ['image', 'max:1024']
         ]);
+
+        foreach (request('banners') as $banner) {
+            $width = Image::make($banner)->width();
+            $height = Image::make($banner)->height();
+            if (($width < 390 || $width > 395) || ($height < 335 || $height > 340))
+                return back()->with('error', 'All category banners must be of height (335 to 340)px and width (390 to 395)px')->withErrors(['banners' => 'All category banners must be of height (335 to 340)px and width (390 to 395)px'])->withInput();
+        }
 
         // Create category
         $category = Category::create(['name' => request('name')]);
@@ -33,6 +44,13 @@ class CategoryController extends Controller
                 $category->subCategories()->create(['name' => $subCategory]);
             }
         }
+
+        foreach (request('banners') as $banner) {
+            $destination = 'banners';
+            $transferFile = 'BN'.time().mt_rand(100, 999).'.'.$banner->getClientOriginalExtension();
+            $location = $banner->move($destination, $transferFile);
+            $category->banners()->create(['url' => $location]);
+        }
         return back()->with('success', 'Category created successfully');
     }
 
@@ -42,8 +60,16 @@ class CategoryController extends Controller
         $this->validate(request(), [
             'name' => ['required', Rule::unique('categories')->ignore($category->id)],
             'subcategories' => ['sometimes', 'array'],
-            'subcategories.*.name' => ['required'],
+            'subcategories.*.name' => ['required']
         ]);
+
+        if ($banners = request('banners'))
+            foreach ($banners as $banner) {
+                $width = Image::make($banner)->width();
+                $height = Image::make($banner)->height();
+                if (($width < 390 || $width > 395) || ($height < 335 || $height > 340))
+                    return back()->with('error', 'All category banners must be of height (335 to 340)px and width (390 to 395)px');
+            }
 
         // Update category
         $category->update(['name' => request('name')]);
@@ -80,6 +106,16 @@ class CategoryController extends Controller
                 }
             }
         }
+
+        if ($banners = request('banners'))
+            foreach ($banners as $banner) {
+                $destination = 'banners';
+                $transferFile = 'BN'.time().mt_rand(100, 999).'.'.$banner->getClientOriginalExtension();
+                $location = $banner->move($destination, $transferFile);
+                $category->banners()->create(['url' => $location]);
+            }
+
+
         if ($hasError) $msg = 'Category updated successfully '.$hasErrorCount.' subcategories not deleted, associated products found';
         else $msg = 'Category updated successfully';
         return back()->with('success', $msg);
@@ -95,6 +131,20 @@ class CategoryController extends Controller
         $category->subCategories()->delete();
         $category->delete();
         return back()->with('success', 'Category deleted successfully');
+    }
+
+    public function destroyBanner(CategoryBanner $categoryBanner)
+    {
+        // Remove old file
+        if (!$categoryBanner['url'])
+            return response()->json(['success' => false], 404);
+
+        $url = $categoryBanner['url'];
+        if ($categoryBanner->delete()) {
+            unlink($url);
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false], 400);
     }
 
     public function getSubcategoriesByIds()
