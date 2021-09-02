@@ -259,7 +259,7 @@
                                 <ul class="comment__list">
                                     @foreach($product->reviews()->where('status', 'approved')->latest()->get()->take(5) as $comment)
                                         <li class="comment__item">
-                                            <div class="item__avatar"><img src="{{ asset('assets/img/avatar.png') }}" style="border-radius: 100%;" alt="alt" /></div>
+                                            <div class="item__avatar"><img src="{{ $comment['email'] ? \App\Http\Controllers\HomeController::getAvatar($comment['email']) : asset('assets/img/avatar.png') }}" style="border-radius: 100%;" alt="alt" /></div>
                                             <div class="item__content">
                                                 <div class="item__name">{{ $comment->name }}</div>
                                                 <div class="item__date">- {{ \Carbon\Carbon::make($comment->created_at)->format('M d, Y') }}</div>

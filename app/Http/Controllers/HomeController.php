@@ -228,4 +228,11 @@ class HomeController extends Controller
         $variations = Variation::all();
         return view('invoice', compact('type', 'data', 'variations'));
     }
+
+    public static function getAvatar($email)
+    {
+        $hash = md5(strtolower(trim($email)));
+        return "https://www.gravatar.com/avatar/$hash?d=".rawurlencode(asset('assets/img/avatar.png'));
+//        return "https://www.gravatar.com/avatar/$hash?d=".rawurlencode('https://marksot.softwebdigital.com/assets/img/avatar.png');
+    }
 }
