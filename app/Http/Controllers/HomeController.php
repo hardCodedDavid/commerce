@@ -233,6 +233,5 @@ class HomeController extends Controller
     {
         $hash = md5(strtolower(trim($email)));
         return "https://www.gravatar.com/avatar/$hash?d=".rawurlencode(asset('assets/img/avatar.png'));
-//        return "https://www.gravatar.com/avatar/$hash?d=".rawurlencode('https://marksot.softwebdigital.com/assets/img/avatar.png');
     }
 }

@@ -58,8 +58,8 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/products/listed', [ProductController::class, 'listed'])->name('products.listed')->middleware('permission:View Products');
     Route::get('/products/details', [ProductController::class, 'show'])->name('products.details')->middleware('permission:View Products');
 
-    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
-    Route::put('/reviews/{review}/{action}', [ReviewController::class, 'action'])->name('reviews.action');
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews')->middleware('permission:View Reviews');
+    Route::put('/reviews/{review}/{action}', [ReviewController::class, 'action'])->name('reviews.action')->middleware('permission:Approve Reviews');
 
     Route::get('/transactions/purchases', [TransactionController::class, 'purchases'])->name('transactions.purchases')->middleware('permission:View Purchases');
     Route::get('/transactions/purchases/new', [TransactionController::class, 'createPurchase'])->name('transactions.purchases.create')->middleware('permission:Add Purchases');

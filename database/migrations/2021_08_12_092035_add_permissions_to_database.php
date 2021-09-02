@@ -74,6 +74,8 @@ class AddPermissionsToDatabase extends Migration
             ['name' => 'Edit Roles', 'guard_name' => 'admin'],
             ['name' => 'Delete Roles', 'guard_name' => 'admin'],
             ['name' => 'Update Settings', 'guard_name' => 'admin'],
+            ['name' => 'View Reviews', 'guard_name' => 'admin'],
+            ['name' => 'Approve Reviews', 'guard_name' => 'admin'],
         ]);
         $role = \Spatie\Permission\Models\Role::where('name', 'Super Admin')->first();
         $permissions = \Spatie\Permission\Models\Permission::all();

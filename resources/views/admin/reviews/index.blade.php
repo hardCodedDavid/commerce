@@ -88,19 +88,53 @@
                                                     Action <i class="icon-lg fa fa-angle-down"></i>
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                                                    <a class="dropdown-item d-flex align-items-center" href="'{{ route('admin.products.show', $review['id']) }}"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-eye mr-2"></i> <span class="">View</span></a>
-                                                    <a type="button" href="javascript:void(0)" onclick="event.preventDefault(); confirmSubmission('approveForm-{{ $review['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-check mr-2"></i> <span class="">Approve</span></a>
-                                                    <a type="button" href="javascript:void(0)" onclick="event.preventDefault(); confirmSubmission('declineForm-{{ $review['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-times mr-2"></i> <span class="">Decline</span></a>
-                                                    <form method="POST" id="approveForm-{{ $review['id'] }}" class="d-none" action="{{ route('admin.reviews.action', [$review['id'], 'approved']) }}">
-                                                        @csrf @method('PUT')
-                                                    </form>
-                                                    <form method="POST" id="declineForm-{{ $review['id'] }}" class="d-none" action="{{ route('admin.reviews.action', [$review['id'], 'declined']) }}">
-                                                        @csrf @method('PUT')
-                                                    </form>
+                                                    <a class="dropdown-item d-flex align-items-center" href="javascript:void(0)" type="button" data-toggle="modal" data-target="#show-review-modal-{{ $review['id'] }}"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-eye mr-2"></i> <span class="">View</span></a>
+                                                    @can('Approve Reviews')
+                                                        <a type="button" href="javascript:void(0)" onclick="event.preventDefault(); confirmSubmission('approveForm-{{ $review['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-check mr-2"></i> <span class="">Approve</span></a>
+                                                        <a type="button" href="javascript:void(0)" onclick="event.preventDefault(); confirmSubmission('declineForm-{{ $review['id'] }}')" class="dropdown-item d-flex align-items-center"><i style="font-size: 13px" class="icon-sm text-secondary fa fa-times mr-2"></i> <span class="">Decline</span></a>
+                                                        <form method="POST" id="approveForm-{{ $review['id'] }}" class="d-none" action="{{ route('admin.reviews.action', [$review['id'], 'approved']) }}">
+                                                            @csrf @method('PUT')
+                                                        </form>
+                                                        <form method="POST" id="declineForm-{{ $review['id'] }}" class="d-none" action="{{ route('admin.reviews.action', [$review['id'], 'declined']) }}">
+                                                            @csrf @method('PUT')
+                                                        </form>
+                                                    @endcan
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
+                                    <div class="modal fade" id="show-review-modal-{{ $review['id'] }}" tabindex="-1" role="dialog" aria-labelledby="show-review-modal-label" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="show-supplier-modal-label">Review</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div>
+                                                        <div class="form-group">
+                                                            <label for="name" class="col-form-label">Name: <span class="text-danger">*</span></label>
+                                                            <input disabled type="text" name="name" class="form-control" id="name" value="{{ $review['name'] }}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="email" class="col-form-label">Email:</label>
+                                                            <input disabled type="email" name="email" class="form-control" id="email" value="{{ $review['email'] }}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="rating" class="col-form-label">Rating:</label>
+                                                            <input disabled type="text" name="rating" class="form-control" id="rating" value="{{ $review['rating'] }}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="review" class="col-form-label">Transactions:</label>
+                                                            <textarea name="review" id="review" disabled class="form-control" cols="30" rows="4">{!! $review['review'] !!}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @endforeach
                                 </tbody>
                             </table>

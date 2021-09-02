@@ -34,7 +34,17 @@
                         </select><span class="product__review">{{ $count }} Customer Review</span><span class="product__id">SKU: <span>{{ $product['sku'] ?? '------' }}</span></span>
                     </div>
                     <div class="col-12 col-lg-5">
-                        <div class="ps-social--share"><a class="ps-social__icon facebook" href="#"><i class="fa fa-thumbs-up"></i><span>Like</span><span class="ps-social__number">0</span></a><a class="ps-social__icon facebook" href="#"><i class="fa fa-facebook-square"></i><span>Like</span><span class="ps-social__number">0</span></a><a class="ps-social__icon twitter" href="#"><i class="fa fa-twitter"></i><span>Like</span></a><a class="ps-social__icon" href="#"><i class="fa fa-plus-square"></i><span>Like</span></a></div>
+                        <div class="ps-social--share">
+                            <div id="fb-root"></div>
+                            <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v11.0" nonce="z5gm17mX"></script>
+                            <div class="fb-share-button" data-href="{{ route('product.detail', $product['code']) }}" data-layout="button" data-size="small">
+                                <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ rawurlencode(route('product.detail', $product['code'])) }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a>
+                            </div>
+{{--                            <a class="ps-social__icon facebook" href="#"><i class="fa fa-thumbs-up"></i><span>Like</span><span class="ps-social__number">0</span></a>--}}
+{{--                            <a class="ps-social__icon facebook" href="#"><i class="fa fa-facebook-square"></i><span>Like</span><span class="ps-social__number">0</span></a>--}}
+{{--                            <a class="ps-social__icon twitter" href="#"><i class="fa fa-twitter"></i><span>Like</span></a>--}}
+{{--                            <a class="ps-social__icon" href="#"><i class="fa fa-plus-square"></i><span>Like</span></a>--}}
+                        </div>
                     </div>
                 </div>
             </div>
