@@ -5,8 +5,9 @@
 @section('content')
 
 @php
-    $variations = App\Models\Variation::all();
+    use App\Models\Variation;
 
+    $variations = Variation::all();
     $count = $product->reviews()->where('status', 'approved')->count();
     $rating = $count > 0 ? $product->reviews()->where('status', 'approved')->sum('rating')/$count : 0;
     $rate5 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 4.5)->count()/$count) * 100, 2) : 0;
@@ -14,10 +15,23 @@
     $rate3 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 2.5)->where('rating', '<', 3.5)->count()/$count) * 100, 2) : 0;
     $rate2 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '>=', 1.5)->where('rating', '<', 2.5)->count()/$count) * 100, 2) : 0;
     $rate1 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '<', 1.5)->count()/$count) * 100, 2) : 0;
+    if (auth()->check())
+        $recent = json_decode(auth()->user()['recent_views'], true) ?? [];
+    else
+        $recent = json_decode(session('recent_views'), true) ?? [];
 @endphp
 
 
 <main class="no-main">
+    <div class="ps-breadcrumb">
+        <div class="container">
+            <ul class="ps-breadcrumb__list">
+                <li class="active"><a href="/">Home</a></li>
+                <li class="active"><a href="/shop">Shop</a></li>
+                <li><a href="javascript:void(0);">{{ $product['name'] }}</a></li>
+            </ul>
+        </div>
+    </div>
     <section class="section--product-type section-product--default">
         <div class="container">
             <div class="product__header">
@@ -40,10 +54,12 @@
                             <div class="fb-share-button" data-href="{{ route('product.detail', $product['code']) }}" data-layout="button" data-size="small">
                                 <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ rawurlencode(route('product.detail', $product['code'])) }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a>
                             </div>
-{{--                            <a class="ps-social__icon facebook" href="#"><i class="fa fa-thumbs-up"></i><span>Like</span><span class="ps-social__number">0</span></a>--}}
-{{--                            <a class="ps-social__icon facebook" href="#"><i class="fa fa-facebook-square"></i><span>Like</span><span class="ps-social__number">0</span></a>--}}
-{{--                            <a class="ps-social__icon twitter" href="#"><i class="fa fa-twitter"></i><span>Like</span></a>--}}
-{{--                            <a class="ps-social__icon" href="#"><i class="fa fa-plus-square"></i><span>Like</span></a>--}}
+                            <a class="ps-social__icon twitter " target="_blank"
+                               href="https://twitter.com/share?ref_src=twsrc%5Etfw&text={{ $product['name'] }}&url={{ route('product.detail', $product['code']) }}"
+                               data-url="{{ route('product.detail', $product['code']) }}"
+                               data-show-count="false">
+                                <i class="fa fa-twitter"></i><span>Share</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -76,6 +92,9 @@
                                     @else
                                         <p class="ps-product__sale"><span class="price-sale">₦{{ $product->getFormattedDiscountedPrice() }}</span></p>
                                     @endif
+
+                                    <div class="ps-product__variable"><span>Weight:  {{ round($product['weight'], 2) }}Kg</span></div>
+
                                     <div class="ps-product__avai alert__success">Availability: <span>{{ number_format($product['quantity']) }} in stock</span>
                                     </div>
                                     <div class="ps-product__info">
@@ -117,9 +136,21 @@
                                     </div>
                                     <div class="ps-product__category">
                                         <ul>
-                                            <li>Categories: @foreach ($product->categories()->get() as $category)
-                                                <span style="font-size: 12px" class="mx-1 bg-light">{{ $category['name'] }}</span>
-                                            @endforeach</li>
+                                            <li>Brands:
+                                                @foreach($product->brands as $brand)
+                                                    <a href="javascript:void(0)" class='text-success'>{{ $brand['name'] ?? '' }}</a>
+                                                @endforeach
+                                            </li>
+                                            <li>Categories:
+                                                @foreach ($product->categories()->get() as $category)
+                                                    <a href="{{ route('category.products', $category) }}" style="font-size: 12px" class="mx-1 bg-light">{{ $category['name'] }}</a>
+                                                @endforeach
+                                            </li>
+                                            <li>Tags:
+                                                @foreach($product->subcategories()->get() as $subcategory)
+                                                    <a href='{{ route('category.products', ['category' => $subcategory->category, 'subcategory' => $subcategory['name']]) }}' style="font-size: 12px" class="mx-1 bg-light">{{ $subcategory['name'] }}</a>
+                                                @endforeach
+                                            </li>
                                         </ul>
                                     </div>
                                     <div class="ps-product__footer">
@@ -156,8 +187,8 @@
                             </div>
                             <div class="extention__block extention__contact">
                                 <p> <span class="text-black">Hotline Order: </span>Free 7:00-21:30</p>
-                                <h4 class="extention__phone">970978-6290</h4>
-                                <h4 class="extention__phone">970343-8888</h4>
+                                <h4 class="extention__phone">{{ \App\Models\Setting::first()->phone_1 }}</h4>
+                                <h4 class="extention__phone">{{ \App\Models\Setting::first()->phone_2 }}</h4>
                             </div>
                         </div>
                     </div>
@@ -300,6 +331,20 @@
                         <div class="ps-post--product">
                             @include('single-product-slider', ['product' => $prod])
                         </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section-recent--default ps-home--block">
+        <div class="container">
+            <div class="ps-block__header">
+                <h3 class="ps-block__title">Your Recent Viewed</h3><a class="ps-block__view" href="{{ route('recentlyViewed') }}">View all <i class="icon-chevron-right"></i></a>
+            </div>
+            <div class="recent__content">
+                <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="5000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="8" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="5" data-owl-item-lg="8" data-owl-item-xl="8" data-owl-duration="1000" data-owl-mousedrag="on">
+                    @foreach($recent as $product)
+                        <a class="recent-item" href="{{ route('product.detail', $product['code']) }}"><img src="{{ asset($product['media'][0]['url'] ?? null) }}" height="100" alt="" /></a>
                     @endforeach
                 </div>
             </div>

@@ -74,6 +74,12 @@
                                 <input type="text" class="form-control" name="phone_2" value="{{ old('phone_2') ?? $settings['phone_2'] }}" id="phone_2" placeholder="Phone 2">
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="motto">Motto <span class="text-info small">(Displayed at the top left of the online store)</span></label>
+                                <input type="text" class="form-control" name="motto" value="{{ old('motto') ?? $settings['motto'] }}" id="motto" placeholder="Motto">
+                            </div>
+                        </div>
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="address">Address</label>

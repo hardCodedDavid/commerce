@@ -12,6 +12,8 @@ use App\Models\Purchase;
 use App\Models\Variation;
 use App\Http\Controllers\CartController;
 use App\Http\Resources\ProductResource;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -20,6 +22,15 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+    public function recentlyViewed()
+    {
+        if (auth()->check())
+            $products =  json_decode(auth()->user()['recent_views'], true) ?? [];
+        else
+            $products = json_decode(session('recent_views'), true) ?? [];
+        return view('recently-viewed', compact('products'));
     }
 
     public function shop()
@@ -32,7 +43,8 @@ class HomeController extends Controller
         if (request('sort') == 'name')
             $products = $products->orderBy('name');
         $products = $products->paginate(request('rpp') ?? 24);
-        return view('shop', compact('products'));
+        $from = $to = null;
+        return view('shop', compact('products', 'from', 'to'));
     }
 
     public function filterShop()
@@ -53,7 +65,7 @@ class HomeController extends Controller
                 $q->whereIn('brands.id', $brands);
             });
         $products = $products->paginate(24);
-        return view('shop', compact('products'));
+        return view('shop', compact('products', 'from', 'to'));
     }
 
     public function cart()
@@ -189,6 +201,26 @@ class HomeController extends Controller
 
     public function productDetail(Product $product)
     {
+        if ($user = User::find(auth()->id())) {
+            $data = json_decode($user['recent_views'], true) ?? [];
+            foreach ($data as $key => $prod)
+                if ($prod['id'] == $product['id'])
+                    array_splice($data, $key, 1);
+
+            $data[] = $product;
+            $user->update(['recent_views' => json_encode($data)]);
+        } else {
+            $data = json_decode(session('recent_views'), true) ?? [];
+            foreach ($data as $key => $prod)
+                if ($prod['id'] == $product['id'])
+                    array_splice($data, $key, 1);
+
+//            if (count($data) > 9)
+//                array_shift($data);
+            $data[] = $product;
+            session(['recent_views' => json_encode($data)]);
+        }
+
         $categories = $product->categories()->get()->map(function($category){
             return $category['id'];
         });
@@ -227,6 +259,14 @@ class HomeController extends Controller
         if (!$data) throw new NotFoundHttpException;
         $variations = Variation::all();
         return view('invoice', compact('type', 'data', 'variations'));
+    }
+
+    public function newsletter()
+    {
+        $this->validate(request(), ['email' => ['required', 'email']]);
+        if (!DB::table('newsletter')->where('email', request('email'))->first())
+            DB::table('newsletter')->insert(['email' => request('email')]);
+        return back()->with('success', 'You have subscribed for '.env('APP_NAME').' newsletter');
     }
 
     public static function getAvatar($email)

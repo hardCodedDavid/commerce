@@ -8,10 +8,10 @@
     $rate1 = $count > 0 ? round((float) ($product->reviews()->where('status', 'approved')->where('rating', '<', 1.5)->count()/$count) * 100, 2) : 0;
 @endphp
 
-<div class="col-6 col-md-4 col-lg-3 col-xl-2 p-0">
+<div class="col-6 col-md-4 col-lg-3 p-0">
     <div class="ps-product--standard">
         <a href="{{ route('product.detail', $product['code']) }}">
-            <img class="ps-product__thumbnail" style="height: 100px;" src="{{ asset($product->media()->first()->url ?? null) }}" alt="alt" />
+            <img class="ps-product__thumbnail" style="height: 120px;" src="{{ asset($product->media()->first()->url ?? null) }}" alt="alt" />
         </a>
         @if ($product->isNew())
             <span class="ps-badge ps-product__new">New </span>

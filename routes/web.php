@@ -47,10 +47,13 @@ Route::get('/orders', [App\Http\Controllers\HomeController::class, 'orders'])->n
 Route::get('/orders/{order:code}/details', [App\Http\Controllers\HomeController::class, 'showOrder'])->name('orders.show')->middleware('auth');
 Route::get('/product/{product:code}/details', [App\Http\Controllers\HomeController::class, 'productDetail'])->name('product.detail');
 Route::post('/product/{product}/review/store', [App\Http\Controllers\HomeController::class, 'storeReview'])->name('product.review');
+Route::get('/recently-viewed', [App\Http\Controllers\HomeController::class, 'recentlyViewed'])->name('recentlyViewed');
+Route::get('/new-arrivals/{category?}', [App\Http\Controllers\ProductController::class, 'newArrivals'])->name('newArrivals');
 Route::get('/deals/{category?}', [App\Http\Controllers\ProductController::class, 'deals'])->name('deals');
 Route::get('/top-selling/{category?}', [App\Http\Controllers\ProductController::class, 'topSelling'])->name('topSelling');
 Route::get('/categories/{category:name}/products/{subcategory?}', [App\Http\Controllers\CategoryController::class, 'getProducts'])->name('category.products');
 Route::get('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'handlePaymentCallback'])->name('payment.callback');
+Route::post('/newsletter', [\App\Http\Controllers\HomeController::class, 'newsletter'])->name('newsletter');
 
 // Ajax routes
 Route::get('/product/search/{val}', [App\Http\Controllers\HomeController::class, 'searchProduct'])->name('product.search');

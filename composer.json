@@ -16,7 +16,8 @@
         "maatwebsite/excel": "^3.1",
         "spatie/laravel-permission": "^4.2",
         "twilio/sdk": "^6.28",
-        "unicodeveloper/laravel-paystack": "^1.0"
+        "unicodeveloper/laravel-paystack": "^1.0",
+        "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

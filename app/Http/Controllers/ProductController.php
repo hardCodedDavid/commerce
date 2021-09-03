@@ -7,6 +7,18 @@ use App\Models\Product;
 
 class ProductController extends Controller
 {
+    public function newArrivals($category = null)
+    {
+        $products =  Product::where('is_listed', 1)
+                            ->whereBetween('created_at', [now()->addDays(-30), now()])
+                            ->with(['categories', 'media'])
+                            ->latest();
+        if ($category)
+            $products = $products->whereHas('categories', function ($q) use ($category) { $q->where('name', $category); });
+        $products = $products->paginate(24);
+        return view('new-arrivals', compact('products', 'category'));
+    }
+
     public function deals($category = null)
     {
         $products =  Product::where('is_listed', 1)

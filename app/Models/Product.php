@@ -12,6 +12,7 @@ class Product extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+    protected $with = ['media', 'categories', 'subcategories', 'reviews'];
 
     public function categories()
     {

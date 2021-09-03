@@ -13,15 +13,23 @@
 @endphp
 
 <main class="no-main">
+    <div class="ps-breadcrumb">
+        <div class="container">
+            <ul class="ps-breadcrumb__list">
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="javascript:void(0);">Shop</a></li>
+            </ul>
+        </div>
+    </div>
     <section class="section-shop">
         <div class="container">
             <div class="shop__content">
                 <div class="row">
                     <div class="col-12 col-lg-3">
-                        <div class="ps-shop--sidebar">
+                        <div class="ps-shop--sidebar" style="max-height: 95%; overflow-y: auto">
                             <div class="sidebar__category">
                                 <div class="sidebar__title">ALL CATEGORIES</div>
-                                <ul class="menu--mobile">
+                                <ul class="menu--mobile" style="max-height: 200px; overflow-y: auto">
                                     <li class="daily-deals category-item"><a href="/deals">Daily Deals</a></li>
                                     <li class="category-item"><a href="/top-selling">Top Selling</a></li>
                                     @foreach ($categories as $category)
@@ -46,20 +54,23 @@
                                         </div>
                                         <div class="block__input">
                                             <div class="input-group">
-                                                <div class="input-group-prepend"><span class="input-group-text">$</span></div>
+                                                <div class="input-group-prepend"><span class="input-group-text">&#8358;</span></div>
                                                 <input name="from" class="form-control" type="text" id="input-with-keypress-0">
                                             </div>
                                             <div class="input-group">
-                                                <div class="input-group-prepend"><span class="input-group-text">$</span></div>
+                                                <div class="input-group-prepend"><span class="input-group-text">&#8358;</span></div>
                                                 <input name="to" class="form-control" type="text" id="input-with-keypress-1">
                                             </div>
+                                            <button onclick="$('#from-filter').val($('#input-with-keypress-0').val());
+                                                $('#to-filter').val($('#input-with-keypress-1').val());
+                                                $('#filter-by-price-form').submit()">Go</button>
                                         </div>
                                     </div>
                                 </div>
                                 @if (count($brands) > 0)
                                     <div class="sidebar__block open">
                                         <div class="sidebar__title">BY BRAND<span class="shop-widget-toggle"><i class="icon-minus"></i></span></div>
-                                        <div class="block__content">
+                                        <div class="block__content" style="max-height: 200px; overflow-y: auto">
                                             <ul>
                                                 @foreach ($brands as $brand)
                                                     <li>
@@ -77,7 +88,7 @@
                                     @if (count($variation->items) > 0)
                                         <div class="sidebar__block open">
                                             <div class="sidebar__title">BY {{ strtoupper($variation['name']) }}<span class="shop-widget-toggle"><i class="icon-minus"></i></span></div>
-                                            <div class="block__content">
+                                            <div class="block__content" style="max-height: 200px; overflow-y: auto">
                                                 <ul>
                                                     @foreach ($variation->items as $item)
                                                         <li>
@@ -101,6 +112,11 @@
                                     font-size: 14px;
                                     width: 100%;
                                 ">Add Filter</button>
+                            </form>
+                            <form action="{{ route('shop.filter') }}" method="post" class="d-none" id="filter-by-price-form">
+                                @csrf
+                                <input type="text" name="from" value="" class="d-none" id="from-filter">
+                                <input type="text" name="to" value="" class="d-none" id="to-filter">
                             </form>
                         </div>
                     </div>
@@ -157,7 +173,7 @@
                                 <div class="row m-0">
                                     @if (count($products) > 0)
                                         @foreach ($products as $product)
-                                            @include('single-product', ['product' => $product])
+                                            @include('cat-products', ['product' => $product])
                                         @endforeach
                                     @else
                                         <div class="col-12 text-center">
@@ -184,8 +200,8 @@
         function slidePriceWidget() {
             const min = parseFloat({{ $min }});
             const max = parseFloat({{ $max }});
-            const from = randomIntFromInterval(min, max);
-            const to = randomIntFromInterval(from, max);
+            const from = (!isNaN({{ $from }}) && !isNaN({{ $to }})) ? {{ $from }} : randomIntFromInterval(min, max);
+            const to = (!isNaN({{ $from }}) && !isNaN({{ $to }})) ? {{ $to }} : randomIntFromInterval(min, max);
             var rangeSlider = document.getElementById('slide-price');
             if (rangeSlider) {
                 var input0 = document.getElementById('input-with-keypress-0');

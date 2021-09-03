@@ -29,6 +29,7 @@ class CreateSettingsTable extends Migration
             $table->string('twitter')->nullable();
             $table->string('instagram')->nullable();
             $table->string('youtube')->nullable();
+            $table->string('motto')->nullable();
             $table->timestamps();
         });
 

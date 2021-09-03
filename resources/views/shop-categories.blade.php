@@ -10,11 +10,29 @@
 
 @section('content')
 <main class="no-main">
+    <div class="ps-breadcrumb">
+        <div class="container">
+            <ul class="ps-breadcrumb__list">
+                <li class="active"><a href="/">Home</a></li>
+                @if(is_null($category))
+                    <li class="active"><a href="/shop">Shop</a></li>
+                @else
+                    <li class="active"><a href="/shop">Shop</a></li>
+                    @if(is_null($subcategory))
+                        <li><a href="javascript:void(0);">{{ $category['name'] }}</a></li>
+                    @else
+                        <li class="active"><a href="{{ route('category.products', $category) }}">{{ $category['name'] }}</a></li>
+                        <li><a href="javascript:void(0);">{{ $subcategory }}</a></li>
+                    @endif
+                @endif
+            </ul>
+        </div>
+    </div>
     <section class="section-shop shop-categories--default">
         <div class="container">
             <div class="row">
                 <div class="col-12 col-lg-3">
-                    <div class="ps-shop--sidebar">
+                    <div class="ps-shop--sidebar" style="max-height: 95%; overflow-y: auto">
                         <div class="sidebar__category">
                             <div class="sidebar__title">SUBCATEGORIES</div>
                             <div class="ps-widget--category">
@@ -94,7 +112,7 @@
                         <div class="flashSale__product">
                             <div class="row m-0">
                                 @foreach ($products as $product)
-                                    @include('single-product', ['product' => $product])
+                                    @include('cat-products', ['product' => $product])
                                 @endforeach
                             </div>
                         </div>

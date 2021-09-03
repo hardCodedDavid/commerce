@@ -5,23 +5,31 @@
 @section('content')
 
 @php
-    $banners = \App\Models\Banner::inRandomOrder()->get();
-    $categories = \App\Models\Category::inRandomOrder()->get();
-    $discountedDeals =  \App\Models\Product::where('is_listed', 1)
+    use App\Models\Banner;
+    use App\Models\Category;
+    use App\Models\Product;
+
+    $banners = Banner::inRandomOrder()->get();
+    $categories = Category::inRandomOrder()->get();
+    $discountedDeals =  Product::where('is_listed', 1)
                             ->where('discount', '>', 0)
                             ->with(['categories', 'media'])
                             ->inRandomOrder()
                             ->get();
 
-    $topSelling = \App\Models\Product::where('is_listed', 1)
+    $topSelling = Product::where('is_listed', 1)
                             ->with(['categories', 'media'])
                             ->orderBy('sold', 'desc')
                             ->get();
 
-    $newArrivals = \App\Models\Product::where('is_listed', 1)
+    $newArrivals = Product::where('is_listed', 1)
                             ->latest()
                             ->with(['categories', 'media'])
                             ->get();
+    if (auth()->check())
+        $recent = json_decode(auth()->user()['recent_views'], true) ?? [];
+    else
+        $recent = json_decode(session('recent_views'), true) ?? [];
 @endphp
 
 <main class="no-main">
@@ -55,8 +63,9 @@
             </div>
             <div class="featured--content">
                 @php
-                    $cat = $categories[0];
-                    unset($categories[0]);
+                    $category = $categories;
+                    $cat = $category[0];
+                    unset($category[0])
                 @endphp
                 <div class="featured__first text-center">
                     <div class="ps-product--vertical">
@@ -107,20 +116,20 @@
             </div>
         </div>
     </section>
-    <section class="section-flashdeal--default ps-home--block">
-        <div class="container">
-            <div class="ps-block__header">
-                <h3 class="ps-block__title"><i class="icon-power"></i>Top Discounted Deals</h3>
-            </div>
-            <div class="flashdeal--content">
-                <div class="owl-carousel" data-owl-auto="false" data-owl-loop="false" data-owl-speed="5000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="6" data-owl-item-xs="2" data-owl-item-sm="2" data-owl-item-md="3" data-owl-item-lg="6" data-owl-duration="1000" data-owl-mousedrag="on">
-                    @foreach ($discountedDeals->take(10) as $deal)
-                        @include('single-product-slider', ['product' => $deal])
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </section>
+{{--    <section class="section-flashdeal--default ps-home--block">--}}
+{{--        <div class="container">--}}
+{{--            <div class="ps-block__header">--}}
+{{--                <h3 class="ps-block__title"><i class="icon-power"></i>Top Discounted Deals</h3>--}}
+{{--            </div>--}}
+{{--            <div class="flashdeal--content">--}}
+{{--                <div class="owl-carousel" data-owl-auto="false" data-owl-loop="false" data-owl-speed="5000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="6" data-owl-item-xs="2" data-owl-item-sm="2" data-owl-item-md="3" data-owl-item-lg="6" data-owl-duration="1000" data-owl-mousedrag="on">--}}
+{{--                    @foreach ($discountedDeals->take(10) as $deal)--}}
+{{--                        @include('single-product-slider', ['product' => $deal])--}}
+{{--                    @endforeach--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </section>--}}
     <section class="section-categories--default">
         <div class="container">
             <div class="categories--block">
@@ -128,7 +137,7 @@
                 <div class="categories__content">
                     <div class="categories__products">
                         <div class="row m-0">
-                            @foreach ($topSelling->take(8) as $product)
+                            @foreach ($topSelling->take(12) as $product)
                                 @include('single-product', ['product' => $product])
                             @endforeach
                         </div>
@@ -136,18 +145,18 @@
                 </div>
             </div>
 
-            <div class="categories--block">
-                <h3><a class="categories__title" id="freshFoodBlock">New Arrivals</a></h3>
-                <div class="categories__content">
-                    <div class="categories__products">
-                        <div class="row m-0">
-                            @foreach ($newArrivals->take(8) as $product)
-                                @include('single-product', ['product' => $product])
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
+{{--            <div class="categories--block">--}}
+{{--                <h3><a class="categories__title" id="freshFoodBlock">New Arrivals</a></h3>--}}
+{{--                <div class="categories__content">--}}
+{{--                    <div class="categories__products">--}}
+{{--                        <div class="row m-0">--}}
+{{--                            @foreach ($newArrivals->take(8) as $product)--}}
+{{--                                @include('single-product', ['product' => $product])--}}
+{{--                            @endforeach--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
         </div>
     </section>
 
@@ -178,7 +187,7 @@
                                     foreach ($category->subCategories()->get()->take(15) as $sub)
                                         $subCategories[] = $sub;
                                     $subCategories1 = array_splice($subCategories, 0, 8);
-                                    $subCategories2 = array_splice($subCategories, 8, 7);
+                                    $subCategories2 = array_splice($subCategories, 8, 7)
                                 @endphp
                                 @foreach($subCategories1 as $subCategory)
                                     <div class="col-6">
@@ -198,13 +207,27 @@
                         <div class="categories__products">
                             <div class="row m-0">
                                 @foreach($category->products()->get()->take(8) as $product)
-                                    @include('single-product', ['product' => $product])
+                                    @include('cat-products', ['product' => $product])
                                 @endforeach
                             </div>
                         </div>
                     </div>
                 </div>
             @endforeach
+        </div>
+    </section>
+    <section class="section-recent--default ps-home--block">
+        <div class="container">
+            <div class="ps-block__header">
+                <h3 class="ps-block__title">Your Recent Viewed</h3><a class="ps-block__view" href="{{ route('recentlyViewed') }}">View all <i class="icon-chevron-right"></i></a>
+            </div>
+            <div class="recent__content">
+                <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="5000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="8" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="5" data-owl-item-lg="8" data-owl-item-xl="8" data-owl-duration="1000" data-owl-mousedrag="on">
+                    @foreach($recent as $product)
+                        <a class="recent-item" href="{{ route('product.detail', $product['code']) }}"><img src="{{ asset($product['media'][0]['url'] ?? null) }}" height="100" alt="" /></a>
+                    @endforeach
+                </div>
+            </div>
         </div>
     </section>
 </main>

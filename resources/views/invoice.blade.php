@@ -43,7 +43,7 @@
                                             @endphp
                                             <div class="col-12 col-md-7 col-lg-7">
                                                 <div class="invoice-logo">
-                                                    <img src="{{ asset($settings['logo'] ?? 'admin/assets/images/logo.svg') }}" class="img-fluid" alt="invoice-logo">
+                                                    <img src="{{ asset($settings['logo']) }}" class="img-fluid" alt="">
                                                 </div>
                                                 <h4>{{ $settings['name'] ?? env('APP_NAME') }}</h4>
                                                 <p class="mb-0">{{ $settings['address'] }}</p>
@@ -57,7 +57,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @if ($type == 'sale')
+                                    @if ($type == 'sales')
                                     <div class="invoice-billing">
                                         <div class="row">
                                             <div class="col-md-6">

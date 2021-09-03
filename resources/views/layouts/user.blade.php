@@ -43,7 +43,7 @@
                 <div class="top-bar">
                     <div class="top-bar__left">
                         <ul class="nav-top">
-                            <li class="nav-top-item"><a class="nav-top-link" href="#">Marksot: No 1 automobile part store in Nigeria.</a></li>
+                            <li class="nav-top-item"><a class="nav-top-link" href="#">{{ env('APP_NAME') }}: {{ \App\Models\Setting::first()['motto'] ?? 'No 1 automobile part store in Nigeria.' }}</a></li>
                         </ul>
                     </div>
                     <div class="top-bar__right">
@@ -100,7 +100,7 @@
                                 <button class="category-toggler"><i class="icon-menu"></i></button>
                                 <div class="mega-menu mega-menu-category">
                                     <ul class="menu--mobile menu--horizontal">
-                                        <li class="daily-deals category-item"><a href="/deals">Deals</a></li>
+                                        <li class="daily-deals category-item"><a href="/new-arrivals">New Arrivals</a></li>
                                         <li class="category-item"><a class="active" href="/top-selling">Top Selling</a></li>
                                         @foreach ($categories as $category)
                                             <li class="has-mega-menu category-item"><a href="{{ route('category.products', $category['name']) }}">{{ $category['name'] }}</a><span class="sub-toggle"><i class="icon-chevron-down"></i></span>
@@ -199,10 +199,9 @@
                 <ul class="menu">
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/">Home</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/shop">Shop</a></li>
+                    <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/new-arrivals">New Arrivals</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/top-selling">Top Selling</a></li>
                     <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="/deals">Discounted Deals</a></li>
-                    {{-- <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">About Us</a></li>
-                    <li class="menu-item-has-children has-mega-menu"><a class="nav-link" href="#">Contact Us</a></li> --}}
                 </ul>
             </div>
         </nav>
@@ -234,54 +233,73 @@
         <div class="container">
             <div class="ps-footer--contact">
                 <div class="row">
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-4">
                         <p class="contact__title">Contact Us</p>
                         <p><b><i class="icon-telephone"> </i>Hotline: </b><span>(7:00 - 21:30)</span></p>
                         <p class="telephone">{{ $settings['phone_1'] }}<br>{{ $settings['phone_2'] }}</p>
                         <p> <b>Head office: </b>{{ $settings['address'] }}</p>
                         <p> <b>Email us: </b><a href="mailto:{{ $settings['email'] }}" >{{ $settings['email'] }}</a></p>
+                        <div class="mt-4 col-12 d-flex">
+                            <a class="icon_social facebook" target="_blank" href="{{ $settings['facebook'] ?? '#' }}"><i class="fa fa-facebook-f"></i></a>
+                            <a class="icon_social twitter" target="_blank" href="{{ $settings['twitter'] ?? '#' }}"><i class="fa fa-twitter"></i></a>
+                            <a class="icon_social google" target="_blank" href="mailto:{{ $settings['email'] ?? '#' }}"><i class="fa fa-google-plus"></i></a>
+                            <a class="icon_social youtube" target="_blank" href="{{ $settings['youtube'] ?? '#' }}"><i class="fa fa-youtube"></i></a>
+                            <a class="icon_social google" target="_blank" href="{{ $settings['instagram'] ?? '#' }}"><i class="fa fa-instagram"></i></a>
+                        </div>
                     </div>
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-4">
                         <div class="row">
                             <div class="col-12 col-lg-6">
-                                <p class="contact__title">Quick Links<span class="footer-toggle"><i class="icon-chevron-down"></i></span></p>
+                                <p class="contact__title">Help and Info <span class="footer-toggle"><i class="icon-chevron-down"></i></span></p>
                                 <ul class="footer-list">
-                                    <li><a href="/">Home</a></li>
-                                    <li><a href="/shop">Shop</a></li>
-                                    {{-- <li><a href="#">About Us</a></li>
+                                    <li><a href="#">About Us</a></li>
                                     <li><a href="#">Contact Us</a></li>
-                                    <li><a href="#">Policy</a></li> --}}
-                                    <li><a href="/faqs">FAQs</a></li>
+                                    <li><a href="/order-tracking">Track Order</a></li>
+                                    <li><a href="/login">Account</a></li>
+                                    <li><a href="#">Marksot Limited</a></li>
                                 </ul>
                                 <hr>
                             </div>
                             <div class="col-12 col-lg-6">
-                                <p class="contact__title">Products<span class="footer-toggle"><i class="icon-chevron-down"></i></span></p>
+                                <p class="contact__title">Knowledge Base <span class="footer-toggle"><i class="icon-chevron-down"></i></span></p>
                                 <ul class="footer-list">
-                                    <li><a href="/top-selling">Top Selling</a></li>
-                                    <li><a href="/deals">Discounted Deals</a></li>
-                                    {{-- <li><a href="#">New Arrivals</a></li>
-                                    <li><a href="#">Careers</a></li>
-                                    <li><a href="#">Our Suppliers</a></li>
-                                    <li><a href="#">Accessibility</a></li> --}}
+                                    <li><a href="/faqs">FAQs</a></li>
+                                    <li><a href="#">Return Policy</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                    <li><a href="#">Shipping Policy</a></li>
+                                    <li><a href="#">Term of Use</a></li>
                                 </ul>
                                 <hr>
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-lg-4">
+                        <p class="contact__title">Newsletter Subscription</p>
+                        <p>Join our email subscription now to get updates on <b>promotions </b>and <b>coupons.</b></p>
+                        <form action="{{ route('newsletter') }}" method="post">
+                            @csrf
+                            <div class="input-group">
+                                <div class="input-group-prepend"><i class="icon-envelope"></i></div>
+                                <input class="form-control" type="email" name="email" required placeholder="Enter your email...">
+                                <div class="input-group-append">
+                                    <button class="btn">Subscribe</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <div class="ps-footer--categories">
-                @foreach ($categories as $category)
-                <div class="categories__list"><b>{{ $category['name'] }}: </b>
-                    <ul class="menu--vertical">
-                        @foreach ($category->subCategories as $subCategory)
-                            <li class="menu-item"><a href="{{ route('category.products', ['category' => $category, 'subcategory' => $subCategory['name']]) }}">{{ $subCategory['name'] }}</a></li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endforeach
-            </div>
+{{--            <div class="ps-footer--categories">--}}
+{{--                @foreach ($categories as $category)--}}
+{{--                <div class="categories__list"><b>{{ $category['name'] }}: </b>--}}
+{{--                    <ul class="menu--vertical">--}}
+{{--                        @foreach ($category->subCategories as $subCategory)--}}
+{{--                            <li class="menu-item"><a href="{{ route('category.products', ['category' => $category, 'subcategory' => $subCategory['name']]) }}">{{ $subCategory['name'] }}</a></li>--}}
+{{--                        @endforeach--}}
+{{--                    </ul>--}}
+{{--                </div>--}}
+{{--                @endforeach--}}
+{{--            </div>--}}
             <div class="row ps-footer__copyright">
                 <div class="col-12 col-lg-6">
                     <div>&copy; {{ date('Y') }} {{ env('APP_NAME') }} All Rights Reversed.</div>
@@ -289,13 +307,7 @@
                 <div class="col-12 col-lg-6 text-lg-right text-left">
                     <div>Powered by <a target="_blank" class="font-weight-bold" href="https://www.softwebdigital.com">Soft-Web Digital</a></div>
                 </div>
-                <div class="mt-3 col-12 ml-auto ps-footer__social">
-                    <a class="icon_social facebook" href="{{ $settings['facebook'] ?? '#' }}"><i class="fa fa-facebook-f"></i></a>
-                    <a class="icon_social twitter" href="{{ $settings['twitter'] ?? '#' }}"><i class="fa fa-twitter"></i></a>
-                    <a class="icon_social google" href="mailto:{{ $settings['email'] ?? '#' }}"><i class="fa fa-google-plus"></i></a>
-                    <a class="icon_social youtube" href="{{ $settings['youtube'] ?? '#' }}"><i class="fa fa-youtube"></i></a>
-                    <a class="icon_social google" href="{{ $settings['instagram'] ?? '#' }}"><i class="fa fa-instagram"></i></a>
-                </div>
+
             </div>
         </div>
     </footer>
@@ -367,10 +379,10 @@
             <ul class="menu--mobile">
                 <li class="menu-item-has-children"><a class="nav-link" href="/">Home</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="/shop">Shop</a></li>
+                    <li class="menu-item-has-children"><a class="nav-link" href="/new-arrivals">New Arrivals</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="/top-selling">Top Selling</a></li>
                     <li class="menu-item-has-children"><a class="nav-link" href="/deals">Discounted Deals</a></li>
-                    {{-- <li class="menu-item-has-children"><a class="nav-link" href="#">About Us</a></li>
-                    <li class="menu-item-has-children"><a class="nav-link" href="#">Contact Us</a></li> --}}
+                    <li class="menu-item-has-children"><a class="nav-link" href="/order-tracking">Order Tracking</a></li>
             </ul>
         </div>
     </nav>
