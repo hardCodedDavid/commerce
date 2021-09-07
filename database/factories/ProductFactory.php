@@ -25,6 +25,7 @@ class ProductFactory extends Factory
             'code' => 'PD0000'.$this->faker->randomNumber(5),
             'name' => $this->faker->unique()->word,
             'description' => $this->faker->sentence,
+            'full_description' => $this->faker->paragraph(20),
             'buy_price' => $this->faker->numberBetween(10000, 100000),
             'sell_price' => $this->faker->numberBetween(10000, 100000),
             'discount' => $this->faker->numberBetween(5000, 9000),
