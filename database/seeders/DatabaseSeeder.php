@@ -19,10 +19,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-//        Product::factory(100)
-//            ->has(Media::factory(3), 'media')
-//            ->has(Review::factory(10), 'reviews')
-//            ->create();
+        Product::factory(100)
+            ->has(Media::factory(3), 'media')
+            ->has(Review::factory(10), 'reviews')
+            ->create();
 
         $cat = Category::all();
         $sub = SubCategory::all();
