@@ -24,12 +24,16 @@ class DatabaseSeeder extends Seeder
             ->has(Review::factory(10), 'reviews')
             ->create();
 
+        Category::factory(20)
+            ->has(SubCategory::factory(2), 'subCategories')
+            ->create();
+
         $cat = Category::all();
         $sub = SubCategory::all();
 
         Product::all()->each(function ($product) use ($cat, $sub) {
             $product->categories()->attach(
-                $cat->random(rand(1, 2))->pluck('id')->toArray()
+                $cat->random(rand(1, 20))->pluck('id')->toArray()
             );
             $product->subCategories()->attach(
                 $sub->random(rand(1, 3))->pluck('id')->toArray()

@@ -63,9 +63,11 @@
             </div>
             <div class="featured--content">
                 @php
-                    $category = $categories;
-                    $cat = $category[0];
-                    unset($category[0])
+                    if (isset($categories)) {
+                        $category = $categories;
+                        $cat = $category[0];
+                        unset($category[0]);
+                    }
                 @endphp
                 <div class="featured__first text-center">
                     <div class="ps-product--vertical">
