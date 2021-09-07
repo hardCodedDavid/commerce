@@ -22,7 +22,7 @@ class MediaFactory extends Factory
     public function definition()
     {
         return [
-            'url' => 'media/PD0000030-1625673509.PNG'
+            'url' => $this->faker->imageUrl(360)
         ];
     }
 }
