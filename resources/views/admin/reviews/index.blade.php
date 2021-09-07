@@ -166,30 +166,6 @@
     <script>
         $(document).ready(function () {
             $('#reviewTable').DataTable({
-                {{--"processing": true,--}}
-                {{--"serverSide": true,--}}
-                {{--"searching": true,--}}
-                {{--"ajax":{--}}
-                {{--    "url": "{{ route('admin.products.ajax') }}",--}}
-                {{--    "dataType": "json",--}}
-                {{--    "type": "POST",--}}
-                {{--    "data":{ _token: "{{csrf_token()}}", type: "{{ $type }}"}--}}
-                {{--},--}}
-                {{--"columns": [--}}
-                {{--    { "data": "sn" },--}}
-                {{--    { "data": "item_number" },--}}
-                {{--    { "data": "name" },--}}
-                {{--    { "data": "buy_price" },--}}
-                {{--    { "data": "sell_price" },--}}
-                {{--    { "data": "discount" },--}}
-                {{--    { "data": "sku" },--}}
-                {{--    { "data": "in_stock" },--}}
-                {{--    { "data": "quantity" },--}}
-                {{--    { "data": "weight" },--}}
-                {{--    { "data": "variations" },--}}
-                {{--    { "data": "status" },--}}
-                {{--    { "data": "action" }--}}
-                {{--],--}}
                 "lengthMenu": [50, 100, 200, 500]
             });
         });

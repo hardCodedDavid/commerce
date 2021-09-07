@@ -33,7 +33,7 @@
             <div class="sidebar">
                 <!-- Start Logobar -->
                 <div class="logobar">
-                    <a href="{{ route('admin.dashboard') }}" class="logo logo-large"><img src="{{ asset('logo/7.png') }}" class="img-fluid" alt="logo"></a>
+                    <a href="{{ route('admin.dashboard') }}" class="logo logo-large"><img src="{{ asset(\App\Models\Setting::first()->dashboard_logo ?? 'logo/7.png') }}" class="img-fluid" alt="logo"></a>
                     <a href="{{ route('admin.dashboard') }}" class="logo logo-small"><img src="{{ asset('logo/5.png') }}" class="img-fluid" alt="logo"></a>
                 </div>
                 <!-- End Logobar -->
@@ -68,7 +68,7 @@
                                             'admin.transactions.sales.invoice']))
                             class="active"
                         @endif>
-                            <a href="javaScript:void();">
+                            <a href="javaScript:void(0);">
                                 <i class="ri-file-list-2-line"></i><span>Transactions</span><i class="ri-arrow-right-s-line"></i>
                             </a>
                             <ul class="vertical-submenu">
@@ -77,7 +77,7 @@
                                 @endcan
                                 @can('View Sales')
                                     <li>
-                                        <a href="javaScript:void();">Sales<i class="ri-arrow-right-s-line"></i></a>
+                                        <a href="javaScript:void(0);">Sales<i class="ri-arrow-right-s-line"></i></a>
                                         <ul class="vertical-submenu">
                                             <li><a href="{{ route('admin.transactions.sales') }}">All</a></li>
                                             <li><a href="{{ route('admin.transactions.sales', 'online') }}">Online</a></li>
@@ -104,7 +104,7 @@
                         <li @if (Route::is(['admin.users']))
                             class="active"
                         @endif>
-                            <a href="javaScript:void();">
+                            <a href="javaScript:void(0);">
                                 <i class="ri-user-3-line"></i><span>Users</span><i class="ri-arrow-right-s-line"></i>
                             </a>
                             <ul class="vertical-submenu">
@@ -136,7 +136,7 @@
                             <li @if (Route::is(['admin.orders']))
                                 class="active"
                             @endif>
-                                <a href="javaScript:void();">
+                                <a href="javaScript:void(0);">
                                     <i class="ri-table-2"></i><span>Orders</span><i class="ri-arrow-right-s-line"></i>
                                 </a>
                                 <ul class="vertical-submenu">
@@ -154,6 +154,15 @@
                                 @endif>
                                 <a href="{{ route('admin.reviews') }}">
                                     <i class="ri-file-list-2-line"></i><span>Reviews</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('View Subscriptions')
+                            <li @if (Route::is(['admin.subscriptions']))
+                                class="active"
+                                @endif>
+                                <a href="{{ route('admin.subscriptions') }}">
+                                    <i class="ri-money-cny-box-fill"></i><span>Subscriptions</span>
                                 </a>
                             </li>
                         @endcan
@@ -247,7 +256,7 @@
                             <ul class="list-inline mb-0">
                                 <li class="list-inline-item">
                                     <div class="topbar-toggle-icon">
-                                        <a class="topbar-toggle-hamburger" href="javascript:void();">
+                                        <a class="topbar-toggle-hamburger" href="javascript:void(0);">
                                             <span class="iconbar">
                                                 <i class="ri-more-fill menu-hamburger-horizontal"></i>
                                                 <i class="ri-more-2-fill menu-hamburger-vertical"></i>
@@ -257,7 +266,7 @@
                                 </li>
                                 <li class="list-inline-item">
                                     <div class="menubar">
-                                        <a class="menu-hamburger" href="javascript:void();">
+                                        <a class="menu-hamburger" href="javascript:void(0);">
                                             <span class="iconbar">
                                                 <i class="ri-menu-2-line menu-hamburger-collapse"></i>
                                                 <i class="ri-close-line menu-hamburger-close"></i>
@@ -280,25 +289,25 @@
                             <ul class="list-inline mb-0">
                                 <li class="list-inline-item">
                                     <div class="menubar">
-                                        <a class="menu-hamburger" href="javascript:void();">
+                                        <a class="menu-hamburger" href="javascript:void(0);">
                                             <span class="iconbar">
                                                 <i class="ri-menu-2-line menu-hamburger-collapse"></i><i class="ri-close-line menu-hamburger-close"></i>
                                             </span>
                                          </a>
                                      </div>
                                 </li>
-                                <li class="list-inline-item">
-                                    <div class="searchbar">
-                                        <form>
-                                            <div class="input-group">
-                                              <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
-                                              <div class="input-group-append">
-                                                <button class="btn" type="submit" id="button-addon2"><i class="ri-search-line"></i></button>
-                                              </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </li>
+{{--                                <li class="list-inline-item">--}}
+{{--                                    <div class="searchbar">--}}
+{{--                                        <form>--}}
+{{--                                            <div class="input-group">--}}
+{{--                                              <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">--}}
+{{--                                              <div class="input-group-append">--}}
+{{--                                                <button class="btn" type="submit" id="button-addon2"><i class="ri-search-line"></i></button>--}}
+{{--                                              </div>--}}
+{{--                                            </div>--}}
+{{--                                        </form>--}}
+{{--                                    </div>--}}
+{{--                                </li>--}}
                             </ul>
                         </div>
                         <div class="infobar">

@@ -332,12 +332,12 @@
                             <div class="card-body">
                                 @foreach ($variation->items as $item)
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="variations[]" @foreach ($product->variationItems()->get() as $currentVariation)
+                                        <input type="checkbox" name="variations[]" @foreach($product->variationItems()->get() as $currentVariation)
                                             @if ($currentVariation['id'] == $item['id'])
                                                 checked
                                             @endif
-                                        @endforeach class="custom-control-input" value="{{ $item['id'] }}" id="var-{{ $currentVariation['name'] }}-{{ $item['name'] }}">
-                                        <label class="custom-control-label" for="var-{{ $currentVariation['name'] }}-{{ $item['name'] }}">{{ $item['name'] }}</label>
+                                        @endforeach class="custom-control-input" value="{{ $item['id'] }}" id="var-{{ $item['name'] }}">
+                                        <label class="custom-control-label" for="var-{{ $item['name'] }}">{{ $item['name'] }}</label>
                                     </div>
                                 @endforeach
                             </div>

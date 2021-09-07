@@ -22,6 +22,7 @@ class CreateSettingsTable extends Migration
             $table->string('phone_2')->nullable();
             $table->text('address')->nullable();
             $table->string('logo')->nullable();
+            $table->string('dashboard_logo')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('account_name')->nullable();
             $table->string('account_number')->nullable();

@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\Admin;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class AddPermissionsToDatabase extends Migration
 {
@@ -76,11 +79,14 @@ class AddPermissionsToDatabase extends Migration
             ['name' => 'Update Settings', 'guard_name' => 'admin'],
             ['name' => 'View Reviews', 'guard_name' => 'admin'],
             ['name' => 'Approve Reviews', 'guard_name' => 'admin'],
+            ['name' => 'View Subscriptions', 'guard_name' => 'admin'],
+            ['name' => 'Delete Subscriptions', 'guard_name' => 'admin'],
+            ['name' => 'Send Newsletter', 'guard_name' => 'admin'],
         ]);
-        $role = \Spatie\Permission\Models\Role::where('name', 'Super Admin')->first();
-        $permissions = \Spatie\Permission\Models\Permission::all();
+        $role = Role::where('name', 'Super Admin')->first();
+        $permissions = Permission::all();
         $role->syncPermissions($permissions);
-        $admin = \App\Models\Admin::first();
+        $admin = Admin::first();
         $admin->assignRole($role);
     }
 
@@ -95,11 +101,11 @@ class AddPermissionsToDatabase extends Migration
             //
         });
 
-        $role = \Spatie\Permission\Models\Role::where('name', 'Super Admin')->first();
-        $permissions = \Spatie\Permission\Models\Permission::all();
+        $role = Role::where('name', 'Super Admin')->first();
+        $permissions = Permission::all();
         if ($role) {
             $role->syncPermissions([]);
-            $admin = \App\Models\Admin::first();
+            $admin = Admin::first();
             $admin->removeRole($role);
             $role->delete();
         }

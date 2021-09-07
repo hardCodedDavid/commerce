@@ -74,9 +74,9 @@
                                 <input type="text" class="form-control" name="phone_2" value="{{ old('phone_2') ?? $settings['phone_2'] }}" id="phone_2" placeholder="Phone 2">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
-                                <label for="motto">Motto <span class="text-info small">(Displayed at the top left of the online store)</span></label>
+                                <label for="motto">Motto <span class="text-info small">(Displayed at the top left corner in the online store)</span></label>
                                 <input type="text" class="form-control" name="motto" value="{{ old('motto') ?? $settings['motto'] }}" id="motto" placeholder="Motto">
                             </div>
                         </div>
@@ -115,7 +115,7 @@
                                 <input type="text" class="form-control" name="youtube" value="{{ old('youtube') ?? $settings['youtube'] }}" id="youtube" placeholder="Youtube">
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             @if ($settings['logo'])
                                 <img src="{{ asset($settings['logo']) }}" alt="logo" width="100px" style="border-radius: 5px">
                             @endif
@@ -123,6 +123,20 @@
                                 <label for="logo">Invoice Logo</label>
                                 <input type="file" class="form-control-file" name="logo" id="logo">
                                 @error('logo')
+                                    <span class="text-danger small" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            @if ($settings['dashboard_logo'])
+                                <img src="{{ asset($settings['dashboard_logo']) }}" alt="dashboard_logo" width="100px" style="border-radius: 5px">
+                            @endif
+                            <div class="form-group">
+                                <label for="dashboard_logo">Dashboard Logo</label>
+                                <input type="file" class="form-control-file" name="dashboard_logo" id="dashboard_logo">
+                                @error('dashboard_logo')
                                     <span class="text-danger small" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

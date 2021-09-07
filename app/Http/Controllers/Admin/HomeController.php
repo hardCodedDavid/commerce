@@ -123,15 +123,21 @@ class HomeController extends Controller
             'email' => ['required'],
             'phone_1' => ['required'],
             'address' => ['required'],
-            'logo' => ['sometimes', 'mimes:jpg,jpeg,png,svg,gif', 'file', 'max:2048']
+            'logo' => ['sometimes', 'mimes:jpg,jpeg,png,svg,gif', 'file', 'max:2048'],
+            'dashboard_logo' => ['sometimes', 'mimes:jpg,jpeg,png,svg,gif', 'file', 'max:2048'],
         ]);
         $settings = Setting::first();
         if (request('logo')) {
-            $path = ProductController::saveFileAndReturnPath(request('logo'), Str::random(8));
+            $path1 = ProductController::saveFileAndReturnPath(request('logo'), Str::random(8));
             if ($settings && $settings['logo']) unlink($settings['logo']);
         }
-        $data = request()->only('name', 'email', 'phone_1', 'phone_2', 'address', 'facebook', 'instagram', 'twitter', 'youtube');
-        if (isset($path)) $data['logo'] = $path;
+        if (request('dashboard_logo')) {
+            $path2 = ProductController::saveFileAndReturnPath(request('dashboard_logo'), Str::random(8));
+            if ($settings && $settings['dashboard_logo']) unlink($settings['dashboard_logo']);
+        }
+        $data = request()->only('name', 'email', 'phone_1', 'phone_2', 'address', 'motto', 'facebook', 'instagram', 'twitter', 'youtube');
+        if (isset($path1)) $data['logo'] = $path1;
+        if (isset($path2)) $data['dashboard_logo'] = $path2;
         if ($settings) $settings->update($data);
         else Setting::create($data);
         return back()->with('success', 'Business profile updated successfully');

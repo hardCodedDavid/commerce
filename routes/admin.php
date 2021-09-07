@@ -61,6 +61,10 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews')->middleware('permission:View Reviews');
     Route::put('/reviews/{review}/{action}', [ReviewController::class, 'action'])->name('reviews.action')->middleware('permission:Approve Reviews');
 
+    Route::get('/subscriptions', [AdminController::class, 'subscriptions'])->name('subscriptions')->middleware('permission:View Subscriptions');
+    Route::post('/subscriptions', [AdminController::class, 'sendMail'])->name('sendMail')->middleware('permission:Send Newsletter');
+    Route::delete('/subscriptions/{sub}', [AdminController::class, 'deleteSubscription'])->name('deleteSubscription')->middleware('permission:Delete Subscriptions');
+
     Route::get('/transactions/purchases', [TransactionController::class, 'purchases'])->name('transactions.purchases')->middleware('permission:View Purchases');
     Route::get('/transactions/purchases/new', [TransactionController::class, 'createPurchase'])->name('transactions.purchases.create')->middleware('permission:Add Purchases');
     Route::post('/transactions/purchases/store', [TransactionController::class, 'storePurchase'])->name('transactions.purchases.store')->middleware('permission:Add Purchases');

@@ -95,11 +95,10 @@
 
                                     <div class="ps-product__variable"><span>Weight:  {{ round($product['weight'], 2) }}Kg</span></div>
 
-                                    <div class="ps-product__avai alert__success">Availability: <span>{{ number_format($product['quantity']) }} in stock</span>
-                                    </div>
+                                    <div class="ps-product__avai alert__success">Availability: <span>{{ number_format($product['quantity']) }} in stock</span></div>
+                                    <div class="mb-2">{{ $product['description'] }}</div>
                                     <div class="ps-product__info">
-                                        <ul class="list-items">
-                                            <div class="mb-2">{{ $product['description'] }}</div>
+                                        <ul class="ps-list--rectangle">
                                             @if ($product->brands()->count() > 0)
                                             <li class="list-item"> <span><i class="icon-square"></i></span>Brands: @foreach ($product->brands()->get() as $brand)
                                                 <span style="font-size: 12px" class="mx-1 bg-light">{{ $brand['name'] }}</span>
@@ -107,7 +106,7 @@
                                             @endif
                                             @foreach ($variations as $variation)
                                                 @if ($product->variationItems()->where('variation_id', $variation['id'])->count() > 0)
-                                                    <li> <span><i class="icon-square"></i></span>{{ $variation['name'] }}: @foreach ($product->variationItems()->where('variation_id', $variation['id'])->get() as $item)
+                                                    <li> <span><i class="icon-square mr-1"></i> </span> {{ $variation['name'] }}: @foreach ($product->variationItems()->where('variation_id', $variation['id'])->get() as $item)
                                                         <span style="font-size: 12px" class="mx-1 bg-light">{{ $item['name'] }}</span>
                                                     @endforeach</li>
                                                 @endif

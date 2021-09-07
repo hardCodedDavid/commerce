@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\NewsletterNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -80,5 +83,27 @@ class AdminController extends Controller
         // Delete admin
         $admin->delete();
         return back()->with('success', 'Admin deleted successfully');
+    }
+
+    public function subscriptions()
+    {
+        $subscriptions = DB::table('newsletter')->latest()->get();
+        return view('admin.subscriptions', compact('subscriptions'));
+    }
+
+    public function sendMail()
+    {
+        $this->validate(request(), ['subject' => 'required', 'body' => 'required']);
+        $subs = DB::table('newsletter')->get();
+        $data = request()->only('subject', 'body', 'additional_note');
+        foreach ($subs as $sub)
+            Notification::route('mail', $sub->email)->notify(new NewsletterNotification($data));
+        return back()->with('success', 'Newsletter Sent');
+    }
+
+    public function deleteSubscription($sub)
+    {
+        DB::table('newsletter')->where('id', $sub)->delete();
+        return back()->with('success', 'Subscription Deleted');
     }
 }

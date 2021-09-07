@@ -265,7 +265,7 @@ class HomeController extends Controller
     {
         $this->validate(request(), ['email' => ['required', 'email']]);
         if (!DB::table('newsletter')->where('email', request('email'))->first())
-            DB::table('newsletter')->insert(['email' => request('email')]);
+            DB::table('newsletter')->insert(['email' => request('email'), 'created_at' => now(), 'updated_at' => now()]);
         return back()->with('success', 'You have subscribed for '.env('APP_NAME').' newsletter');
     }
 
