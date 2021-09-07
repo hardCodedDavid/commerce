@@ -226,7 +226,7 @@
             <div class="recent__content">
                 <div class="owl-carousel" data-owl-auto="true" data-owl-loop="true" data-owl-speed="5000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="true" data-owl-item="8" data-owl-item-xs="3" data-owl-item-sm="3" data-owl-item-md="5" data-owl-item-lg="8" data-owl-item-xl="8" data-owl-duration="1000" data-owl-mousedrag="on">
                     @foreach($recent as $product)
-                        <a class="recent-item" href="{{ route('product.detail', $product['code']) }}"><img src="{{ asset($product['media'][0]['url'] ?? null) }}" height="100" alt="" /></a>
+                        <a class="recent-item" href="{{ route('product.detail', $product['code']) }}"><img src="{{ asset($product['media'] ? $product['media'][0]['url'] : null) }}" height="100" alt="" /></a>
                     @endforeach
                 </div>
             </div>
