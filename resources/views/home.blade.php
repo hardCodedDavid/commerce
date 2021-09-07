@@ -63,7 +63,7 @@
             </div>
             <div class="featured--content">
                 @php
-                    if (isset($categories)) {
+                    if (count($categories) > 0) {
                         $category = $categories;
                         $cat = $category[0];
                         unset($category[0]);
