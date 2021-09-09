@@ -25,7 +25,8 @@ class ReviewFactory extends Factory
             'name' => $this->faker->name,
             'email' => $this->faker->safeEmail,
             'rating' => $this->faker->randomElement([1,2,3,4,5]),
-            'review' => $this->faker->text
+            'review' => $this->faker->text,
+            'status' => 'approved'
         ];
     }
 }
