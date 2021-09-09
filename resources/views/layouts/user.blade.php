@@ -617,7 +617,7 @@
             let cartItemsCountAlt = $('.cart-items-count-alt');
             let count = 0;
             data.items.forEach(item => {
-                count += item.quantity;
+                count += parseInt(item.quantity);
                 html += `<li class="cart-item">
                             <div class="ps-product--mini-cart">
                                 <a href="/product/${item.product.code}/details">
