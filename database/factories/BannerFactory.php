@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Media;
+use App\Models\Banner;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MediaFactory extends Factory
+class BannerFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Media::class;
+    protected $model = Banner::class;
 
     /**
      * Define the model's default state.
@@ -22,7 +22,8 @@ class MediaFactory extends Factory
     public function definition()
     {
         return [
-            'url' => $this->faker->imageUrl(200, 256)
+            'url' => $this->faker->imageUrl(1248, 360),
+            'position' => 'top'
         ];
     }
 }

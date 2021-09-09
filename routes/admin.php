@@ -93,6 +93,7 @@ Route::middleware(['auth:admin'])->group(function () {
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders')->middleware('permission:View Orders');
     Route::put('/orders/{order}/change-state', [OrderController::class, 'changeState'])->name('orders.state.change')->middleware('permission:Process Orders');
+    Route::post('/orders/{order}/update', [OrderController::class, 'update'])->name('orders.update')->middleware('permission:Process Orders');
     Route::get('/orders/{order}/show', [OrderController::class, 'show'])->name('orders.show')->middleware('permission:View Orders');
 
     Route::get('/banners', [BannerController::class, 'index'])->name('banners')->middleware('permission:View Banners');
@@ -146,6 +147,7 @@ Route::middleware(['auth:admin'])->group(function () {
 
     Route::get('/settings', [HomeController::class, 'settings'])->name('settings')->middleware('permission:Update Settings');
     Route::post('/settings/business/update', [HomeController::class, 'updateBusiness'])->name('business.update')->middleware('permission:Update Settings');
+    Route::put('/settings/locations/update', [HomeController::class, 'updateLocations'])->name('location.update')->middleware('permission:Update Settings');
     Route::post('/settings/bank/update', [HomeController::class, 'updateBank'])->name('bank.update')->middleware('permission:Update Settings');
 
     Route::get('/profile', [HomeController::class, 'profile'])->name('profile');

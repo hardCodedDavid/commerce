@@ -54,6 +54,7 @@ Route::get('/top-selling/{category?}', [App\Http\Controllers\ProductController::
 Route::get('/categories/{category:name}/products/{subcategory?}', [App\Http\Controllers\CategoryController::class, 'getProducts'])->name('category.products');
 Route::get('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'handlePaymentCallback'])->name('payment.callback');
 Route::post('/newsletter', [\App\Http\Controllers\HomeController::class, 'newsletter'])->name('newsletter');
+Route::get('/delivery/create', [\App\Http\Controllers\DeliveryController::class, 'createDelivery']);
 
 // Ajax routes
 Route::get('/product/search/{val}', [App\Http\Controllers\HomeController::class, 'searchProduct'])->name('product.search');

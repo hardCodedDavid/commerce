@@ -5,6 +5,19 @@
 @section('style')
     <!-- Apex css -->
     <link href="{{ asset('admin/assets/plugins/apexcharts/apexcharts.css') }}" rel="stylesheet">
+    <link href="{{ asset('admin/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput-typeahead.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/assets/plugins/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('admin/assets/plugins/datatables/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/assets/css/icons.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/assets/css/flag-icon.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/assets/css/style.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/assets/plugins/datepicker/datepicker.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/assets/css/icons.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/assets/css/flag-icon.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('admin/assets/css/style.css') }}" rel="stylesheet" type="text/css">
 @endsection
 
 @section('breadcrumbs')
@@ -116,6 +129,13 @@
                             </div>
                         </div>
                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="linkedin">Linkedin (Optional)</label>
+                                <input type="text" class="form-control" name="linkedin" value="{{ old('linkedin') ?? $settings['linkedin'] }}" id="linkedin" placeholder="Linkedin">
+                            </div>
+                        </div>
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6">
                             @if ($settings['logo'])
                                 <img src="{{ asset($settings['logo']) }}" alt="logo" width="100px" style="border-radius: 5px">
                             @endif
@@ -137,6 +157,34 @@
                                 <label for="dashboard_logo">Dashboard Logo</label>
                                 <input type="file" class="form-control-file" name="dashboard_logo" id="dashboard_logo">
                                 @error('dashboard_logo')
+                                    <span class="text-danger small" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            @if ($settings['store_logo'])
+                                <img src="{{ asset($settings['store_logo']) }}" alt="store_logo" width="100px" style="border-radius: 5px">
+                            @endif
+                            <div class="form-group">
+                                <label for="store_logo">Online Store Logo</label>
+                                <input type="file" class="form-control-file" name="store_logo" id="store_logo">
+                                @error('store_logo')
+                                    <span class="text-danger small" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            @if ($settings['email_logo'])
+                                <img src="{{ asset($settings['email_logo']) }}" alt="email_logo" width="100px" style="border-radius: 5px">
+                            @endif
+                            <div class="form-group">
+                                <label for="email_logo">Email Logo</label>
+                                <input type="file" class="form-control-file" name="email_logo" id="email_logo">
+                                @error('email_logo')
                                     <span class="text-danger small" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -203,6 +251,69 @@
                     </form>
                 </div>
             </div>
+
+            <div class="card mt-5">
+                <div class="card-body">
+                    <h6 class="card-title">Pickup Locations</h6>
+                    <form method="POST" id="locationsForm" action="{{ route('admin.location.update') }}">
+                        @csrf
+                        @method('PUT')
+                        <div class="form-group">
+                            <label for="locations" class="col-form-label">Locations: <span class="text-danger">*</span></label>
+                            <div class="repeater-default">
+                                <div id="oldLocations" data-repeater-list="locations">
+                                    <div data-repeater-item="">
+                                        @foreach(json_decode($settings->pickup_locations, true) ?? [] as $key => $loc)
+                                            <div class="form-group row d-flex align-items-end">
+                                                <div class="col-10">
+                                                    <input type="text" name="locations[]" class="form-control" value="{!! $loc !!}">
+                                                </div><!--end col-->
+
+                                                <div class="col-2">
+                                                    <span data-repeater-delete="" class="btn btn-outline-danger">
+                                                        <span class="fa fa-trash me-1"></span>
+                                                    </span>
+                                                </div><!--end col-->
+                                            </div><!--end row-->
+                                        @endforeach
+                                        <div class="form-group row d-flex align-items-end">
+                                            <div class="col-10">
+                                                <input type="text" name="locations[]" class="form-control">
+                                            </div><!--end col-->
+
+                                            <div class="col-2">
+                                                <span data-repeater-delete="" class="btn btn-outline-danger">
+                                                    <span class="fa fa-trash me-1"></span>
+                                                </span>
+                                            </div><!--end col-->
+                                        </div>
+                                    </div><!--end /div-->
+                                </div><!--end repet-list-->
+                                <div class="form-group mb-0 row">
+                                    <div class="col-sm-12">
+                                        <span data-repeater-create="" class="btn btn-outline-secondary">
+                                            <span class="fa fa-plus"></span> Add
+                                        </span>
+                                    </div><!--end col-->
+                                </div><!--end row-->
+                            </div> <!--end repeter-->
+                            @error('locations')
+                                <span class="text-danger small" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                            @error('locations.*')
+                                <span class="text-danger small" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <div class="col-12 text-right">
+                            <button class="btn btn-primary" id="submitButton" onclick="confirmSubmission('locationsForm')" type="button">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <!-- End row -->
@@ -210,6 +321,25 @@
 @endsection
 
 @section('script')
+    <script src="{{ asset('admin/assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datatables/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datatables/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datatables/jszip.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datatables/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datatables/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datatables/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datatables/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datatables/buttons.colVis.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/custom/custom-table-datatable.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datepicker/datepicker.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/datepicker/i18n/datepicker.en.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/custom/custom-form-datepicker.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/bootstrap-tagsinput/typeahead.bundle.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/repeater/jquery.repeater.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/pages/jquery.form-repeater.js') }}"></script>
     <script>
         $(document).ready(function (){
             let bankList = $('#bankList');

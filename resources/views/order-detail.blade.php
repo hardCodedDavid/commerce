@@ -18,26 +18,32 @@
                             <div class="ps-form__header">
                                 <h3> Orders</h3>
                             </div>
-                            <div class="row">
+                            <div class="row mb-3">
                                 <div class="col-12">
-                                    <h4>Shipping Information</h4>
-                                    <div style="font-size: 13px" class="my-2"><strong class="mr-2">Country:</strong>{{ $order['country'] }}</div>
-                                    <div style="font-size: 13px" class="my-2"><strong class="mr-2">State:</strong>{{ $order['state'] }}</div>
-                                    <div style="font-size: 13px" class="my-2"><strong class="mr-2">City:</strong>{{ $order['city'] }}</div>
-                                    <div style="font-size: 13px" class="my-2"><strong class="mr-2">Address:</strong>{{ $order['address'] }}</div>
-                                    <div style="font-size: 13px" class="my-2"><strong class="mr-2">PostCode:</strong>{{ $order['postcode'] ?? 'N/A' }}</div>
-                                    <div style="font-size: 13px" class="my-2"><strong class="mr-2">Note:</strong>{{ $order['note'] ?? 'N/A' }}</div>
-                                    <div style="font-size: 13px" class="my-2"><strong class="mr-2">Status:</strong>
-                                        @if ($order['status'] == 'pending')
-                                            <span class="badge badge-warning">pending</span>
-                                        @elseif ($order['status'] == 'processing')
-                                            <span class="badge badge-primary">processing</span>
-                                        @elseif ($order['status'] == 'delivered')
-                                            <span class="badge badge-success">delivered</span>
-                                        @elseif ($order['status'] == 'cancelled')
-                                            <span class="badge badge-danger">cancelled</span>
-                                        @endif
-                                    </div>
+                                    @if($order['delivery_method'] == 'ship')
+                                        <h4>Shipping Information</h4>
+                                        <div style="font-size: 13px" class="my-2"><strong class="mr-2">Country:</strong>{{ $order['country'] }}</div>
+                                        <div style="font-size: 13px" class="my-2"><strong class="mr-2">State:</strong>{{ $order['state'] }}</div>
+                                        <div style="font-size: 13px" class="my-2"><strong class="mr-2">City:</strong>{{ $order['city'] }}</div>
+                                        <div style="font-size: 13px" class="my-2"><strong class="mr-2">Address:</strong>{{ $order['address'] }}</div>
+                                        <div style="font-size: 13px" class="my-2"><strong class="mr-2">PostCode:</strong>{{ $order['postcode'] ?? 'N/A' }}</div>
+                                        <div style="font-size: 13px" class="my-2"><strong class="mr-2">Note:</strong>{{ $order['note'] ?? 'N/A' }}</div>
+                                        <div style="font-size: 13px" class="my-2"><strong class="mr-2">Status:</strong>
+                                            @if ($order['status'] == 'pending')
+                                                <span class="badge badge-warning">pending</span>
+                                            @elseif ($order['status'] == 'processing')
+                                                <span class="badge badge-primary">processing</span>
+                                            @elseif ($order['status'] == 'delivered')
+                                                <span class="badge badge-success">delivered</span>
+                                            @elseif ($order['status'] == 'cancelled')
+                                                <span class="badge badge-danger">cancelled</span>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <h4>Pickup Information</h4>
+                                        <div style="font-size: 13px" class="my-2"><strong class="mr-2">Location:</strong>{!! $order['pickup_location'] !!}</div>
+                                        <div style="font-size: 13px" class="my-2"><strong class="mr-2">Pickup Date:</strong>{!! \Carbon\Carbon::make($order['pickup_date'])->format('M d, Y') ?? '<i>being calculated...</i>' !!}</div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="ps-form__content table-responsive">

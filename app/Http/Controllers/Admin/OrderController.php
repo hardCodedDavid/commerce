@@ -32,6 +32,12 @@ class OrderController extends Controller
         ]);
     }
 
+    public function update(Order $order)
+    {
+        $this->validate(request(), ['pickup_date' => 'required|date|after_or_equal:'.date('Y-m-d')]);
+        $order->update(['pickup_date' => request('pickup_date')]);
+        return back()->with('success', 'Order pickup date updated');
+    }
 
     public function changeState(Order $order)
     {

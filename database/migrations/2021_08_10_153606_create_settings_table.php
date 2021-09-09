@@ -23,6 +23,8 @@ class CreateSettingsTable extends Migration
             $table->text('address')->nullable();
             $table->string('logo')->nullable();
             $table->string('dashboard_logo')->nullable();
+            $table->string('store_logo')->nullable();
+            $table->string('email_logo')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('account_name')->nullable();
             $table->string('account_number')->nullable();
@@ -30,7 +32,9 @@ class CreateSettingsTable extends Migration
             $table->string('twitter')->nullable();
             $table->string('instagram')->nullable();
             $table->string('youtube')->nullable();
+            $table->string('linkedin')->nullable();
             $table->string('motto')->nullable();
+            $table->longText('pickup_locations')->nullable();
             $table->timestamps();
         });
 

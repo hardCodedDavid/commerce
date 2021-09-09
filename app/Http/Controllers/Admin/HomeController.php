@@ -135,12 +135,35 @@ class HomeController extends Controller
             $path2 = ProductController::saveFileAndReturnPath(request('dashboard_logo'), Str::random(8));
             if ($settings && $settings['dashboard_logo']) unlink($settings['dashboard_logo']);
         }
-        $data = request()->only('name', 'email', 'phone_1', 'phone_2', 'address', 'motto', 'facebook', 'instagram', 'twitter', 'youtube');
+        if (request('store_logo')) {
+            $path3 = ProductController::saveFileAndReturnPath(request('store_logo'), Str::random(8));
+            if ($settings && $settings['store_logo']) unlink($settings['store_logo']);
+        }
+        if (request('email_logo')) {
+            $path4 = ProductController::saveFileAndReturnPath(request('email_logo'), Str::random(8));
+            if ($settings && $settings['email_logo']) unlink($settings['email_logo']);
+        }
+        $data = request()->only('name', 'email', 'phone_1', 'phone_2', 'address', 'motto', 'facebook', 'instagram', 'twitter', 'youtube', 'linkedin');
         if (isset($path1)) $data['logo'] = $path1;
         if (isset($path2)) $data['dashboard_logo'] = $path2;
+        if (isset($path3)) $data['store_logo'] = $path3;
+        if (isset($path4)) $data['email_logo'] = $path4;
         if ($settings) $settings->update($data);
         else Setting::create($data);
         return back()->with('success', 'Business profile updated successfully');
+    }
+
+    public function updateLocations()
+    {
+        // Validate request
+        $this->validate(request(), [
+            'locations' => ['required', 'array', 'min:1']
+        ]);
+        $settings = Setting::first();
+        $data = [];
+        foreach (request('locations') as $location) $data[] = array_values($location)[0];
+        $settings->update(['pickup_locations' => json_encode($data)]);
+        return back()->with('success', 'Bank details updated successfully');
     }
 
     public function updateBank()

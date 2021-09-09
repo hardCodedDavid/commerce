@@ -84,7 +84,7 @@
                     <div class="header-inner__left">
                         <button class="navbar-toggler"><i class="icon-menu"></i></button>
                     </div>
-                    <div class="header-inner__center"><a class="logo open" href="/"><img class="img-fluid" width="200px" src="{{ asset('logo/1.png') }}" alt="Logo"></a></div>
+                    <div class="header-inner__center"><a class="logo open" href="/"><img class="img-fluid" width="200px" src="{{ asset($settings->store_logo ?? null) }}" alt="Logo"></a></div>
                     <div class="header-inner__right">
                         <button class="button-icon icon-sm search-mobile"><i class="icon-magnifier"></i></button>
                     </div>
@@ -94,7 +94,7 @@
         <section class="ps-header--center header-desktop">
             <div class="container">
                 <div class="header-inner">
-                    <div class="header-inner__left"><a class="logo" href="/"><img class="img-fluid" width="200px" src="{{ asset('logo/1.png') }}" alt="Logo"></a>
+                    <div class="header-inner__left"><a class="logo" href="/"><img class="img-fluid" width="200px" src="{{ asset($settings->store_logo ?? null) }}" alt="Logo"></a>
                         <ul class="menu">
                             <li class="menu-item-has-children has-mega-menu">
                                 <button class="category-toggler"><i class="icon-menu"></i></button>
@@ -620,7 +620,7 @@
                 count += item.quantity;
                 html += `<li class="cart-item">
                             <div class="ps-product--mini-cart">
-                                <a href="product-default.html">
+                                <a href="/product/${item.product.code}/details">
                                     <img class="ps-product__thumbnail" src="${item.product.media[0]}" alt="alt" />
                                 </a>
                                 <div class="ps-product__content"><a class="ps-product__name" href="/product/${item.product.code}/details">${item.product.name}</a>

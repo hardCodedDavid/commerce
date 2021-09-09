@@ -83,18 +83,28 @@ class HomeController extends Controller
 
     public function processCheckout()
     {
-        $rules = [
-            'name' => 'required',
-            'country' => 'required',
-            'state' => 'required',
-            'address' => 'required',
-            'city' => 'required',
-            'phone' => 'required',
-            'shipping_country' => 'required_if:ship_to_new_address,yes',
-            'shipping_state' => 'required_if:ship_to_new_address,yes',
-            'shipping_address' => 'required_if:ship_to_new_address,yes',
-            'shipping_city' => 'required_if:ship_to_new_address,yes',
-        ];
+//        return request();
+        $this->validate(request(), ['delivery_method' => 'required']);
+
+        if (request('delivery_method') == 'pickup')
+            $rules = [
+                'name' => 'required',
+                'phone' => 'required',
+                'pickup_location' => 'required'
+            ];
+        else
+            $rules = [
+                'name' => 'required',
+                'country' => 'required',
+                'state' => 'required',
+                'address' => 'required',
+                'city' => 'required',
+                'phone' => 'required',
+                'shipping_country' => 'required_if:ship_to_new_address,yes',
+                'shipping_state' => 'required_if:ship_to_new_address,yes',
+                'shipping_address' => 'required_if:ship_to_new_address,yes',
+                'shipping_city' => 'required_if:ship_to_new_address,yes',
+            ];
         if (!auth()->user()) {
             if (request('create_account') == 'yes'){
                 $rules['email'] = 'required|unique:users';
@@ -110,12 +120,16 @@ class HomeController extends Controller
             ]);
             event(new Registered($user));
         }
-        $data = request()->only('name', 'country', 'state', 'address', 'city', 'phone', 'email', 'note');
+        if (request('delivery_method') == 'pickup')
+            $data = request()->only('name', 'phone', 'email', 'pickup_location');
+        else
+            $data = request()->only('name', 'country', 'state', 'address', 'city', 'phone', 'email', 'note');
         if (auth()->user())
             if (request('ship_to_new_address'))
                 $data = request()->only('shipping_country', 'shipping_state', 'shipping_address', 'shipping_postcode', 'eshipping_citymail', 'note');
         $data['auth'] = !is_null(auth()->user());
         $data['email'] = auth()->user()['email'] ?? request('email');
+        $data['delivery_method'] = request('delivery_method');
         $cart = CartController::getUserCartAsArray();
         $data['cart'] = $cart;
         return PaymentController::initializeTransaction($cart['total'], $data);

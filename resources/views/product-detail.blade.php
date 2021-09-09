@@ -166,22 +166,42 @@
                     </div>
                     <div class="col-12 col-lg-3">
                         <div class="ps-product--extention">
+{{--                            <div class="extention__block">--}}
+{{--                                <div class="extention__item">--}}
+{{--                                    <div class="extention__icon"><i class="icon-truck"></i></div>--}}
+{{--                                    <div class="extention__content"> <b class="text-black">Free Shipping </b>apply to all orders over <span class="text-success">$100</span></div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                            <div class="extention__block">--}}
+{{--                                <div class="extention__item">--}}
+{{--                                    <div class="extention__icon"><i class="icon-leaf"></i></div>--}}
+{{--                                    <div class="extention__content">Guranteed <b class="text-black">100% Organic </b>from natural farmas </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                            <div class="extention__block">--}}
+{{--                                <div class="extention__item border-none">--}}
+{{--                                    <div class="extention__icon"><i class="icon-repeat-one2"></i></div>--}}
+{{--                                    <div class="extention__content"> <b class="text-black">1 Day Returns </b>if you change your mind</div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                             <div class="extention__block">
                                 <div class="extention__item">
-                                    <div class="extention__icon"><i class="icon-truck"></i></div>
-                                    <div class="extention__content"> <b class="text-black">Free Shipping </b>apply to all orders over <span class="text-success">$100</span></div>
+                                    <div class="extention__content"> 7% discount on shipping for products above N220,000.</div>
                                 </div>
                             </div>
                             <div class="extention__block">
                                 <div class="extention__item">
-                                    <div class="extention__icon"><i class="icon-leaf"></i></div>
-                                    <div class="extention__content">Guranteed <b class="text-black">100% Organic </b>from natural farmas </div>
+                                    <div class="extention__content"> Fast and reliable repair services for mobile phones. </div>
+                                </div>
+                            </div>
+                            <div class="extention__block">
+                                <div class="extention__item">
+                                    <div class="extention__content"> 3 days free return for products with the seal still intact </div>
                                 </div>
                             </div>
                             <div class="extention__block">
                                 <div class="extention__item border-none">
-                                    <div class="extention__icon"><i class="icon-repeat-one2"></i></div>
-                                    <div class="extention__content"> <b class="text-black">1 Day Returns </b>if you change your mind</div>
+                                    <div class="extention__content"> Manufacturer warranty on all products. </div>
                                 </div>
                             </div>
                             <div class="extention__block extention__contact">

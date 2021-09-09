@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Sale;
+use Exception;
 use Illuminate\Http\Request;
 use Unicodeveloper\Paystack\Facades\Paystack;
 
@@ -25,16 +26,17 @@ class PaymentController extends Controller
             'amount' => $amount,
             'meta' => json_encode($data)
         ]);
-        \request()->merge($paymentData);
+        request()->merge($paymentData);
         try{
             return Paystack::getAuthorizationUrl()->redirectNow();
-        }catch(\Exception $e) {
+        }catch(Exception $e) {
             return back()->with('error', 'The paystack token has expired. Please refresh the page and try again.');
         }
     }
 
     public function handlePaymentCallback()
     {
+        logger('here');
         $paymentDetails = Paystack::getPaymentData();
         $res = $paymentDetails['data'];
         $payment = Payment::query()->where('reference', $res['reference'])->first();
@@ -44,19 +46,34 @@ class PaymentController extends Controller
                     if ($res["status"] == 'success') {
                         if ($payment && $payment['status'] == 'pending') {
                             $meta = json_decode($payment['meta'], true);
-                            $order = Order::create([
-                                'user_id' => auth()->user()['id'] ?? null,
-                                'code' => Order::getCode(),
-                                'name' => $meta['name'],
-                                'email' => $meta['email'],
-                                'phone' => $meta['phone'],
-                                'country' => $meta['country'],
-                                'state' => $meta['state'],
-                                'city' => $meta['city'],
-                                'address' => $meta['address'],
-                                'note' => $meta['note'],
-                                'total' => $meta['cart']['total']
-                            ]);
+                            $method = $meta['delivery_method'];
+                            if ($method == 'pickup')
+                                $order = Order::create([
+                                    'user_id' => auth()->user()['id'] ?? null,
+                                    'code' => Order::getCode(),
+                                    'name' => $meta['name'],
+                                    'email' => $meta['email'],
+                                    'phone' => $meta['phone'],
+                                    'delivery_method' => $method,
+                                    'pickup_location' => $meta['pickup_location'],
+                                    'pickup_date' => now()->addDays(5),
+                                    'total' => $meta['cart']['total']
+                                ]);
+                            else
+                                $order = Order::create([
+                                    'user_id' => auth()->user()['id'] ?? null,
+                                    'code' => Order::getCode(),
+                                    'name' => $meta['name'],
+                                    'email' => $meta['email'],
+                                    'phone' => $meta['phone'],
+                                    'country' => $meta['country'],
+                                    'state' => $meta['state'],
+                                    'city' => $meta['city'],
+                                    'address' => $meta['address'],
+                                    'note' => $meta['note'],
+                                    'delivery_method' => $method,
+                                    'total' => $meta['cart']['total']
+                                ]);
                             foreach ($meta['cart']['items'] as $item) {
                                 $order->items()->create([
                                     'product_id' => $item['product']['id'],
@@ -100,7 +117,8 @@ class PaymentController extends Controller
                     }
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            logger($e);
             // return $e;
             $payment->update(['status' => 'failed']);
             return redirect('/checkout')->with('error', 'Payment not successful');

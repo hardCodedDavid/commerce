@@ -75,15 +75,43 @@
                                     <p class="mb-0">{{ $order['phone'] }}</p>
                                     </div>
                                 </div>
+                                <div class="col-md-6 col-lg-6 col-xl-3">
+                                    <div class="order-primary-detail mb-4">
+                                        <h6>Delivery Method</h6>
+                                        <p class="mb-0">{{ $order['delivery_method'] }}</p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 col-lg-6 col-xl-6 ">
+                                <div class="col-md-8">
                                     <div class="order-primary-detail mb-4">
-                                    <h6>Shipping Information </h6>
-                                    <p><strong>Address</strong>: {{ $order['address'] }}</p>
-                                    <p><strong>Country</strong>: {{ $order['country'] }}</p>
-                                    <p><strong>State</strong>: {{ $order['state'] }}</p>
-                                    <p><strong>City</strong>: {{ $order['city'] }}</p>
+                                        @if($order['delivery_method'] == 'ship')
+                                            <h6>Shipping Information </h6>
+                                            <p><strong>Address</strong>: {{ $order['address'] }}</p>
+                                            <p><strong>Country</strong>: {{ $order['country'] }}</p>
+                                            <p><strong>State</strong>: {{ $order['state'] }}</p>
+                                            <p><strong>City</strong>: {{ $order['city'] }}</p>
+                                        @else
+                                            <form action="{{ route('admin.orders.update', $order->id) }}" method="post" class="my-auto w-100">
+                                                @csrf
+                                                <h6>Pickup Information </h6>
+                                                <p><strong>Location</strong>: {!! $order['pickup_location'] !!}</p>
+                                                <div class="d-flex align-content-center">
+                                                    <p><strong>Pickup Date</strong>: </p>
+                                                    @if($order->status != 'delivered' && $order->status != 'cancelled')
+                                                        <input type="date" name="pickup_date" style="max-width: 50%;" class="form-control mx-3" value="{{ old('pickup_date') ?? \Carbon\Carbon::make($order['pickup_date'])->format('Y-m-d') }}">
+                                                        <button class="btn btn-sm btn-primary" >Update</button>
+                                                    @else
+                                                        &nbsp;<span class="align-self-start">{{ \Carbon\Carbon::make($order['pickup_date'])->format('M d, Y') }}</span>
+                                                    @endif
+                                                </div>
+                                                @error('pickup_date')
+                                                <div class="small">
+                                                    <strong style="color: red">{{ $message }}</strong>
+                                                </div>
+                                                @enderror
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
