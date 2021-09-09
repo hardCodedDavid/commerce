@@ -26,7 +26,7 @@ class CreateAdminsTable extends Migration
         DB::table('admins')
             ->insert([
                 'name' => 'Admin',
-                'email' => 'admin@marksot.ng',
+                'email' => 'admin@marksotstores.com',
                 'password' => bcrypt('password')
             ]);
     }

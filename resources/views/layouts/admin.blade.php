@@ -33,7 +33,7 @@
             <div class="sidebar">
                 <!-- Start Logobar -->
                 <div class="logobar">
-                    <a href="{{ route('admin.dashboard') }}" class="logo logo-large"><img src="{{ asset(\App\Models\Setting::first()->dashboard_logo ?? 'logo/7.png') }}" class="img-fluid" alt="logo"></a>
+                    <a href="{{ route('admin.dashboard') }}" class="logo logo-large"><img src="{{ asset(\App\Models\Setting::first()->dashboard_logo ?? null) }}" class="img-fluid" alt="logo"></a>
                     <a href="{{ route('admin.dashboard') }}" class="logo logo-small"><img src="{{ asset('logo/5.png') }}" class="img-fluid" alt="logo"></a>
                 </div>
                 <!-- End Logobar -->
