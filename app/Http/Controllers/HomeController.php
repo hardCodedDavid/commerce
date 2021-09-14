@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use App\Models\Product;
@@ -75,26 +76,36 @@ class HomeController extends Controller
 
     public function checkout()
     {
+        $delivery_fee = 0;
+        $user = User::find(auth()->id());
+        if ($user && $user['address'] && $user['latitude'] && $user['longitude']) {
+            $delivery_fee = 2500;
+//            try {
+//                $delivery_fee = DeliveryController::estimateDelivery([["address" => $user['address'], "latitude" => $user['latitude'], "longitude" => $user['longitude']]])['fare'] ?? 0;
+//            } catch (Exception $e) {
+//                $delivery_fee = 0;
+//            }
+        }
         $cart = CartController::getUserCartAsArray();
         if (count($cart['items'])  < 1)
             return redirect('/cart');
-        return view('checkout');
+        return view('checkout', compact('delivery_fee'));
     }
 
     public function processCheckout()
     {
-//        return request();
         $this->validate(request(), ['delivery_method' => 'required']);
 
         if (request('delivery_method') == 'pickup')
             $rules = [
-                'name' => 'required',
-                'phone' => 'required',
+                'pickup_name' => 'required',
+                'pickup_phone' => 'required',
                 'pickup_location' => 'required'
             ];
         else
             $rules = [
                 'name' => 'required',
+                'email' => 'required',
                 'country' => 'required',
                 'state' => 'required',
                 'address' => 'required',
@@ -106,12 +117,26 @@ class HomeController extends Controller
                 'shipping_city' => 'required_if:ship_to_new_address,yes',
             ];
         if (!auth()->user()) {
-            if (request('create_account') == 'yes'){
+            if (request('delivery_method') == 'pickup') $rules['pickup_email'] = 'required';
+            if (request('create_account') == 'yes') {
                 $rules['email'] = 'required|unique:users';
                 $rules['password'] = 'required|confirmed|min:8';
-            }else $rules['email'] = 'required';
+            }
         }
         $this->validate(request(), $rules);
+
+        $delivery_fee = 0;
+        if (request('delivery_method') == 'ship') {
+            $delivery_fee = 2500;
+            if (request('ship_to_new_address')) {
+                if (request('shippingCityLat') == null || request('shippingCityLng') == null)
+                    return back()->with('error', 'Address could not be validated. Select a new address and try again')->withInput();
+            } else {
+                if (request('cityLat') == null || request('cityLng') == null)
+                    return back()->with('error', 'Address could not be validated. Select a new address and try again')->withInput();
+            }
+        }
+
         if (request('create_account') == 'yes') {
             $user = User::create([
                 'name' => request('name'),
@@ -120,19 +145,68 @@ class HomeController extends Controller
             ]);
             event(new Registered($user));
         }
-        if (request('delivery_method') == 'pickup')
-            $data = request()->only('name', 'phone', 'email', 'pickup_location');
-        else
+
+        if (request('delivery_method') == 'pickup') {
+            $data = [
+                'name' => request('pickup_name'),
+                'phone' => request('pickup_phone'),
+                'email' => auth()->user()['email'] ?? request('pickup_email'),
+                'pickup_location' => request('pickup_location')
+            ];
+        }
+        else {
             $data = request()->only('name', 'country', 'state', 'address', 'city', 'phone', 'email', 'note');
-        if (auth()->user())
-            if (request('ship_to_new_address'))
-                $data = request()->only('shipping_country', 'shipping_state', 'shipping_address', 'shipping_postcode', 'eshipping_citymail', 'note');
+            $data['email'] = auth()->user()['email'] ?? request('email');
+            $data['longitude'] = request('cityLng');
+            $data['latitude'] = request('cityLat');
+        }
+        if (auth()->user()) {
+            if (request('ship_to_new_address')) {
+                $data = [
+                    'country' => request('shipping_country'),
+                    'state' => request('shipping_state'),
+                    'address' => request('shipping_address'),
+                    'postcode' => request('shipping_postcode'),
+                    'city' => request('shipping_city'),
+                    'note' => request('note'),
+                    'name' => request('name'),
+                    'phone' => request('phone'),
+                    'email' => auth()->user()['email'] ?? request('email')
+                ];
+                $data['longitude'] = request('shippingCityLng');
+                $data['latitude'] = request('shippingCityLat');
+            }
+        }
+//        if (request('delivery_method') == 'ship') {
+//            try {
+//                $delivery_fee = DeliveryController::estimateDelivery([["address" => $data['address'], "latitude" => $data['latitude'], "longitude" => $data['longitude']]])['fare'] ?? request('delivery_fee');
+//            } catch (Exception $e) {
+//                $delivery_fee = request('delivery_fee');
+//            }
+//        }
+
         $data['auth'] = !is_null(auth()->user());
-        $data['email'] = auth()->user()['email'] ?? request('email');
         $data['delivery_method'] = request('delivery_method');
         $cart = CartController::getUserCartAsArray();
         $data['cart'] = $cart;
-        return PaymentController::initializeTransaction($cart['total'], $data);
+
+        return PaymentController::initializeTransaction(($cart['total'] + $delivery_fee), $data);
+    }
+
+    public function estimateDeliveryCost()
+    {
+        return true;
+        $data = [
+//            "customer_name" => "Bar",
+//            "customer_phone" => "+2341234567891",
+//            "customer_email" => "example+1@about.com",
+            [
+                "address" => request('loc'),
+                "latitude" => request('lat'),
+                "longitude" => request('lng')
+            ]
+        ];
+        return DeliveryController::estimateDelivery($data);
     }
 
     public function wishlist()
@@ -185,6 +259,8 @@ class HomeController extends Controller
         ]);
 
         $data = request()->only('name', 'country', 'state', 'city', 'address', 'phone', 'postcode');
+        $data['longitude'] = request('cityLng');
+        $data['latitude'] = request('cityLat');
         auth()->user()->update($data);
         return back()->with('success', 'Profile updated successfully');
     }

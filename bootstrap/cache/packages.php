@@ -35,6 +35,17 @@
       'Image' => 'Intervention\\Image\\Facades\\Image',
     ),
   ),
+  'kingflamez/laravelrave' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'KingFlamez\\Rave\\RaveServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Rave' => 'KingFlamez\\Rave\\Facades\\Rave',
+    ),
+  ),
   'laravel/sail' => 
   array (
     'providers' => 

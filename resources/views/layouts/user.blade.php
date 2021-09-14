@@ -404,7 +404,8 @@
         const error = {!! json_encode(session('error')) !!};
         const warning = {!! json_encode(session('warning')) !!};
         const info = {!! json_encode(session('info')) !!};
-        const errors = {!! json_encode($errors->any()) !!}
+        const errors = {!! json_encode($errors->any()) !!};
+
         if (success)
             $.notify(success, 'success');
         if (errors)

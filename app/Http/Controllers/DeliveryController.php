@@ -2,20 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class DeliveryController extends Controller
 {
-    public static function estimateDelivery($data)
+    public static function estimateDelivery($dropoffs)
     {
-        return Http::withHeaders(['Content-Type' => 'application/json'])->post('https://private-anon-8d29497fae-gokada2.apiary-mock.com/api/developer/v3/order_estimate', [
-            "api_key" => env('GOKADA_API_KEY'),
-            "pickup_address" => $data['pickup_address'],
-            "pickup_latitude" => $data['pickup_latitude'],
-            "pickup_longitude" => $data['pickup_longitude'],
-            "dropoffs" => $data['dropoffs']
-        ]);
+        return Http::withHeaders(['Content-Type' => 'application/json'])
+            ->post('https://private-anon-8d29497fae-gokada2.apiary-mock.com/api/developer/v3/order_estimate', [
+//            ->post('https://api.gokada.ng/api/developer/v3/order_estimate', [
+                "api_key" => env('GOKADA_API_KEY'),
+                "pickup_address" => env('GOKADA_PICKUP_ADDRESS'),
+                "pickup_latitude" => env('GOKADA_PICKUP_LATITUDE'),
+                "pickup_longitude" => env('GOKADA_PICKUP_LONGITUDE'),
+                "dropoffs" => $dropoffs
+            ]);
+    }
+
+    public static function createDelivery($data)
+    {
+        return Http::withHeaders(['Content-Type' => 'application/json'])
+            ->post('https://private-anon-8d29497fae-gokada2.apiary-mock.com/api/developer/v3/order_create', [
+                "api_key" => env('GOKADA_API_KEY'),
+                "pickup_address" => $data['address'],
+                "pickup_latitude" => $data['latitude'],
+                "pickup_longitude" => $data['longitude'],
+                "pickup_customer_name" => $data['longitude'],
+                "pickup_customer_email" => $data['longitude'],
+                "pickup_customer_phone" => $data['phone'],
+                "pickup_datetime" => $data['date'],
+                "dropoffs" => $data['dropoffs']
+            ]);
+    }
+
+    public static function checkDeliveryStatus($id)
+    {
+        return Http::withHeaders(['Content-Type' => 'application/json'])
+            ->post('https://private-anon-8d29497fae-gokada2.apiary-mock.com/api/developer/v3/order_status', [
+                "api_key" => env('GOKADA_API_KEY'),
+                "order_id" => $id
+            ]);
+    }
+
+    public static function cancelDelivery($id)
+    {
+        return Http::withHeaders(['Content-Type' => 'application/json'])
+            ->post('https://private-anon-8d29497fae-gokada2.apiary-mock.com/api/developer/v3/order_cancel', [
+                "api_key" => env('GOKADA_API_KEY'),
+                "order_id" => $id
+            ]);
     }
 
     public function deliveryCallback()

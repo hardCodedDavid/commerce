@@ -16,6 +16,8 @@
     $city = $user['city'] ?? null;
     $phone = $user['phone'] ?? null;
     $email = $user['email'] ?? null;
+    $lat = $user['latitude'] ?? null;
+    $lng = $user['longitude'] ?? null;
 @endphp
 
 @section('content')
@@ -65,7 +67,9 @@
                                 </div>
                                 <div class="col-lg-6 form-group--block">
                                     <label>Address: <span>*</span></label>
-                                    <input class="form-control @error('address') is-invalid @enderror" name="address" value="{{ old('address') ?? $address }}" type="text" placeholder="Address">
+                                    <input class="form-control @error('address') is-invalid @enderror" name="address" value="{{ old('address') ?? $address }}" type="text" placeholder="Address" id="searchTextField" autocomplete="on" runat="server" />
+                                    <input type="hidden" id="cityLat" name="cityLat" value="{{ old('cityLat') ?? $lat }}" />
+                                    <input type="hidden" id="cityLng" name="cityLng" value="{{ old('cityLng') ?? $lng }}" />
                                     @error('address')
                                         <div class="small">
                                             <strong style="color: red">{{ $message }}</strong>
@@ -147,4 +151,20 @@
         </div>
     </section>
 </main>
+@endsection
+@section('scripts')
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN_UW11I0wCCLflmY5Eu1FLc2-UYXrOmw&libraries=places" type="text/javascript"></script>
+    <script type="text/javascript">
+        function initialize() {
+            var input = document.getElementById('searchTextField');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var place = autocomplete.getPlace();
+                // document.getElementById('city2').value = place.name;
+                document.getElementById('cityLat').value = place.geometry.location.lat();
+                document.getElementById('cityLng').value = place.geometry.location.lng();
+            });
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
 @endsection

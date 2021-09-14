@@ -23,6 +23,8 @@ class CreateOrdersTable extends Migration
             $table->string('state')->nullable();
             $table->string('city')->nullable();
             $table->text('address')->nullable();
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
             $table->text('pickup_location')->nullable();
             $table->timestamp('pickup_date')->nullable();
             $table->text('note')->nullable();
