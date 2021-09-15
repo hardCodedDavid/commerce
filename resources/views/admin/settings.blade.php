@@ -276,17 +276,6 @@
                                                 </div><!--end col-->
                                             </div><!--end row-->
                                         @endforeach
-                                        <div class="form-group row d-flex align-items-end">
-                                            <div class="col-10">
-                                                <input type="text" name="locations[]" class="form-control">
-                                            </div><!--end col-->
-
-                                            <div class="col-2">
-                                                <span data-repeater-delete="" class="btn btn-outline-danger">
-                                                    <span class="fa fa-trash me-1"></span>
-                                                </span>
-                                            </div><!--end col-->
-                                        </div>
                                     </div><!--end /div-->
                                 </div><!--end repet-list-->
                                 <div class="form-group mb-0 row">

@@ -326,11 +326,11 @@
 {{--                                                <div class="item__check"> <i class="icon-checkmark-circle"></i>Verified Purchase</div>--}}
                                                 <div class="item__rate">
                                                     <select class="rating-stars">
-                                                        <option value="1" {{ ($comment['rating'] > 0 && $comment['rating'] < 1.5) ? 'selected' : '' }}>1</option>
-                                                        <option value="2" {{ ($comment['rating'] >= 1.5 && $comment['rating'] < 2.5) ? 'selected' : '' }}>2</option>
-                                                        <option value="3" {{ ($comment['rating'] >= 2.5 && $comment['rating'] < 3.5) ? 'selected' : '' }}>3</option>
-                                                        <option value="4" {{ ($comment['rating'] >= 3.5 && $comment['rating'] < 4.5) ? 'selected' : '' }}>4</option>
-                                                        <option value="5" {{ $comment['rating'] >= 4.5 ? 'selected' : '' }}>5</option>
+                                                        <option value="1" {{ ((float) $comment['rating'] > 0 && (float) $comment['rating'] < 1.5) ? 'selected' : '' }}>1</option>
+                                                        <option value="2" {{ ((float) $comment['rating'] >= 1.5 && (float) $comment['rating'] < 2.5) ? 'selected' : '' }}>2</option>
+                                                        <option value="3" {{ ((float) $comment['rating'] >= 2.5 && (float) $comment['rating'] < 3.5) ? 'selected' : '' }}>3</option>
+                                                        <option value="4" {{ ((float) $comment['rating'] >= 3.5 && (float) $comment['rating'] < 4.5) ? 'selected' : '' }}>4</option>
+                                                        <option value="5" {{ (float) $comment['rating'] >= 4.5 ? 'selected' : '' }}>5</option>
                                                     </select>
                                                 </div>
                                                 <p class="item__des">{!! $comment['review'] !!}</p>
