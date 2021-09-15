@@ -283,11 +283,11 @@
                                                 <div class="input__rating">
                                                     <label>Your rating: <span>*</span></label>
                                                     <select class="rating-stars" onchange="$('#rating').val($(this).val()); console.log($(this).val())">
-                                                        <option value="1" {{ !in_array(old('rating'), [2,3,4,5]) ? 'selected' : '' }}>1</option>
+                                                        <option value="1" {{ old('rating') == 1 ? 'selected' : '' }}>1</option>
                                                         <option value="2" {{ old('rating') == 2 ? 'selected' : '' }}>2</option>
                                                         <option value="3" {{ old('rating') == 3 ? 'selected' : '' }}>3</option>
                                                         <option value="4" {{ old('rating') == 4 ? 'selected' : '' }}>4</option>
-                                                        <option value="5" {{ old('rating') == 5 ? 'selected' : '' }}>5</option>
+                                                        <option value="5" {{ !in_array(old('rating'), [1,2,3,4]) ? 'selected' : '' }}>5</option>
                                                     </select>
                                                     <input type="hidden" name="rating" id="rating" value="1">
                                                 </div>
