@@ -131,6 +131,10 @@ class HomeController extends Controller
             $path1 = ProductController::saveFileAndReturnPath(request('logo'), Str::random(8));
             if ($settings && $settings['logo']) unlink($settings['logo']);
         }
+        if (request('icon')) {
+            $icon = ProductController::resizeImageAndReturnPath(request('icon'), Str::random(8), 100, 100, 'img');
+            if ($settings && $settings['icon']) unlink($settings['icon']);
+        }
         if (request('dashboard_logo')) {
             $path2 = ProductController::saveFileAndReturnPath(request('dashboard_logo'), Str::random(8));
             if ($settings && $settings['dashboard_logo']) unlink($settings['dashboard_logo']);
@@ -145,11 +149,12 @@ class HomeController extends Controller
         }
         $data = request()->only('name', 'email', 'phone_1', 'phone_2', 'address', 'motto', 'facebook', 'instagram', 'twitter', 'youtube', 'linkedin');
         if (isset($path1)) $data['logo'] = $path1;
+        if (isset($icon)) $data['icon'] = $icon;
         if (isset($path2)) $data['dashboard_logo'] = $path2;
         if (isset($path3)) $data['store_logo'] = $path3;
         if (isset($path4)) $data['email_logo'] = $path4;
         if ($settings) $settings->update($data);
-        else Setting::create($data);
+        else Setting::query()->create($data);
         return back()->with('success', 'Business profile updated successfully');
     }
 

@@ -3,19 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Exception;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Sale;
 use App\Models\Purchase;
 use App\Models\Variation;
-use App\Http\Controllers\CartController;
 use App\Http\Resources\ProductResource;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HomeController extends Controller
@@ -36,11 +35,11 @@ class HomeController extends Controller
 
     public function shop()
     {
-        $products = Product::where('is_listed', 1)->latest();
-        if (request('sort') == 'sale')
-            $products = $products->orderBy('sold');
+        $products = Product::query()->where('is_listed', 1)->latest();
         if (request('sort') == 'price')
             $products = $products->orderBy('sell_price');
+        if (request('sort') == 'sale')
+            $products = $products->orderBy('sold');
         if (request('sort') == 'name')
             $products = $products->orderBy('name');
         $products = $products->paginate(request('rpp') ?? 24);
@@ -50,7 +49,7 @@ class HomeController extends Controller
 
     public function filterShop()
     {
-        $products = Product::where('is_listed', 1)->latest();
+        $products = Product::query()->where('is_listed', 1)->latest();
         $from = request('from');
         $to = request('to');
         $brands = request('brands');
@@ -92,7 +91,10 @@ class HomeController extends Controller
         return view('checkout', compact('delivery_fee'));
     }
 
-    public function processCheckout()
+    /**
+     * @throws ValidationException
+     */
+    public function processCheckout(): RedirectResponse
     {
         $this->validate(request(), ['delivery_method' => 'required']);
 
@@ -123,7 +125,16 @@ class HomeController extends Controller
                 $rules['password'] = 'required|confirmed|min:8';
             }
         }
+
         $this->validate(request(), $rules);
+
+        $cart = CartController::getUserCartAsArray();
+        $errors = null;
+        foreach($cart['items'] as $item)
+            if ($item['product']['quantity'] < $item['quantity'])
+                $errors .= $item['product']['name'].', ';
+        if ($errors)
+            return back()->with('error', 'Can\'t checkout, quantities not available for '.$errors)->withInput();
 
         $delivery_fee = 0;
         if (request('delivery_method') == 'ship') {
@@ -187,26 +198,25 @@ class HomeController extends Controller
 
         $data['auth'] = !is_null(auth()->user());
         $data['delivery_method'] = request('delivery_method');
-        $cart = CartController::getUserCartAsArray();
         $data['cart'] = $cart;
 
         return PaymentController::initializeTransaction(($cart['total'] + $delivery_fee), $data);
     }
 
-    public function estimateDeliveryCost()
+    public function estimateDeliveryCost(): bool
     {
         return true;
-        $data = [
+//        $data = [
 //            "customer_name" => "Bar",
 //            "customer_phone" => "+2341234567891",
 //            "customer_email" => "example+1@about.com",
-            [
-                "address" => request('loc'),
-                "latitude" => request('lat'),
-                "longitude" => request('lng')
-            ]
-        ];
-        return DeliveryController::estimateDelivery($data);
+//            [
+//                "address" => request('loc'),
+//                "latitude" => request('lat'),
+//                "longitude" => request('lng')
+//            ]
+//        ];
+//        return DeliveryController::estimateDelivery($data);
     }
 
     public function wishlist()
@@ -234,20 +244,26 @@ class HomeController extends Controller
         return view('order-successful', compact('order'));
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function trackOrder()
     {
         $this->validate(request(), [
             'order_id' => 'required',
             'email' => 'required|email',
         ]);
-        $order = Order::where('email', request('email'))->where('code', request('order_id'))->first();
+        $order = Order::query()->where('email', request('email'))->where('code', request('order_id'))->first();
         if (!$order) {
             return back()->with('error', 'We couldn\'t find an order with this ID and email address');
         }
         return view('order-tracker', compact('order'));
     }
 
-    public function updateAccount()
+    /**
+     * @throws ValidationException
+     */
+    public function updateAccount(): RedirectResponse
     {
         $this->validate(request(), [
             'name' => 'required',
@@ -261,11 +277,14 @@ class HomeController extends Controller
         $data = request()->only('name', 'country', 'state', 'city', 'address', 'phone', 'postcode');
         $data['longitude'] = request('cityLng');
         $data['latitude'] = request('cityLat');
-        auth()->user()->update($data);
+        User::find(auth()->id())->update($data);
         return back()->with('success', 'Profile updated successfully');
     }
 
-    public function changePassword()
+    /**
+     * @throws ValidationException
+     */
+    public function changePassword(): RedirectResponse
     {
         $this->validate(request(), [
             'old_password' => 'required',
@@ -273,7 +292,7 @@ class HomeController extends Controller
         ]);
         if (!Hash::check(request('old_password'), auth()->user()['password']))
             return back()->with('error', 'Old password incorrect');
-        auth()->user()->update([
+        User::find(auth()->id())->update([
             'password' => Hash::make(request('new_password'))
         ]);
         return back()->with('success', 'Password changed successfully');
@@ -314,13 +333,16 @@ class HomeController extends Controller
         $categories = $product->categories()->get()->map(function($category){
             return $category['id'];
         });
-        $related = Product::where('is_listed', 1)->whereHas('categories', function($q) use ($categories) {
+        $related = Product::query()->where('is_listed', 1)->whereHas('categories', function($q) use ($categories) {
             $q->whereIn('categories.id', $categories);
         })->where('id', '!=', $product['id'])->get();
         return view('product-detail', compact('product', 'related'));
     }
 
-    public function storeReview(Product $product)
+    /**
+     * @throws ValidationException
+     */
+    public function storeReview(Product $product): RedirectResponse
     {
         $this->validate(request(), [
             'review' => 'required',
@@ -333,9 +355,9 @@ class HomeController extends Controller
         return back()->with('success', 'Review submitted');
     }
 
-    public function searchProduct($val)
+    public function searchProduct($val): JsonResponse
     {
-        $products = Product::where('is_listed', 1)->where(function ($q) use ($val) {
+        $products = Product::query()->where('is_listed', 1)->where(function ($q) use ($val) {
             $q->where('name', 'LIKE', '%'.$val.'%')->orWhere('description', 'LIKE', '%'.$val.'%');
         })->get();
         return response()->json(ProductResource::collection($products));
@@ -343,15 +365,18 @@ class HomeController extends Controller
 
     public function getInvoice($type, $code)
     {
-        if ($type == "sales") $data = Sale::where('code', $code)->first();
-        else if ($type == "purchases") $data = Purchase::where('code', $code)->first();
+        if ($type == "sales") $data = Sale::query()->where('code', $code)->first();
+        else if ($type == "purchases") $data = Purchase::query()->where('code', $code)->first();
         else throw new NotFoundHttpException;
         if (!$data) throw new NotFoundHttpException;
         $variations = Variation::all();
         return view('invoice', compact('type', 'data', 'variations'));
     }
 
-    public function newsletter()
+    /**
+     * @throws ValidationException
+     */
+    public function newsletter(): RedirectResponse
     {
         $this->validate(request(), ['email' => ['required', 'email']]);
         if (!DB::table('newsletter')->where('email', request('email'))->first())
@@ -359,7 +384,7 @@ class HomeController extends Controller
         return back()->with('success', 'You have subscribed for '.env('APP_NAME').' newsletter');
     }
 
-    public static function getAvatar($email)
+    public static function getAvatar($email): string
     {
         $hash = md5(strtolower(trim($email)));
         return "https://www.gravatar.com/avatar/$hash?d=".rawurlencode(asset('assets/img/avatar.png'));

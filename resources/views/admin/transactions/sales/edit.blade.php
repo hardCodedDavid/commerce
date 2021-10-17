@@ -94,80 +94,180 @@
                                     <div id="productsList" data-repeater-list="products">
                                         @if (old('products'))
                                             @if (count(old('products')) > 0)
-                                                @foreach (old('products') as $key=>$currentProduct)
-                                                <div data-repeater-item>
-                                                    <div class="form-group row d-flex align-items-end">
+                                                @foreach (old('products') as $key => $currentProduct)
+                                                    <div data-repeater-item class="repeater">
+                                                        <div class="form-group row d-flex align-items-start">
+                                                            <div class="col-sm-4 my-2">
+                                                                <input type="hidden" name="products[{{ $key }}][saleItemId]" value="{{ $currentProduct['saleItemId'] }}">
+                                                                <label class="form-label">Product</label>
+                                                                <input type="hidden" name="products[{{ $key }}][product]" value="{{ $currentProduct['product'] }}">
+                                                                <select name="" disabled class="form-control item-name select2-single">
+                                                                    <option value="">Select Product</option>
+                                                                    @foreach ($products as $product)
+                                                                        <option @if ($currentProduct['product'] == $product['id'])
+                                                                            selected
+                                                                        @endif value="{{ $product['id'] }}">{{ $product['name'] }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                @error('products.'.$key.'.product')
+                                                                    <span class="text-danger small" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div><!--end col-->
+
+                                                            <div class="col-sm-4 my-2 item-quantity">
+                                                                <label class="form-label">Quantity</label>
+                                                                <input type="number" step="any" value="{{ $currentProduct['quantity'] }}" name="products[{{ $key }}][quantity]" placeholder="0" class="form-control">
+                                                                @error('products.'.$key.'.quantity')
+                                                                    <span class="text-danger small" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div><!--end col-->
+
+                                                            <div class="col-sm-4 my-2 item-unit-price">
+                                                                <label class="form-label">Unit Price</label>
+                                                                <input type="number" step="any" value="{{ $currentProduct['price'] }}" name="products[{{ $key }}][price]" placeholder="0" class="form-control">
+                                                                @error('products.'.$key.'.price')
+                                                                    <span class="text-danger small" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div><!--end col-->
+
+                                                            @php
+                                                                $saleItem = App\Models\SaleItem::find($currentProduct['saleItemId']);
+                                                            @endphp
+
+                                                            <div class="col-sm-3 my-2 item-brand">
+                                                                <label class="form-label">Brand</label>
+                                                                <select name="products[{{ $key }}][brand]" class="form-control select2-single">
+                                                                    <option value="">Select Brand</option>
+                                                                    @if($currentProduct['saleItemId'])
+                                                                        @foreach ($saleItem->product->brands()->get() as $brand)
+                                                                            <option @if ($brand['id'] == $currentProduct['brand'])
+                                                                                selected
+                                                                            @endif value="{{ $brand['id'] }}">{{ $brand['name'] }}</option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                            </div><!--end col-->
+
+                                                            @foreach ($variations as $variation)
+                                                                <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
+                                                                    <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
+                                                                    <select name="products[{{ $key }}][{{ $variation['name'] }}]" class="form-control select2-single">
+                                                                        <option value="">Select {{ $variation['name'] }}</option>
+                                                                        @if($currentProduct['saleItemId'])
+                                                                            @foreach ($saleItem->variationItems()->where('variation_id', $variation['id'])->get() as $currentItem)
+                                                                                <option @if (in_array($currentItem['id'], $saleItem->getVariationItemsIdToArray()))
+                                                                                    selected
+                                                                                @endif value="{{ $currentItem['id'] }}">{{ $currentItem['name'] }}</option>
+                                                                            @endforeach
+                                                                        @endif
+                                                                    </select>
+                                                                </div><!--end col-->
+                                                            @endforeach
+
+                                                            <div class="col-sm-12 my-2 item-numbers">
+                                                                <label class="form-label">Old Item Number(s)</label>
+                                                                <div class="row">
+                                                                    @if(isset($currentProduct['old_item_numbers']))
+                                                                        @php $i = 0; @endphp
+                                                                        @foreach($currentProduct['old_item_numbers'] as $curKey => $item)
+                                                                            <div class="col-md-4">
+                                                                                <div class="d-flex justify-content-between">
+                                                                                    <input type="text" value="{{ $item['no'] }}" readonly name="products[{{ $key }}][old_item_numbers][{{ $i }}][no]" id="products[{{ $key }}][old_item_numbers][{{ $i }}][no]" class="form-control item-number-values my-2">
+                                                                                    <input type="hidden" value="{{ $item['id'] }}" name="products[{{ $key }}][old_item_numbers][{{ $i }}][id]" id="products[{{ $key }}][old_item_numbers][{{ $i }}][id]" class="item-number-values">
+                                                                                    <div class="ml-3 align-self-center">
+                                                                                        <button type="button" onclick="deleteItemNumber(this, '{{ $item['id'] }}')" class="btn btn-danger-rgba"> <i class="fa fa-trash-o"></i></button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                @error('products.'.$key.'.old_item_numbers.'.$i.'.no')
+                                                                                    <span class="text-danger small" role="alert">
+                                                                                        <strong>{{ $message }}</strong>
+                                                                                    </span>
+                                                                                @enderror
+                                                                            </div>
+                                                                            @php $i++ @endphp
+                                                                        @endforeach
+                                                                    @endif
+                                                                </div>
+                                                                <label class="form-label" for="oldItemNumbers-{{ $key }}">New Item Number(s)</label>
+                                                                <select class="select2-multi-select form-control" name="products[{{ $key }}][item_numbers]" id="oldItemNumbers-{{ $key }}" multiple="multiple">
+                                                                    <option value="">Select Item Number</option>
+                                                                    @if(isset($currentProduct['item_numbers']))
+                                                                        @php $product = App\Models\Product::find($currentProduct['product']); @endphp
+                                                                        @if($product)
+                                                                            @foreach($product->itemNumbers()->where('status', 'available')->get() as $curKey => $item)
+                                                                                <option value="{{ $item['id'] }}" @if(in_array($item['id'], $currentProduct['item_numbers'])) selected @endif>{{ $item['no'] }}</option>
+                                                                            @endforeach
+                                                                        @endif
+                                                                    @endif
+                                                                </select>
+                                                                @error('products.'.$key.'.item_numbers')
+                                                                    <span class="text-danger small" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+
+                                                            <div class="col-sm-1 my-2">
+                                                                <span data-repeater-delete class="btn btn-outline-danger">
+                                                                    <span class="fa fa-trash me-1"></span>
+                                                                </span>
+                                                            </div><!--end col-->
+                                                        </div><!--end row-->
+                                                        <hr>
+                                                    </div><!--end /div-->
+                                                @endforeach
+                                            @else
+                                                <div data-repeater-item class="repeater">
+                                                    <div class="form-group row d-flex align-items-start">
                                                         <div class="col-sm-4 my-2">
-                                                            <input type="hidden" name="products[0][saleItemId]" value="{{ $currentProduct['saleItemId'] }}">
                                                             <label class="form-label">Product</label>
-                                                            <select name="products[0][product]" required class="form-control item-name select2-single">
+                                                            <input type="hidden" name="products[{{ $key }}][saleItemId]">
+                                                            <select name="products[{{ $key }}][product]" required class="form-control item-name select2-single">
                                                                 <option value="">Select Product</option>
                                                                 @foreach ($products as $product)
-                                                                    <option @if ($currentProduct['product'] == $product['id'])
-                                                                        selected
-                                                                    @endif value="{{ $product['id'] }}">{{ $product['name'] }}</option>
+                                                                    <option value="{{ $product['id'] }}">{{ $product['name'] }}</option>
                                                                 @endforeach
                                                             </select>
-                                                            @error('products.'.$key.'.product')
-                                                                <span class="text-danger small" role="alert">
-                                                                    <strong>{{ $message }}</strong>
-                                                                </span>
-                                                            @enderror
                                                         </div><!--end col-->
 
                                                         <div class="col-sm-4 my-2 item-quantity">
                                                             <label class="form-label">Quantity</label>
-                                                            <input type="number" step="any" value="{{ $currentProduct['quantity'] }}" name="products[0][quantity]" placeholder="0" class="form-control">
-                                                            @error('products.'.$key.'.quantity')
-                                                                <span class="text-danger small" role="alert">
-                                                                    <strong>{{ $message }}</strong>
-                                                                </span>
-                                                            @enderror
+                                                            <input type="number" step="any" name="products[{{ $key }}][quantity]" placeholder="0" class="form-control">
                                                         </div><!--end col-->
 
                                                         <div class="col-sm-4 my-2 item-unit-price">
                                                             <label class="form-label">Unit Price</label>
-                                                            <input type="number" step="any" value="{{ $currentProduct['price'] }}" name="products[0][price]" placeholder="0" class="form-control">
-                                                            @error('products.'.$key.'.price')
-                                                                <span class="text-danger small" role="alert">
-                                                                    <strong>{{ $message }}</strong>
-                                                                </span>
-                                                            @enderror
+                                                            <input type="number" step="any" name="products[{{ $key }}][price]" placeholder="0" class="form-control">
                                                         </div><!--end col-->
-
-                                                        @php
-                                                            $saleItem = App\Models\SaleItem::find($currentProduct['saleItemId']);
-                                                        @endphp
 
                                                         <div class="col-sm-3 my-2 item-brand">
                                                             <label class="form-label">Brand</label>
-                                                            <select name="products[0][brand]" class="form-control select2-single">
+                                                            <select name="products[{{ $key }}][brand]" class="form-control select2-single">
                                                                 <option value="">Select Brand</option>
-                                                                @if($currentProduct['saleItemId'])
-                                                                    @foreach ($saleItem->product->brands()->get() as $brand)
-                                                                        <option @if ($brand['id'] == $currentProduct['brand'])
-                                                                            selected
-                                                                        @endif value="{{ $brand['id'] }}">{{ $brand['name'] }}</option>
-                                                                    @endforeach
-                                                                @endif
                                                             </select>
                                                         </div><!--end col-->
 
                                                         @foreach ($variations as $variation)
                                                             <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
                                                                 <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
-                                                                <select name="products[0][{{ $variation['name'] }}]" class="form-control select2-single">
+                                                                <select name="products[{{ $key }}][{{ $variation['name'] }}]" class="form-control select2-single">
                                                                     <option value="">Select {{ $variation['name'] }}</option>
-                                                                    @if($currentProduct['saleItemId'])
-                                                                        @foreach ($saleItem->variationItems()->where('variation_id', $variation['id'])->get() as $currentItem)
-                                                                            <option @if (in_array($currentItem['id'], $saleItem->getVariationItemsIdToArray()))
-                                                                                selected
-                                                                            @endif value="{{ $currentItem['id'] }}">{{ $currentItem['name'] }}</option>
-                                                                        @endforeach
-                                                                    @endif
                                                                 </select>
                                                             </div><!--end col-->
                                                         @endforeach
+
+                                                        <div class="col-sm-12 my-2 item-numbers">
+                                                            <label class="form-label" for="oldItemNumbers-{{ $key }}">New Item Number(s)</label>
+                                                            <select class="select2-multi-select form-control" name="products[{{ $key }}][item_numbers]" id="oldItemNumbers-{{ $key }}" multiple="multiple">
+                                                                <option value="">Select Item Number</option>
+                                                            </select>
+                                                        </div>
 
                                                         <div class="col-sm-1 my-2">
                                                             <span data-repeater-delete class="btn btn-outline-danger">
@@ -177,195 +277,186 @@
                                                     </div><!--end row-->
                                                     <hr>
                                                 </div><!--end /div-->
+                                            @endif
+
+                                        @else
+                                            @php
+                                                $fetchedSaleItems = $sale->items()->get();
+                                            @endphp
+                                            @if (count($fetchedSaleItems) > 0)
+                                                @foreach ($fetchedSaleItems as $key=>$currentProduct)
+                                                    <div data-repeater-item class="repeater">
+                                                        <div class="form-group row d-flex align-items-start">
+                                                            <div class="col-sm-4 my-2">
+                                                                <input type="hidden" name="products[{{ $key }}][saleItemId]" value="{{ $currentProduct['id'] }}">
+                                                                <label class="form-label">Product</label>
+                                                                <input type="hidden" name="products[{{ $key }}][product]" value="{{ $currentProduct['product_id'] }}">
+                                                                <select name="" disabled class="form-control item-name select2-single">
+                                                                    <option value="">Select Product</option>
+                                                                    @foreach ($products as $product)
+                                                                        <option @if ($currentProduct['product_id'] == $product['id'])
+                                                                            selected
+                                                                        @endif value="{{ $product['id'] }}">{{ $product['name'] }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                @error('products.'.$key.'.product')
+                                                                    <span class="text-danger small" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div><!--end col-->
+
+                                                            <div class="col-sm-4 my-2 item-quantity">
+                                                                <label class="form-label">Quantity</label>
+                                                                <input type="number" step="any" value="{{ $currentProduct['quantity'] }}" name="products[{{ $key }}][quantity]" placeholder="0" class="form-control">
+                                                                @error('products.'.$key.'.quantity')
+                                                                    <span class="text-danger small" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div><!--end col-->
+
+                                                            <div class="col-sm-4 my-2 item-unit-price">
+                                                                <label class="form-label">Unit Price</label>
+                                                                <input type="number" step="any" value="{{ $currentProduct['price'] }}" name="products[{{ $key }}][price]" placeholder="0" class="form-control">
+                                                                @error('products.'.$key.'.price')
+                                                                    <span class="text-danger small" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div><!--end col-->
+
+                                                            <div class="col-sm-3 my-2 item-brand">
+                                                                <label class="form-label">Brand</label>
+                                                                <select name="products[{{ $key }}][brand]" class="form-control select2-single">
+                                                                    <option value="">Select Brand</option>
+                                                                    @foreach ($currentProduct->product->brands()->get() as $brand)
+                                                                        <option @if ($brand['id'] == $currentProduct['brand_id'])
+                                                                            selected
+                                                                        @endif value="{{ $brand['id'] }}">{{ $brand['name'] }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div><!--end col-->
+
+                                                            @foreach ($variations as $variation)
+                                                                <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
+                                                                    <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
+                                                                    <select name="products[{{ $key }}][{{ $variation['name'] }}]" class="form-control select2-single">
+                                                                        <option value="">Select {{ $variation['name'] }}</option>
+                                                                        @foreach ($currentProduct->product->variationItems()->where('variation_id', $variation['id'])->get() as $currentItem)
+                                                                            <option @if (in_array($currentItem['id'], $currentProduct->getVariationItemsIdToArray()))
+                                                                                selected
+                                                                            @endif value="{{ $currentItem['id'] }}">{{ $currentItem['name'] }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div><!--end col-->
+                                                            @endforeach
+
+                                                            <div class="col-sm-12 my-2 item-numbers">
+                                                                <label class="form-label">Old Item Number(s)</label>
+                                                                <div class="row">
+                                                                    @php $i = 0; @endphp
+                                                                    @foreach(json_decode($currentProduct['item_numbers'], true) as $curKey => $item)
+                                                                        <div class="col-md-4">
+                                                                            <div class="d-flex justify-content-between">
+                                                                                <input type="text" value="{{ array_values($item)[0] }}" readonly name="products[{{ $key }}][old_item_numbers][{{ $i }}][no]" id="products[{{ $key }}][old_item_numbers][{{ $i }}][no]" class="form-control item-number-values my-2">
+                                                                                <input type="hidden" value="{{ array_keys($item)[0] }}" name="products[{{ $key }}][old_item_numbers][{{ $i }}][id]" id="products[{{ $key }}][old_item_numbers][{{ $i }}][id]" class="item-number-values">
+                                                                                <div class="ml-3 align-self-center">
+                                                                                    <button type="button" onclick="deleteItemNumber(this, '{{ array_keys($item)[0] }}')" class="btn btn-danger-rgba"> <i class="fa fa-trash-o"></i></button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @php $i++ @endphp
+                                                                    @endforeach
+                                                                </div>
+                                                                <label class="form-label" for="oldItemNumbers-{{ $key }}">New Item Number(s)</label>
+                                                                <select class="select2-multi-select form-control" name="products[{{ $key }}][item_numbers]" id="oldItemNumbers-{{ $key }}" multiple="multiple">
+                                                                    <option value="">Select Item Number</option>
+                                                                    @if(isset($currentProduct['item_numbers']))
+                                                                        @php $product = App\Models\Product::find($currentProduct['product_id']); @endphp
+                                                                        @if($product)
+                                                                            @foreach($product->itemNumbers()->where('status', 'available')->get() as $curKey => $item)
+                                                                                <option value="{{ $item['id'] }}">{{ $item['no'] }}</option>
+                                                                            @endforeach
+                                                                        @endif
+                                                                    @endif
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="col-sm-1 my-2">
+                                                                <span data-repeater-delete class="btn btn-outline-danger">
+                                                                    <span class="fa fa-trash me-1"></span>
+                                                                </span>
+                                                            </div><!--end col-->
+                                                        </div><!--end row-->
+                                                        <hr>
+                                                    </div><!--end /div-->
                                                 @endforeach
                                             @else
-                                            <div data-repeater-item>
-                                                <div class="form-group row d-flex align-items-end">
-                                                    <div class="col-sm-4 my-2">
-                                                        <label class="form-label">Product</label>
-                                                        <input type="hidden" name="products[0][saleItemId]">
-                                                        <select name="products[0][product]" required class="form-control item-name select2-single">
-                                                            <option value="">Select Product</option>
-                                                            @foreach ($products as $product)
-                                                                <option value="{{ $product['id'] }}">{{ $product['name'] }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div><!--end col-->
-
-                                                    <div class="col-sm-4 my-2 item-quantity">
-                                                        <label class="form-label">Quantity</label>
-                                                        <input type="number" step="any" name="products[0][quantity]" placeholder="0" class="form-control">
-                                                    </div><!--end col-->
-
-                                                    <div class="col-sm-4 my-2 item-unit-price">
-                                                        <label class="form-label">Unit Price</label>
-                                                        <input type="number" step="any" name="products[0][price]" placeholder="0" class="form-control">
-                                                    </div><!--end col-->
-
-                                                    <div class="col-sm-3 my-2 item-brand">
-                                                        <label class="form-label">Brand</label>
-                                                        <select name="products[0][brand]" class="form-control select2-single">
-                                                            <option value="">Select Brand</option>
-                                                        </select>
-                                                    </div><!--end col-->
-
-                                                    @foreach ($variations as $variation)
-                                                        <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
-                                                            <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
-                                                            <select name="products[0][{{ $variation['name'] }}]" class="form-control select2-single">
-                                                                <option value="">Select {{ $variation['name'] }}</option>
+                                                <div data-repeater-item class="repeater">
+                                                    <div class="form-group row d-flex align-items-start">
+                                                        <div class="col-sm-4 my-2">
+                                                            <label class="form-label">Product</label>
+                                                            <input type="hidden" name="products[{{ $key }}][saleItemId]">
+                                                            <select name="products[{{ $key }}][product]" required class="form-control item-name select2-single">
+                                                                <option value="">Select Product</option>
+                                                                @foreach ($products as $product)
+                                                                    <option value="{{ $product['id'] }}">{{ $product['name'] }}</option>
+                                                                @endforeach
                                                             </select>
                                                         </div><!--end col-->
-                                                    @endforeach
 
-                                                    <div class="col-sm-1 my-2">
-                                                        <span data-repeater-delete class="btn btn-outline-danger">
-                                                            <span class="fa fa-trash me-1"></span>
-                                                        </span>
-                                                    </div><!--end col-->
-                                                </div><!--end row-->
-                                                <hr>
-                                            </div><!--end /div-->
+                                                        <div class="col-sm-4 my-2 item-quantity">
+                                                            <label class="form-label">Quantity</label>
+                                                            <input type="number" step="any" name="products[{{ $key }}][quantity]" placeholder="0" class="form-control">
+                                                        </div><!--end col-->
+
+                                                        <div class="col-sm-4 my-2 item-unit-price">
+                                                            <label class="form-label">Unit Price</label>
+                                                            <input type="number" step="any" name="products[{{ $key }}][price]" placeholder="0" class="form-control">
+                                                        </div><!--end col-->
+
+                                                        <div class="col-sm-3 my-2 item-brand">
+                                                            <label class="form-label">Brand</label>
+                                                            <select name="products[{{ $key }}][brand]" class="form-control select2-single">
+                                                                <option value="">Select Brand</option>
+                                                            </select>
+                                                        </div><!--end col-->
+
+                                                        @foreach ($variations as $variation)
+                                                            <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
+                                                                <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
+                                                                <select name="products[{{ $key }}][{{ $variation['name'] }}]" class="form-control select2-single">
+                                                                    <option value="">Select {{ $variation['name'] }}</option>
+                                                                </select>
+                                                            </div><!--end col-->
+                                                        @endforeach
+
+                                                        <div class="col-sm-12 my-2 item-numbers">
+                                                            <label class="form-label">Item Number(s)</label>
+                                                            <select class="select2-multi-select form-control" name="products[{{ $key }}][item_numbers]" id="oldItemNumbers-{{ $key }}" multiple="multiple">
+                                                                <option value="">Select Item Number</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="col-sm-1 my-2">
+                                                            <span data-repeater-delete class="btn btn-outline-danger">
+                                                                <span class="fa fa-trash me-1"></span>
+                                                            </span>
+                                                        </div><!--end col-->
+                                                    </div><!--end row-->
+                                                    <hr>
+                                                </div><!--end /div-->
                                             @endif
-                                        @else
-                                        @php
-                                            $fetchedSaleItems = $sale->items()->get();
-                                        @endphp
-                                        @if (count($fetchedSaleItems) > 0)
-                                        @foreach ($fetchedSaleItems as $key=>$currentProduct)
-                                        <div data-repeater-item>
-                                            <div class="form-group row d-flex align-items-end">
-                                                <div class="col-sm-4 my-2">
-                                                    <input type="hidden" name="products[0][saleItemId]" value="{{ $currentProduct['id'] }}">
-                                                    <label class="form-label">Product</label>
-                                                    <select name="products[0][product]" required class="form-control item-name select2-single">
-                                                        <option value="">Select Product</option>
-                                                        @foreach ($products as $product)
-                                                            <option @if ($currentProduct['product_id'] == $product['id'])
-                                                                selected
-                                                            @endif value="{{ $product['id'] }}">{{ $product['name'] }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('products.'.$key.'.product')
-                                                        <span class="text-danger small" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div><!--end col-->
-
-                                                <div class="col-sm-4 my-2 item-quantity">
-                                                    <label class="form-label">Quantity</label>
-                                                    <input type="number" step="any" value="{{ $currentProduct['quantity'] }}" name="products[0][quantity]" placeholder="0" class="form-control">
-                                                    @error('products.'.$key.'.quantity')
-                                                        <span class="text-danger small" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div><!--end col-->
-
-                                                <div class="col-sm-4 my-2 item-unit-price">
-                                                    <label class="form-label">Unit Price</label>
-                                                    <input type="number" step="any" value="{{ $currentProduct['price'] }}" name="products[0][price]" placeholder="0" class="form-control">
-                                                    @error('products.'.$key.'.price')
-                                                        <span class="text-danger small" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div><!--end col-->
-
-                                                <div class="col-sm-3 my-2 item-brand">
-                                                    <label class="form-label">Brand</label>
-                                                    <select name="products[0][brand]" class="form-control select2-single">
-                                                        <option value="">Select Brand</option>
-                                                        @foreach ($currentProduct->product->brands()->get() as $brand)
-                                                            <option @if ($brand['id'] == $currentProduct['brand_id'])
-                                                                selected
-                                                            @endif value="{{ $brand['id'] }}">{{ $brand['name'] }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div><!--end col-->
-
-                                                @foreach ($variations as $variation)
-                                                    <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
-                                                        <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
-                                                        <select name="products[0][{{ $variation['name'] }}]" class="form-control select2-single">
-                                                            <option value="">Select {{ $variation['name'] }}</option>
-                                                            @foreach ($currentProduct->product->variationItems()->where('variation_id', $variation['id'])->get() as $currentItem)
-                                                                <option @if (in_array($currentItem['id'], $currentProduct->getVariationItemsIdToArray()))
-                                                                    selected
-                                                                @endif value="{{ $currentItem['id'] }}">{{ $currentItem['name'] }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div><!--end col-->
-                                                @endforeach
-
-                                                <div class="col-sm-1 my-2">
-                                                    <span data-repeater-delete class="btn btn-outline-danger">
-                                                        <span class="fa fa-trash me-1"></span>
-                                                    </span>
-                                                </div><!--end col-->
-                                            </div><!--end row-->
-                                            <hr>
-                                        </div><!--end /div-->
-                                        @endforeach
-                                        @else
-                                        <div data-repeater-item>
-                                            <div class="form-group row d-flex align-items-end">
-                                                <div class="col-sm-4 my-2">
-                                                    <label class="form-label">Product</label>
-                                                    <input type="hidden" name="products[0][saleItemId]">
-                                                    <select name="products[0][product]" required class="form-control item-name select2-single">
-                                                        <option value="">Select Product</option>
-                                                        @foreach ($products as $product)
-                                                            <option value="{{ $product['id'] }}">{{ $product['name'] }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div><!--end col-->
-
-                                                <div class="col-sm-4 my-2 item-quantity">
-                                                    <label class="form-label">Quantity</label>
-                                                    <input type="number" step="any" name="products[0][quantity]" placeholder="0" class="form-control">
-                                                </div><!--end col-->
-
-                                                <div class="col-sm-4 my-2 item-unit-price">
-                                                    <label class="form-label">Unit Price</label>
-                                                    <input type="number" step="any" name="products[0][price]" placeholder="0" class="form-control">
-                                                </div><!--end col-->
-
-                                                <div class="col-sm-3 my-2 item-brand">
-                                                    <label class="form-label">Brand</label>
-                                                    <select name="products[0][brand]" class="form-control select2-single">
-                                                        <option value="">Select Brand</option>
-                                                    </select>
-                                                </div><!--end col-->
-
-                                                @foreach ($variations as $variation)
-                                                    <div class="col-sm-3 my-2 variation-{{ $variation['name'] }}">
-                                                        <label class="form-label text-capitalize">{{ $variation['name'] }}</label>
-                                                        <select name="products[0][{{ $variation['name'] }}]" class="form-control select2-single">
-                                                            <option value="">Select {{ $variation['name'] }}</option>
-                                                        </select>
-                                                    </div><!--end col-->
-                                                @endforeach
-
-                                                <div class="col-sm-1 my-2">
-                                                    <span data-repeater-delete class="btn btn-outline-danger">
-                                                        <span class="fa fa-trash me-1"></span>
-                                                    </span>
-                                                </div><!--end col-->
-                                            </div><!--end row-->
-                                            <hr>
-                                        </div><!--end /div-->
-                                        @endif
                                         @endif
                                     </div><!--end repet-list-->
-                                    <div class="form-group mb-0 row">
-                                        <div class="col-sm-12">
-                                            <span data-repeater-create onclick="reInitializeSingleSelect()" class="btn btn-outline-secondary">
-                                                <span class="fa fa-plus"></span> Add Product
-                                            </span>
-                                        </div><!--end col-->
-                                    </div><!--end row-->
+{{--                                    <div class="form-group mb-0 row">--}}
+{{--                                        <div class="col-sm-12">--}}
+{{--                                            <span data-repeater-create onclick="reInitializeSingleSelect()" class="btn btn-outline-secondary">--}}
+{{--                                                <span class="fa fa-plus"></span> Add Product--}}
+{{--                                            </span>--}}
+{{--                                        </div><!--end col-->--}}
+{{--                                    </div><!--end row-->--}}
                                 </div> <!--end repeter-->
                             </fieldset><!--end fieldset-->
                         </div><!--end form-->
@@ -455,6 +546,15 @@
     <script src="{{ asset('admin/assets/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/custom/custom-form-select.js') }}"></script>
     <script>
+        $(document).ready(function () {
+            const select2 = $('.select2-multi-select')
+            select2.select2({
+                placeholder: 'Select an item number',
+                tags: true
+            });
+            renameItemNumberFields()
+        })
+
         const variationList = {!! json_encode($variations) !!};
         const productsList = $('#productsList');
         const additionalFee = $('#additionalFee');
@@ -473,8 +573,20 @@
 
         productsList.on('input', 'div div div.item-quantity input', computeSubTotal);
 
+        function renameItemNumberFields() {
+            const itemFields = $('.item-number-values');
+            setTimeout(() => {
+                itemFields.each(i => $(itemFields[i]).prop('name', $(itemFields[i]).prop('id')))
+            }, 50)
+        }
+
         function reInitializeSingleSelect() {
-            setTimeout(() => $('.select2-single').select2(), 10)
+            setTimeout(() => {
+                $('.select2-single').select2()
+                const repeaters = $('.repeater')
+                $(repeaters[repeaters.length - 1]).find('.item-numbers select').attr('id', 'oldItemNumbers-'+(repeaters.length - 1)).html('')
+                $('.select2-multi-select').select2({placeholder: 'Select an item number', tags: true});
+            }, 10)
         }
 
         function fetchProductDetailsAndComputeSubTotal(selected) {
@@ -512,6 +624,43 @@
             })
         }
 
+        function setItemNumbers(el, itemNumbers) {
+            if(el) {
+                itemNumbers.forEach(itemNumber => {
+                    el.parent().parent().find('.item-numbers select').append(`<option value="${itemNumber.id}">${itemNumber.no}</option>`);
+                });
+
+                const oldProducts = {!! json_encode(old('products')) !!};
+                if (oldProducts)
+                    if (oldProducts.length > 0) {
+                        $(oldProducts).each(i => {
+                            const itemNumbers = oldProducts[i]['item_numbers']
+                            if (itemNumbers)
+                                if (itemNumbers.length > 0) {
+                                    $(`#oldItemNumbers-${i} option`).each(function () {
+                                        if (itemNumbers.find(cur => parseInt($(this).prop('value')) === parseInt(cur))) $(this).prop('selected', true);
+                                    })
+                                }
+                        });
+                    }
+
+
+                $('.select2-multi-select').select2({
+                    placeholder: 'Select an item number',
+                    tags: true
+                });
+            }
+        }
+
+        function clearItemNumbers(el){
+            if (el) {
+                el.parent().parent().find('.item-numbers select').html('');
+                el.parent().parent().find('.item-numbers select').select2({
+                    placeholder: 'Select an item number', tags: true
+                });
+            }
+        }
+
         function computeSubTotal() {
             $('#subTotal').text(`₦ ${numberFormat(fetchSubTotal())}`);
             $('#totalAmount').text(`₦ ${numberFormat(fetchTotal())}`);
@@ -536,6 +685,32 @@
             return subTotal.toFixed(2);
         }
 
+        function deleteItemNumber(el, id) {
+            $.ajax({
+                type: 'PUT',
+                url: '/admin/sales/item-number/'+ id +'/update',
+                headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                success: function (res) {
+                    console.log(res)
+                    new PNotify( {
+                        title: 'Success', text: res.msg, type: 'success'
+                    });
+                    const qty = $(el).parent().parent().parent().parent().parent().parent().find('.item-quantity input')
+                    qty.val(parseInt(qty.val()) - 1)
+                    clearItemNumbers($(el).parent().parent().parent().parent())
+                    setItemNumbers($(el).parent().parent().parent().parent(), res.itemNumbers)
+                    $(el).parent().parent().parent().remove()
+                    computeSubTotal()
+                },
+                error: function(err) {
+                    console.log(err);
+                    new PNotify( {
+                        title: 'Error', text: err['responseJSON'].msg, type: 'error'
+                    });
+                }
+            });
+        }
+
         function fetchProductDetails(el){
             $.ajax({
                 type: 'GET',
@@ -543,9 +718,11 @@
                 success: function (data) {
                     clearBrands(el);
                     clearVariations(el);
+                    clearItemNumbers(el);
                     setBrands(el, data.brands);
                     setPrice(el, data.sell_price);
                     setVariations(el, data.variations);
+                    setItemNumbers(el, data.itemNumbers);
                 },
                 error: function(err) {
                     console.log(err);

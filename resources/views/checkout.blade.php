@@ -92,7 +92,7 @@
                                             @enderror
                                         </div>
                                         <div class="col-12 mt-3">
-                                            @php $locations = json_decode(\App\Models\Setting::first()->pickup_locations, true) ?? []; $location = App\Models\Setting::first()->address @endphp
+                                            @php $locations = json_decode(App\Models\Setting::first()->pickup_locations, true) ?? []; $location = App\Models\Setting::first()->address @endphp
                                             <h5>Pickup Location</h5>
                                             @if(count($locations) < 1)
                                                 <div class="form-group">
@@ -298,7 +298,7 @@
                                 @foreach ($cart['items'] as $item)
                                     <div class="checkout__product__item">
                                         <div class="checkout-product">
-                                            <div class="product__name">{{ $item['product']['name'] }}<span>(x1)</span></div>
+                                            <div class="product__name">{{ $item['product']['name'] }}<span>(x{{ $item['quantity'] }})</span></div>
                                             <div class="product__unit">{{ $item['product']['weight'] }}Kg</div>
                                         </div>
                                         <div class="checkout-price">₦{{ number_format($item['product']->getDiscountedPrice()) }}</div>
@@ -348,6 +348,7 @@
 @section('scripts')
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN_UW11I0wCCLflmY5Eu1FLc2-UYXrOmw&libraries=places" type="text/javascript"></script>
     <script type="text/javascript">
+        getStates();
         const del1 = $('#delivery_method1')
         const del2 = $('#delivery_method2')
         const delFeeCont = $('#delivery_fee_container')
@@ -392,6 +393,20 @@
         }
         google.maps.event.addDomListener(window, 'load', initialize);
 
+
+        function getStates() {
+            $.ajax({
+                url: "/d",
+                type: "GET",
+                headers: {"Authorization" : "Bearer {{ env('CNS_ACCESS_TOKEN') }}", "X-CSRF-TOKEN": "{{ csrf_token() }}"},
+                success: function (res) {
+                    console.log(res)
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        }
 
         function estimateDelivery(diff = false) {
             let loc, lat, lng;

@@ -962,6 +962,17 @@ label:hover:before {
   font-weight: 600;
 }
 
+.ps-checkout-button {
+  background-color: #190D3F;
+  color: white;
+  border-radius: 2px;
+  text-align: center;
+  width: 100%;
+  padding: 15px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .blog--header {
   padding-bottom: 40px;
 }

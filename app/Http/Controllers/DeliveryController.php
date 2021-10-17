@@ -2,21 +2,73 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 
 class DeliveryController extends Controller
 {
-    public static function estimateDelivery($dropoffs)
+    public static $token;
+
+    public function __construct()
     {
-        return Http::withHeaders(['Content-Type' => 'application/json'])
-            ->post('https://private-anon-8d29497fae-gokada2.apiary-mock.com/api/developer/v3/order_estimate', [
-//            ->post('https://api.gokada.ng/api/developer/v3/order_estimate', [
-                "api_key" => env('GOKADA_API_KEY'),
-                "pickup_address" => env('GOKADA_PICKUP_ADDRESS'),
-                "pickup_latitude" => env('GOKADA_PICKUP_LATITUDE'),
-                "pickup_longitude" => env('GOKADA_PICKUP_LONGITUDE'),
-                "dropoffs" => $dropoffs
-            ]);
+        self::$token = 'Bearer '. env('CNS_ACCESS_TOKEN');
+    }
+
+    public function getStates()
+    {
+        return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
+            ->get('https://api.clicknship.com.ng/clicknship/Operations/States'), true);
+    }
+
+    public function getCities()
+    {
+        return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
+            ->get('https://api.clicknship.com.ng/clicknship/operations/cities'), true);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getCitiesByState()
+    {
+        $this->validate(request(), ['state' => 'required']);
+        return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
+            ->get('https://api.clicknship.com.ng/clicknship/Operations/StateCities?StateName='.request('state')), true);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getDeliveryTowns()
+    {
+        $this->validate(request(), ['city_code' => 'required']);
+        return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
+            ->get('https://api.clicknship.com.ng/clicknship/Operations/DeliveryTowns?CityCode='.request('city_code')), true);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getDropOffLocations()
+    {
+        $this->validate(request(), ['city_code' => 'required']);
+        return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
+            ->get('https://api.clicknship.com.ng/ClicknShip/Operations/DropOffAddresses?citycode='.request('city_code')), true);
+    }
+
+    public function estimateDeliveryFee()
+    {
+        return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
+            ->post('https://api.clicknship.com.ng/clicknship/Operations/DeliveryFee', [
+                'Origin' => env('CNS_ORIGIN'),
+                'Destination' => 'LAGOS MAINLAND',
+                'OnforwardingTownID' => '17',
+                'Weight' => '1.5',
+                'PickupType' => '1'
+            ]), true);
     }
 
     public static function createDelivery($data)
@@ -53,6 +105,34 @@ class DeliveryController extends Controller
             ]);
     }
 
+    public static function getToken()
+    {
+        $data = json_decode(Http::withHeaders(['Content-Type' => 'application/x-www-form-urlencoded'])
+            ->asForm()->post('https://api.clicknship.com.ng/Token', [
+                'username' => env('CNS_USERNAME'),
+                'password' => env('CNS_PASSWORD'),
+                'grant_type' => 'password'
+            ]), true);
+
+        if (isset($data['access_token'])) {
+            file_put_contents(App::environmentFilePath(), str_replace(
+                'CNS_ACCESS_TOKEN' . '=' . env('CNS_ACCESS_TOKEN'),
+                'CNS_ACCESS_TOKEN' . '=' . $data['access_token'],
+                file_get_contents(App::environmentFilePath())
+            ));
+            file_put_contents(App::environmentFilePath(), str_replace(
+                'CNS_TOKEN_EXPIRY' . '=' . env('CNS_TOKEN_EXPIRY'),
+                'CNS_TOKEN_EXPIRY' . '=' . $data['expires_in'],
+                file_get_contents(App::environmentFilePath())
+            ));
+
+            // Reload the cached config
+            if (file_exists(App::getCachedConfigPath())) {
+                Artisan::call("config:cache");
+            }
+        }
+    }
+
     public function deliveryCallback()
     {
         $data = json_decode(file_get_contents('php://input'), true);
@@ -72,7 +152,7 @@ class DeliveryController extends Controller
 
         try {
             //
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             logger($e->getMessage());
             exit();
         }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -10,6 +12,7 @@ use App\Models\Category;
 use App\Models\Variation;
 use App\Models\Brand;
 use App\Models\Product;
+use Illuminate\Validation\ValidationException;
 use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
@@ -58,7 +61,10 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store()
+    /**
+     * @throws ValidationException
+     */
+    public function store(): RedirectResponse
     {
         // Validate request
         $this->validate(request(), [
@@ -69,8 +75,8 @@ class ProductController extends Controller
             'sell_price' => ['required', 'numeric', 'gte:buy_price'],
             'discount' => ['required', 'numeric'],
             'in_stock' => ['required', 'string'],
-            'quantity' => ['required', 'numeric'],
-            'item_number' => ['required', 'unique:products,item_number'],
+//            'quantity' => ['required', 'numeric'],
+//            'item_number' => ['required', 'unique:products,item_number'],
             'weight' => ['numeric'],
             'categories' => ['required', 'array'],
             'media' => ['required', 'array', 'max:5'],
@@ -78,10 +84,11 @@ class ProductController extends Controller
         ]);
 
         // Create Product
-        $data = request()->only('name', 'description', 'full_description', 'buy_price', 'sell_price', 'discount', 'sku', 'quantity', 'weight', 'item_number', 'note');
+        $data = request()->only('name', 'description', 'full_description', 'buy_price', 'sell_price', 'discount', 'sku', 'weight', 'note');
         $data['code'] = Product::getCode();
         $data['in_stock'] = request('in_stock') == 'instock';
         $data['is_listed'] = request('feature') == 'feature';
+        $data['created_by'] = auth('admin')->id();
         $product = Product::create($data);
 
         // // Save Categories
@@ -104,26 +111,26 @@ class ProductController extends Controller
         return redirect()->route('admin.products')->with('success', 'Product created successfully');
     }
 
-    public function destroy(Product $product)
+    public function destroy(Product $product): RedirectResponse
     {
         $product->delete();
 
         return redirect()->route('admin.products')->with('success', 'Product deleted successfully');
     }
 
-    public function feature(Product $product)
+    public function feature(Product $product): RedirectResponse
     {
         $product->update(['is_listed' => 1]);
         return redirect()->route('admin.products')->with('success', 'Product featured successfully');
     }
 
-    public function unlist(Product $product)
+    public function unlist(Product $product): RedirectResponse
     {
         $product->update(['is_listed' => 0]);
         return redirect()->route('admin.products')->with('success', 'Product unlisted successfully');
     }
 
-    public function removeMedia(Product $product)
+    public function removeMedia(Product $product): JsonResponse
     {
         if ($product->media()->count() > 1) {
             $product->media()->where('id', request('id'))->delete();
@@ -136,11 +143,18 @@ class ProductController extends Controller
         }));
     }
 
-    public function getProductDetails(Product $product){
+    public function getProductDetails(Product $product): JsonResponse
+    {
         $product['brands'] = $product->brands()->get()->map(function($brand){
             return [
                 'id' => $brand['id'],
                 'name' => $brand['name']
+            ];
+        });
+        $product['itemNumbers'] = $product->itemNumbers()->where('status', 'available')->get()->map(function($item){
+            return [
+                'id' => $item['id'],
+                'no' => $item['no']
             ];
         });
         $variations = [];
@@ -156,7 +170,10 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    public function update(Product $product)
+    /**
+     * @throws ValidationException
+     */
+    public function update(Product $product): RedirectResponse
     {
         // Validate request
         $this->validate(request(), [
@@ -167,8 +184,8 @@ class ProductController extends Controller
             'sell_price' => ['required', 'numeric', 'gte:buy_price'],
             'discount' => ['required', 'numeric'],
             'in_stock' => ['required', 'string'],
-            'quantity' => ['required', 'numeric'],
-            'item_number' => ['required', Rule::unique('products')->ignore($product->id)],
+//            'quantity' => ['required', 'numeric'],
+//            'item_number' => ['required', Rule::unique('products')->ignore($product->id)],
             'weight' => ['numeric'],
             'categories' => ['required', 'array'],
             'media' => ['sometimes', 'array', 'max:'.(5 - $product->media()->count())],
@@ -176,9 +193,14 @@ class ProductController extends Controller
         ]);
 
         // Create Product
-        $data = request()->only('name', 'description', 'full_description', 'buy_price', 'sell_price', 'discount', 'sku', 'quantity', 'weight', 'item_number', 'note');
+        $data = request()->only('name', 'description', 'full_description', 'buy_price', 'sell_price', 'discount', 'sku', 'weight', 'note');
         $data['in_stock'] = request('in_stock') == 'instock';
         $data['is_listed'] = request('feature') == 'feature';
+        if (!$product['updated_by']) {
+            $data['updated_by'] = auth('admin')->id();
+            $data['updated_date'] = now();
+        }
+        $data['last_updated_by'] = auth('admin')->id();
         $product->update($data);
 
         // // Save Categories
@@ -208,7 +230,7 @@ class ProductController extends Controller
     {
         //   Define all column names
         $columns = [
-            'id', 'item_number', 'name', 'buy_price', 'sell_price', 'discount', 'sku', 'in_stock', 'quantity', 'weight', 'id', 'id', 'id'
+            'id', 'name', 'created_by', 'buy_price', 'sell_price', 'discount', 'sku', 'in_stock', 'quantity', 'weight', 'id', 'id', 'id'
         ];
         //    Find data based on page
         if (request('type') == 'listed'){
@@ -224,32 +246,28 @@ class ProductController extends Controller
         $dir = $request['order.0.dir'];
         $search = $request['search.value'];
         //  Check if request wants to search or not and fetch data
-        if(empty($search))
-        {
-            $products = $products->offset($start)
-                ->limit($limit)
-                ->orderBy($order,$dir)
-                ->get();
-        }
-        else {
-            $products = $products->where('code','LIKE',"%{$search}%")
-                ->orWhereHas('variationItems',function ($q) use ($search) { $q->where('name', 'LIKE',"%{$search}%"); })
-                ->orWhereHas('brands',function ($q) use ($search) { $q->where('name', 'LIKE',"%{$search}%"); })
-                ->orWhere('item_number', 'LIKE',"%{$search}%")
-                ->orWhere('name', 'LIKE',"%{$search}%")
-                ->orWhere('description', 'LIKE',"%{$search}%")
-                ->orWhere('buy_price', 'LIKE',"%{$search}%")
-                ->orWhere('sell_price', 'LIKE',"%{$search}%")
-                ->orWhere('discount', 'LIKE',"%{$search}%")
-                ->orWhere('sku', 'LIKE',"%{$search}%")
-                ->orWhere('quantity', 'LIKE',"%{$search}%")
-                ->orWhere('weight', 'LIKE',"%{$search}%");
+        if(!empty($search)) {
+            $products = $products->where('code', 'LIKE', "%{$search}%")
+                ->orWhereHas('variationItems', function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%{$search}%");
+                })
+                ->orWhereHas('brands', function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%{$search}%");
+                })
+                ->orWhere('name', 'LIKE', "%{$search}%")
+                ->orWhere('description', 'LIKE', "%{$search}%")
+                ->orWhere('buy_price', 'LIKE', "%{$search}%")
+                ->orWhere('sell_price', 'LIKE', "%{$search}%")
+                ->orWhere('discount', 'LIKE', "%{$search}%")
+                ->orWhere('sku', 'LIKE', "%{$search}%")
+                ->orWhere('quantity', 'LIKE', "%{$search}%")
+                ->orWhere('weight', 'LIKE', "%{$search}%");
             $totalFiltered = $products->count();
-            $products = $products->offset($start)
-                ->limit($limit)
-                ->orderBy($order,$dir)
-                ->get();
         }
+        $products = $products->offset($start)
+            ->limit($limit)
+            ->orderBy($order,$dir)
+            ->get();
         //   Loop through all data and mutate data
         $data = [];
         $key = $start + 1;
@@ -288,8 +306,8 @@ class ProductController extends Controller
             }
 
             $datum['sn'] = $key;
-            $datum['item_number'] = '<a class="font-weight-bold" href="'. route('admin.products.show', $product) .'">'. $product['item_number'] .'</a>';
-            $datum['name'] = $product['name'];
+            $datum['name'] = '<a class="font-weight-bold" href="'. route('admin.products.show', $product) .'">'. $product['name'] .'</a>';
+            $datum['creator'] = $product->getCreatedBy();
             $datum['buy_price'] = $product['buy_price'];
             $datum['sell_price'] = $product['sell_price'];
             $datum['discount'] = $product['discount'];
@@ -328,13 +346,26 @@ class ProductController extends Controller
         echo json_encode($res);
     }
 
-    public static function saveFileAndReturnPath($file, $code)
+    public static function saveFileAndReturnPath($file, $code): string
     {
         $destination = 'media';
         $transferFile = $code.'-'.time().'.'.$file->getClientOriginalExtension();
         if (!file_exists($destination)) File::makeDirectory($destination);
         $image = Image::make($file);
         $image->save($destination . '/' . $transferFile, 60);
+        return $destination . '/' . $transferFile;
+    }
+
+    public static function resizeImageAndReturnPath($file, $code, $width, $height = null, $destination = 'media'): string
+    {
+        $transferFile = $code.'-'.time().'.'.$file->getClientOriginalExtension();
+        if (!file_exists($destination)) mkdir($destination, 666, true);
+        $imgFile = Image::make($file->getRealPath());
+
+        $imgFile->resize($width, $height, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save($destination.'/'.$transferFile);
+
         return $destination . '/' . $transferFile;
     }
 }

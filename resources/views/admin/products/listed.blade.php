@@ -68,8 +68,8 @@
                             <thead>
                             <tr>
                                 <th><i class="fa fa-list-ul"></i></th>
-                                <th>Item Number</th>
                                 <th>Name</th>
+                                <th>Created By</th>
                                 <th>Buy Price</th>
                                 <th>Sell Price</th>
                                 <th>Discount</th>
@@ -122,8 +122,8 @@
                 },
                 "columns": [
                     { "data": "sn" },
-                    { "data": "item_number" },
                     { "data": "name" },
+                    { "data": "creator" },
                     { "data": "buy_price" },
                     { "data": "sell_price" },
                     { "data": "discount" },

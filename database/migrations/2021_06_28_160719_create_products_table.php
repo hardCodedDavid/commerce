@@ -23,7 +23,7 @@ class CreateProductsTable extends Migration
             $table->decimal('discount');
             $table->string('sku')->nullable();
             $table->boolean('in_stock');
-            $table->integer('quantity');
+            $table->integer('quantity')->nullable();
             $table->decimal('weight')->nullable();
             $table->text('note')->nullable();
             $table->integer('sold')->default(0);

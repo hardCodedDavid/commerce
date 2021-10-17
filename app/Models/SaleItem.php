@@ -8,6 +8,9 @@ use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Brand;
 use App\Models\VariationItem;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SaleItem extends Model
 {
@@ -15,27 +18,37 @@ class SaleItem extends Model
 
     protected $guarded = [];
 
-    public function sale()
+    public function getQuantityAttribute(): int
+    {
+        return $this->itemNumbers()->count();
+    }
+
+    public function sale(): BelongsTo
     {
         return $this->belongsTo(Sale::class);
     }
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function brand()
+    public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
     }
 
-    public function variationItems()
+    public function variationItems(): BelongsToMany
     {
         return $this->belongsToMany(VariationItem::class);
     }
 
-    public function getVariationItemsIdToArray()
+    public function itemNumbers(): HasMany
+    {
+        return $this->hasMany(ItemNumber::class);
+    }
+
+    public function getVariationItemsIdToArray(): array
     {
         $arr = [];
         foreach ($this->variationItems()->get() as $item) {

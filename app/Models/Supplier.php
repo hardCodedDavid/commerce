@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Purchase;
 
+/**
+ * @method static find(array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\Request|string|null $request)
+ */
 class Supplier extends Model
 {
     use HasFactory;

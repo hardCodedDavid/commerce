@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use App\Models\Product;
-use App\Models\Sale;
-use App\Models\SaleItem;
-use App\Models\Brand;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @method static create(array $data)
+ */
 class Sale extends Model
 {
     use HasFactory;
@@ -18,33 +18,53 @@ class Sale extends Model
 
     protected $dates = ['date'];
 
-    public function items()
+    public function getTotalQuantity(): int
+    {
+        $qty = 0;
+        foreach ($this->items()->get() as $item)
+            $qty += $item->itemNumbers()->count();
+        return $qty;
+    }
+
+    public function items(): HasMany
     {
         return $this->hasMany(SaleItem::class);
     }
 
-    public function getTotalQuantity()
-    {
-        return $this->items()->sum('quantity');
-    }
-
-    public function order()
+    public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function getCreatedBy()
+    {
+        $admin = Admin::find($this->attributes['created_by']);
+        return $admin ? explode(' ', $admin->name)[0] : null;
+    }
+
+    public function getUpdatedBy()
+    {
+        $admin = Admin::find($this->attributes['updated_by']);
+        return $admin ? explode(' ', $admin->name)[0] : null;
+    }
+
+    public function getLastUpdatedBy()
+    {
+        $admin = Admin::find($this->attributes['last_updated_by']);
+        return $admin ? explode(' ', $admin->name)[0] : null;
     }
 
     public function getSubTotal()
     {
         $sum = 0;
-        foreach ($this->items as $item) {
-            $sum += $item['quantity'] * $item['price'];
-        }
+        foreach ($this->items()->get() as $item)
+            $sum += $item->itemNumbers()->count() * $item['price'];
         return $sum;
     }
 
     public function getProfit()
     {
-        return $this->items->sum('profit');
+        return $this->items()->sum('profit');
     }
 
     public function getTotal()
@@ -54,15 +74,15 @@ class Sale extends Model
         return $this->getSubTotal() + $shipping + $additional;
     }
 
-    public static function getCode()
+    public static function getCode(): string
     {
-        $last_item = Sale::latest()->first();
+        $last_item = Sale::query()->latest()->first();
         if ($last_item) $num = $last_item['id'] + 1;
         else $num = 1;
         return self::generateUniqueCode($num);
     }
 
-    protected static function generateUniqueCode($num)
+    protected static function generateUniqueCode($num): string
     {
         while (strlen($num) < 6){
             $num = '0'.$num;

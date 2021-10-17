@@ -7,7 +7,7 @@
     <title>@yield('title')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Fevicon -->
-    <link rel="shortcut icon" href="{{ asset('logo/5.png') }}">
+    <link rel="shortcut icon" href="{{ asset(\App\Models\Setting::first()->icon) }}">
     <!-- Start css -->
     <!-- Switchery css -->
     <link href="{{ asset('admin/assets/plugins/switchery/switchery.min.css') }}" rel="stylesheet">
@@ -33,12 +33,12 @@
             <div class="sidebar">
                 <!-- Start Logobar -->
                 <div class="logobar">
-                    <a href="{{ route('admin.dashboard') }}" class="logo logo-large"><img src="{{ asset(\App\Models\Setting::first()->dashboard_logo ?? null) }}" class="img-fluid" alt="logo"></a>
-                    <a href="{{ route('admin.dashboard') }}" class="logo logo-small"><img src="{{ asset('logo/5.png') }}" class="img-fluid" alt="logo"></a>
+                    <a href="{{ route('admin.dashboard') }}" class="logo logo-large"><img src="{{ asset(\App\Models\Setting::first()->dashboard_logo ?? null) }}" class="" style="max-height: 30px; width: auto" alt=""></a>
+{{--                    <a href="{{ route('admin.dashboard') }}" class="logo logo-small"><img src="{{ asset('logo/5.png') }}" class="img-fluid" alt="logo"></a>--}}
                 </div>
                 <!-- End Logobar -->
                 <!-- Start Navigationbar -->
-                <div class="navigationbar">
+                <div class="navigationbar" style="height: calc(100vh - 150px)">
                     <ul class="vertical-menu">
                         <li class="vertical-header">Main</li>
                         <li @if (Route::is(['admin.dashboard']))
@@ -250,7 +250,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-12">
                         <div class="mobile-logobar">
-                            <a href="{{ route('admin.dashboard') }}" class="mobile-logo"><img src="{{ asset('logo/7.png') }}" class="img-fluid" alt="logo"></a>
+                            <a href="{{ route('admin.dashboard') }}" class="mobile-logo"><img src="{{ asset(\App\Models\Setting::first()->dashboard_logo ?? null) }}" class="img-fluid" height="40" alt=""></a>
                         </div>
                         <div class="mobile-togglebar">
                             <ul class="list-inline mb-0">

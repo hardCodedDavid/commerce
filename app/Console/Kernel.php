@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CNSCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,7 +14,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        CNSCommand::class
     ];
 
     /**
@@ -28,6 +29,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('queue:work --sansdaemon')
             ->everyMinute()
             ->withoutOverlapping();
+
+        $schedule->command('CNS:token')->weekly();
     }
 
     /**

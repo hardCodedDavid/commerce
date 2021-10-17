@@ -98,7 +98,25 @@
                                 @endforeach
                                 <p class="text-primary font-15 f-w-7 my-md-2 my-3"><span class="font-weight-normal">Note: </span><span>{{ $product->note ?? '----' }}</span></p>
                                 <p class="text-primary font-15 f-w-7 my-md-2 my-3"><span class="font-weight-normal">Created Date: </span><span>{{ $product->created_at->format('M d, Y \a\t h:i A') }}</span></p>
+                                <p class="text-primary font-15 f-w-7 my-md-2 my-3"><span class="font-weight-normal">Available Item Numbers: </span>
+                                    @foreach($product->itemNumbers()->where('status', 'available')->get() as $item)
+                                        <span style="font-size: 12px" class="mx-1 badge badge-light">{{ $item['no'] }}</span>
+                                    @endforeach
+                                </p>
+                                <p class="text-primary font-15 f-w-7 my-md-2 my-3"><span class="font-weight-normal">Sold Item Numbers: </span>
+                                    @foreach($product->itemNumbers()->where('status', 'sold')->get() as $item)
+                                        <span style="font-size: 12px" class="mx-1 badge badge-light">{{ $item['no'] }}</span>
+                                    @endforeach
+                                </p>
                             </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="small mx-1"><i>created by:</i> {{ $product->getCreatedBy() }}</span>
+                            @if($product['updated_by'] && $product['updated_by'] != $product['last_updated_by'])
+                                <span class="small mx-1"><i>last updated by:</i> {{ $sale->getLastUpdatedBy() }}</span>
+                            @else
+                                <span class="small mx-1"><i>updated by:</i> {{ $product->getUpdatedBy() }}</span>
+                            @endif
                         </div>
                     </div>
                 </div>

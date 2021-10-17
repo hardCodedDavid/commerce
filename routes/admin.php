@@ -70,7 +70,9 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('/transactions/purchases/store', [TransactionController::class, 'storePurchase'])->name('transactions.purchases.store')->middleware('permission:Add Purchases');
     Route::get('/transactions/purchases/{purchase:code}/edit', [TransactionController::class, 'editPurchase'])->name('transactions.purchases.edit')->middleware('permission:Edit Purchases');
     Route::put('/transactions/purchases/{purchase:code}/update', [TransactionController::class, 'updatePurchase'])->name('transactions.purchases.update')->middleware('permission:Edit Purchases');
+    Route::put('/sales/item-number/{id}/update', [TransactionController::class, 'removeItemNumber']);
     Route::delete('/transactions/purchases/{purchase:code}/delete', [TransactionController::class, 'destroyPurchase'])->name('transactions.purchases.destroy')->middleware('permission:Delete Purchases');
+    Route::delete('/item-number/{id}/delete', [TransactionController::class, 'deleteItemNumber']);
     Route::get('/transactions/purchases/{purchase:code}/invoice', [TransactionController::class, 'purchaseInvoice'])->name('transactions.purchases.invoice')->middleware('permission:View Purchases');
 
     Route::get('/transactions/sales', [TransactionController::class, 'sales'])->name('transactions.sales')->middleware('permission:View Sales');

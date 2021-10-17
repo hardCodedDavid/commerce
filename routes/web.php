@@ -24,6 +24,13 @@ use Illuminate\Http\Request;
 
 Auth::routes();
 
+Route::get('/a', [DeliveryController::class, 'estimateDeliveryFee']);
+Route::get('/b', [DeliveryController::class, 'getDeliveryTowns']);
+Route::get('/c', [DeliveryController::class, 'getDropOffLocations']);
+Route::get('/d', [DeliveryController::class, 'getStates']);
+Route::get('/e', [DeliveryController::class, 'getCitiesByState']);
+
+
 Route::get('/email/verify', [VerificationController::class, 'verifyEmail'])
     ->middleware('auth')
     ->name('verification.notice');

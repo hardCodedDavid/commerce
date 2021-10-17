@@ -9,6 +9,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @method static find(mixed $id)
+ */
 class Admin extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;

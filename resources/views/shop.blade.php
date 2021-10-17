@@ -200,8 +200,8 @@
         function slidePriceWidget() {
             const min = parseFloat({{ $min }});
             const max = parseFloat({{ $max }});
-            const from = (!isNaN({{ $from }}) && !isNaN({{ $to }})) ? {{ $from }} : randomIntFromInterval(min, max);
-            const to = (!isNaN({{ $from }}) && !isNaN({{ $to }})) ? {{ $to }} : randomIntFromInterval(min, max);
+            const from = (!isNaN({{ $from }}) && !isNaN({{ $to }})) ? parseFloat('{{ $from }}') : randomIntFromInterval(min, max);
+            const to = (!isNaN({{ $from }}) && !isNaN({{ $to }})) ? parseFloat('{{ $to }}') : randomIntFromInterval(min, max);
             var rangeSlider = document.getElementById('slide-price');
             if (rangeSlider) {
                 var input0 = document.getElementById('input-with-keypress-0');

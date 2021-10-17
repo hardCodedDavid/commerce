@@ -123,13 +123,13 @@
                                             </div>
                                         </div>
                                             @if ($product['in_stock'])
-                                            <a onclick="addToCart({{ $product['id'] }}, this.parentNode.querySelector('input[type=number]').value)" class="ps-product__addcart ps-button">
-                                                <i class="icon-cart"></i>Add to cart
-                                            </a>
+                                                <a onclick="addToCart({{ $product['id'] }}, this.parentNode.querySelector('input[type=number]').value)" class="ps-product__addcart ps-button">
+                                                    <i class="icon-cart"></i>Add to cart
+                                                </a>
                                             @else
-                                            <a style="background: #e91313" class="ps-product__addcart ps-button">
-                                                <i class="icon-cart"></i>Out of Stock
-                                            </a>
+                                                <a style="background: #e91313" class="ps-product__addcart ps-button">
+                                                    <i class="icon-cart"></i>Out of Stock
+                                                </a>
                                             @endif
                                             <a class="ps-product__icon" onclick="addToWishlist({{ $product['id'] }})" href="javaScript:void(0);"><i class="icon-heart"></i></a>
                                     </div>
@@ -156,6 +156,7 @@
                                         <a class="ps-product__shop" href="/shop"><i class="icon-store"></i><span>Shop</span></a>
                                         @if ($product['in_stock'])
                                             <a class="ps-product__addcart ps-button" onclick="addToCart({{ $product['id'] }}, document.querySelector('#singleProductQty').value)"><i class="icon-cart"></i>Add to cart</a>
+                                            <a class="ps-product__shop" href="{{ route('checkout') }}" title="checkout"><i class="icon-exit"></i><span>Checkout</span></a>
                                         @else
                                             <a class="ps-product__addcart ps-button" style="background: #e91313"><i class="icon-cart"></i>Out of Stock</a>
                                         @endif
@@ -289,7 +290,7 @@
                                                         <option value="4" {{ old('rating') == 4 ? 'selected' : '' }}>4</option>
                                                         <option value="5" {{ !in_array(old('rating'), [1,2,3,4]) ? 'selected' : '' }}>5</option>
                                                     </select>
-                                                    <input type="hidden" name="rating" id="rating" value="1">
+                                                    <input type="hidden" name="rating" id="rating" value="5">
                                                 </div>
                                             </div>
                                             <div class="col-12 form-group--block">

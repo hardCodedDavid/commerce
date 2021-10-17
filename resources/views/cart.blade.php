@@ -13,6 +13,7 @@
                 <li><a href="javascript:void(0);">Cart</a></li>
             </ul>
         </div>
+    </div>
     <section class="section--shopping-cart">
         <div class="container shopping-container">
             <h2 class="page__title">Shopping Cart</h2>

@@ -40,7 +40,7 @@
                                     @endphp
                                     <div class="col-12 col-md-7 col-lg-7">
                                         <div class="invoice-logo">
-                                            <img src="{{ asset($settings['logo'] ?? 'admin/assets/images/logo.svg') }}" class="img-fluid" alt="invoice-logo">
+                                            <img src="{{ asset($settings['invoice_logo']) }}" class="img-fluid" alt="invoice-logo">
                                         </div>
                                         <h4>{{ $settings['name'] ?? env('APP_NAME') }}</h4>
                                         <p class="mb-0">{{ $settings['address'] }}</p>
@@ -91,12 +91,13 @@
                                                     <th scope="col">{{ ucfirst($variation['name']) }}</th>
                                                 @endforeach
                                                 <th scope="col">Qty</th>
+                                                <th scope="col">Item Number(s)</th>
                                                 <th scope="col">Unit Price</th>
                                                 <th scope="col">Total Price</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($sale->items()->get() as $key=>$item)
+                                            @foreach ($sale->items()->get() as $key => $item)
                                                 <tr>
                                                     <th scope="row">{{ $key + 1 }}</th>
                                                     <td>{{ $item->product['name'] }}</td>
@@ -111,8 +112,13 @@
                                                         <td>{{ $value ?? 'N/A' }}</td>
                                                     @endforeach
                                                     <td>{{ $item['quantity'] }}</td>
-                                                    <td>₦{{ number_format($item['price']) }}</td>
-                                                    <td>₦{{ number_format($item['price'] * $item['quantity']) }}</td>
+                                                    <td>
+                                                        @foreach (json_decode($item['item_numbers'], true) as $number)
+                                                            <span class="small bg-light mx-1 px-1">{{ array_values($number)[0] }}</span>
+                                                        @endforeach
+                                                    </td>
+                                                    <td>₦{{ number_format($item['price'], 2) }}</td>
+                                                    <td>₦{{ number_format($item['price'] * $item['quantity'], 2) }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -159,6 +165,14 @@
                                         </div>
                                         @endcan
                                     </div>
+                                </div>
+                                <div class="mt-3">
+                                    <span class="small mx-1"><i>created by:</i> {{ $sale->getCreatedBy() }}</span>
+                                    @if($sale['updated_by'] && $sale['updated_by'] != $sale['last_updated_by'])
+                                        <span class="small mx-1"><i>last updated by:</i> {{ $sale->getLastUpdatedBy() }}</span>
+                                    @else
+                                        <span class="small mx-1"><i>updated by:</i> {{ $sale->getUpdatedBy() }}</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>

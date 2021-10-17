@@ -69,6 +69,7 @@
                                 <th><i class="fa fa-list-ul"></i></th>
                                 <th>Code</th>
                                 <th>Supplier</th>
+                                <th>Created By</th>
                                 <th>Total Products</th>
                                 <th>Total Quantity</th>
                                 <th>Sub Total</th>
@@ -121,6 +122,7 @@
                     { "data": "sn" },
                     { "data": "code" },
                     { "data": "supplier" },
+                    { "data": "creator" },
                     { "data": "products" },
                     { "data": "quantity" },
                     { "data": "sub_total" },

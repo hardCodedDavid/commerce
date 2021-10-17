@@ -76,6 +76,7 @@
                                 <th><i class="fa fa-list-ul"></i></th>
                                 <th>Code</th>
                                 <th>Customer</th>
+                                <th>Created By</th>
                                 <th>Type</th>
                                 <th>Total Products</th>
                                 <th>Total Quantity</th>
@@ -129,6 +130,7 @@
                    { "data": "sn" },
                    { "data": "code" },
                    { "data": "customer" },
+                   { "data": "creator" },
                    { "data": "type" },
                    { "data": "products" },
                    { "data": "quantity" },

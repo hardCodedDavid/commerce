@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddItemNumberToProductsTable extends Migration
+class AddAdminIdColumnToProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,10 @@ class AddItemNumberToProductsTable extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->string('item_number')->unique();
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
+            $table->foreignId('last_updated_by')->nullable();
+            $table->timestamp('updated_date')->nullable();
         });
     }
 
@@ -26,7 +29,7 @@ class AddItemNumberToProductsTable extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('item_number');
+            $table->dropColumn(['created_by', 'updated_by', 'last_updated_by', 'last_updated_date']);
         });
     }
 }

@@ -184,17 +184,17 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="form-group row mb-0">
-                                            <label for="stockQuantity" class="col-sm-4 col-form-label">Quantity</label>
-                                            <div class="col-sm-8">
-                                                <input type="number" value="{{ old('quantity') ?? $product['quantity'] }}" name="quantity" class="form-control" id="stockQuantity" placeholder="100">
-                                                @error('quantity')
-                                                    <span class="text-danger small" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group row mb-0">--}}
+{{--                                            <label for="stockQuantity" class="col-sm-4 col-form-label">Quantity</label>--}}
+{{--                                            <div class="col-sm-8">--}}
+{{--                                                <input type="number" value="{{ old('quantity') ?? $product['quantity'] }}" name="quantity" class="form-control" id="stockQuantity" placeholder="100">--}}
+{{--                                                @error('quantity')--}}
+{{--                                                    <span class="text-danger small" role="alert">--}}
+{{--                                                        <strong>{{ $message }}</strong>--}}
+{{--                                                    </span>--}}
+{{--                                                @enderror--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
                                     </div>
                                     <div class="tab-pane fade" id="v-pills-full_description" role="tabpanel" aria-labelledby="v-pills-full_description-tab">
                                         <div class="my-1">
@@ -220,17 +220,17 @@
                                                 <textarea class="form-control" name="note" id="purchaseNote" rows="3" placeholder="Purchase note">{{ old('note') ?? $product['note'] }}</textarea>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
-                                            <label for="item_number" class="col-sm-3 col-form-label">Item/Part Number</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" value="{{ old('item_number') ?? $product['item_number'] }}" name="item_number" class="form-control" id="item_number" placeholder="Item Number">
-                                                @error('item_number')
-                                                    <span class="text-danger small" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
+{{--                                        <div class="form-group row">--}}
+{{--                                            <label for="item_number" class="col-sm-3 col-form-label">Item/Part Number</label>--}}
+{{--                                            <div class="col-sm-9">--}}
+{{--                                                <input type="text" value="{{ old('item_number') ?? $product['item_number'] }}" name="item_number" class="form-control" id="item_number" placeholder="Item Number">--}}
+{{--                                                @error('item_number')--}}
+{{--                                                    <span class="text-danger small" role="alert">--}}
+{{--                                                        <strong>{{ $message }}</strong>--}}
+{{--                                                    </span>--}}
+{{--                                                @enderror--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
                                         <div class="form-group row mb-0">
                                             <label for="feature" class="col-sm-3 col-form-label">Website Feature?</label>
                                             <div class="col-sm-9">

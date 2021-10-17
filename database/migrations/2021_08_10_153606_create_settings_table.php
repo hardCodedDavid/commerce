@@ -22,6 +22,7 @@ class CreateSettingsTable extends Migration
             $table->string('phone_2')->nullable();
             $table->text('address')->nullable();
             $table->string('logo')->nullable();
+            $table->string('icon')->nullable();
             $table->string('dashboard_logo')->nullable();
             $table->string('store_logo')->nullable();
             $table->string('email_logo')->nullable();

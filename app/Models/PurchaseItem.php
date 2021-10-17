@@ -30,6 +30,11 @@ class PurchaseItem extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function itemNumbers()
+    {
+        return $this->hasMany(ItemNumber::class);
+    }
+
     public function variationItems()
     {
         return $this->belongsToMany(VariationItem::class);
@@ -42,5 +47,10 @@ class PurchaseItem extends Model
             $arr[] = $item['id'];
         }
         return $arr;
+    }
+
+    public function getQuantityAttribute(): int
+    {
+        return $this->itemNumbers()->count();
     }
 }

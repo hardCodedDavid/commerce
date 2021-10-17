@@ -8,7 +8,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="apple-touch-icon.html" rel="apple-touch-icon">
-    <link rel="shortcut icon" href="{{ asset('logo/5.png') }}">
+    <link rel="shortcut icon" href="{{ asset(\App\Models\Setting::first()->icon) }}">
     <meta name="author" content="">
     <meta name="keywords" content="">
     <meta name="description" content="">
@@ -693,7 +693,7 @@
                 $('.shopping-cart-body').html(`<div class="cart-item text-center py-3">Cart is empty<div>`);
             } else {
                 $('.shopping-cart-body').html(html);
-            };
+            }
         }
 
         function updateDetailedWishlistView(data) {

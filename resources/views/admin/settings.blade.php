@@ -191,6 +191,20 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            @if ($settings['icon'])
+                                <img src="{{ asset($settings['icon']) }}" alt="icon" width="100px" style="border-radius: 5px">
+                            @endif
+                            <div class="form-group">
+                                <label for="icon">Website Icon</label>
+                                <input type="file" class="form-control-file" name="icon" id="icon">
+                                @error('icon')
+                                    <span class="text-danger small" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="col-md-12 text-right">
                             <button type="button" onclick="confirmSubmission('updateProfileForm')" class="btn  btn-primary">Update</button>
                         </div>
@@ -253,6 +267,7 @@
             </div>
 
             <div class="card mt-5">
+                @php $locations = json_decode($settings->pickup_locations, true) ?? []; @endphp
                 <div class="card-body">
                     <h6 class="card-title">Pickup Locations</h6>
                     <form method="POST" id="locationsForm" action="{{ route('admin.location.update') }}">
@@ -263,19 +278,17 @@
                             <div class="repeater-default">
                                 <div id="oldLocations" data-repeater-list="locations">
                                     <div data-repeater-item="">
-                                        @foreach(json_decode($settings->pickup_locations, true) ?? [] as $key => $loc)
-                                            <div class="form-group row d-flex align-items-end">
-                                                <div class="col-10">
-                                                    <input type="text" name="locations[]" class="form-control" value="{!! $loc !!}">
-                                                </div><!--end col-->
+                                        <div class="form-group row d-flex align-items-end">
+                                            <div class="col-10">
+                                                <input type="text" name="locations[]" class="form-control" value="">
+                                            </div><!--end col-->
 
-                                                <div class="col-2">
-                                                    <span data-repeater-delete="" class="btn btn-outline-danger">
-                                                        <span class="fa fa-trash me-1"></span>
-                                                    </span>
-                                                </div><!--end col-->
-                                            </div><!--end row-->
-                                        @endforeach
+                                            <div class="col-2">
+                                                <span data-repeater-delete="" class="btn btn-outline-danger">
+                                                    <span class="fa fa-trash me-1"></span>
+                                                </span>
+                                            </div><!--end col-->
+                                        </div>
                                     </div><!--end /div-->
                                 </div><!--end repet-list-->
                                 <div class="form-group mb-0 row">
@@ -369,6 +382,28 @@
                     }
                 });
             });
+
+            const locations = {!! json_encode($locations) !!};
+            let html = ''
+            locations.forEach((cur, index) => {
+                html += `
+                <div data-repeater-item="">
+                    <div class="form-group row d-flex align-items-end">
+                        <div class="col-10">
+                            <input type="text" name="locations[${index}]" class="form-control" value="${cur}">
+                        </div><!--end col-->
+
+                        <div class="col-2">
+                            <span data-repeater-delete="" class="btn btn-outline-danger">
+                                <span class="fa fa-trash me-1"></span>
+                            </span>
+                        </div><!--end col-->
+                    </div>
+                </div>
+            `;
+            })
+            $('#oldLocations').html(html)
+
             function checkForPendingTransactionNotification()
             {
                 if (pendingTransaction.prop('checked')){
