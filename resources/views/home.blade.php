@@ -80,7 +80,7 @@
                 @if(isset($cat))
                     <div class="featured__first text-center">
                         <div class="ps-product--vertical">
-                            <a href="{{ route('category.products', $cat) }}"><img class="ps-product__thumbnail" src="{{ asset($cat->products()->first() ? ($cat->products()->inRandomOrder()->first()->media()->first()['url'] ?? null) : null) }}" alt="" /></a>
+                            <a href="{{ route('category.products', $cat) }}"><img class="ps-product__thumbnail" src="{{ asset($cat->products()->count() > 0 ? ($cat->products()->whereHas('media', function ($q) { $q->where('url', '!=', null); })->inRandomOrder()->first()->media()->where('url', '!=', null)->first()['url'] ?? null) : null) }}" alt="" /></a>
                             <div class="ps-product__content">
                                 <a class="ps-product__name" href="{{ route('category.products', $cat) }}">{{ $cat['name'] }}</a>
                                 <p class="ps-product__quantity">{{ $cat->products()->count() }} item(s)</p>
@@ -93,7 +93,7 @@
                         @foreach($categories->take(8) as $key => $category)
                             <div class="col-3 p-0">
                                 <div class="ps-product--vertical">
-                                    <a href="{{ route('category.products', $category) }}"><img class="ps-product__thumbnail" src="{{ asset($cat->products()->first() ? ($cat->products()->inRandomOrder()->first()->media()->first()['url'] ?? null) : null) }}" alt="" /></a>
+                                    <a href="{{ route('category.products', $category) }}"><img class="ps-product__thumbnail" src="{{ asset($category->products()->count() > 0 ? ($category->products()->whereHas('media', function ($q) { $q->where('url', '!=', null); })->inRandomOrder()->first()->media()->where('url', '!=', null)->first()['url'] ?? null) : null) }}" alt="" /></a>
                                     <div class="ps-product__content">
                                         <a class="ps-product__name" href="{{ route('category.products', $category) }}">{{ $category['name'] }}</a>
                                         <p class="ps-product__quantity">{{ $category->products()->count() }} item(s)</p>
@@ -109,7 +109,7 @@
                     <div class="product-slide">
                         @if(isset($cat))
                             <a class="ps-product--vertical item-first" href="{{ route('category.products', $cat) }}">
-                                <img class="ps-product__thumbnail" src="{{ asset($cat->products()->first() ? ($cat->products()->inRandomOrder()->first()->media()->first()['url'] ?? null) : null) }}" alt="" />
+                                <img class="ps-product__thumbnail" src="{{ asset($cat->products()->count() > 0 ? ($cat->products()->whereHas('media', function ($q) { $q->where('url', '!=', null); })->inRandomOrder()->first()->media()->where('url', '!=', null)->first()['url'] ?? null) : null) }}" alt="" />
                                 <div class="ps-product__content">
                                     <h5 class="ps-product__name">{{ $cat['name'] }}</h5>
                                     <p class="ps-product__quantity">{{ $cat->products()->count() }} item(s)</p>
@@ -118,7 +118,7 @@
                         @endif
                         @foreach($categories->take(8) as $category)
                             <a class="ps-product--vertical" href="#">
-                                <img class="ps-product__thumbnail" src="{{ asset($cat->products()->first() ? ($cat->products()->inRandomOrder()->first()->media()->first()['url'] ?? null) : null) }}" alt="" />
+                                <img class="ps-product__thumbnail" src="{{ asset($category->products()->count() > 0 ? ($category->products()->whereHas('media', function ($q) { $q->where('url', '!=', null); })->inRandomOrder()->first()->media()->where('url', '!=', null)->first()['url'] ?? null) : null) }}" alt="" />
                                 <div class="ps-product__content">
                                     <h5 class="ps-product__name">{{ $category['name'] }}</h5>
                                     <p class="ps-product__quantity">{{ $category->products()->count() }} items</p>
