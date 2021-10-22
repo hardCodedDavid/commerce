@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Validation\ValidationException;
 
 class DeliveryController extends Controller
 {
-    public static $token;
+    public static string $token;
 
     public function __construct()
     {
@@ -23,87 +21,54 @@ class DeliveryController extends Controller
             ->get('https://api.clicknship.com.ng/clicknship/Operations/States'), true);
     }
 
-    public function getCities()
+    public function getCitiesByState($state)
     {
         return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
-            ->get('https://api.clicknship.com.ng/clicknship/operations/cities'), true);
+            ->get('https://api.clicknship.com.ng/clicknship/Operations/StateCities?StateName='.$state), true);
     }
 
-    /**
-     * @throws ValidationException
-     */
-    public function getCitiesByState()
+    public function getDeliveryTowns($city)
     {
-        $this->validate(request(), ['state' => 'required']);
         return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
-            ->get('https://api.clicknship.com.ng/clicknship/Operations/StateCities?StateName='.request('state')), true);
+            ->get('https://api.clicknship.com.ng/clicknship/Operations/DeliveryTowns?CityCode='.$city), true);
     }
 
-    /**
-     * @throws ValidationException
-     */
-    public function getDeliveryTowns()
+    public function getDropOffLocations($city)
     {
-        $this->validate(request(), ['city_code' => 'required']);
         return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
-            ->get('https://api.clicknship.com.ng/clicknship/Operations/DeliveryTowns?CityCode='.request('city_code')), true);
+            ->get('https://api.clicknship.com.ng/ClicknShip/Operations/DropOffAddresses?citycode='.$city), true);
     }
 
-    /**
-     * @throws ValidationException
-     */
-    public function getDropOffLocations()
-    {
-        $this->validate(request(), ['city_code' => 'required']);
-        return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
-            ->get('https://api.clicknship.com.ng/ClicknShip/Operations/DropOffAddresses?citycode='.request('city_code')), true);
-    }
-
-    public function estimateDeliveryFee()
+    public function estimateDeliveryFee($destination, $townID, $weight)
     {
         return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
             ->post('https://api.clicknship.com.ng/clicknship/Operations/DeliveryFee', [
-                'Origin' => env('CNS_ORIGIN'),
-                'Destination' => 'LAGOS MAINLAND',
-                'OnforwardingTownID' => '17',
-                'Weight' => '1.5',
+                'Origin' => env('CNS_CITY'),
+                'Destination' => $destination,
+                'OnforwardingTownID' => $townID,
+                'Weight' => $weight,
                 'PickupType' => '1'
             ]), true);
     }
 
-    public static function createDelivery($data)
+    public function trackShipment($waybill)
     {
-        return Http::withHeaders(['Content-Type' => 'application/json'])
-            ->post('https://private-anon-8d29497fae-gokada2.apiary-mock.com/api/developer/v3/order_create', [
-                "api_key" => env('GOKADA_API_KEY'),
-                "pickup_address" => $data['address'],
-                "pickup_latitude" => $data['latitude'],
-                "pickup_longitude" => $data['longitude'],
-                "pickup_customer_name" => $data['longitude'],
-                "pickup_customer_email" => $data['longitude'],
-                "pickup_customer_phone" => $data['phone'],
-                "pickup_datetime" => $data['date'],
-                "dropoffs" => $data['dropoffs']
-            ]);
+        return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
+            ->get('https://api.clicknship.com.ng/clicknship/Operations/TrackShipment?waybillno='.$waybill), true);
     }
 
-    public static function checkDeliveryStatus($id)
+    public function pickupRequest($code, $data)
     {
-        return Http::withHeaders(['Content-Type' => 'application/json'])
-            ->post('https://private-anon-8d29497fae-gokada2.apiary-mock.com/api/developer/v3/order_status', [
-                "api_key" => env('GOKADA_API_KEY'),
-                "order_id" => $id
-            ]);
+        $data['OrderNo'] = $code;
+        return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
+            ->post('https://api.clicknship.com.ng/clicknship/Operations/PickupRequest', $data), true);
     }
 
-    public static function cancelDelivery($id)
-    {
-        return Http::withHeaders(['Content-Type' => 'application/json'])
-            ->post('https://private-anon-8d29497fae-gokada2.apiary-mock.com/api/developer/v3/order_cancel', [
-                "api_key" => env('GOKADA_API_KEY'),
-                "order_id" => $id
-            ]);
-    }
+//    public function printWaybill($waybill)
+//    {
+//        return Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
+//            ->get('https://api.clicknship.com.ng/clicknship/Operations/PrintWaybill?waybillno='.$waybill);
+//    }
 
     public static function getToken()
     {
@@ -133,31 +98,9 @@ class DeliveryController extends Controller
         }
     }
 
-    public function deliveryCallback()
-    {
-        $data = json_decode(file_get_contents('php://input'), true);
-        $data = serialize($data);
-
-        define('GOKADA_SECRET_KEY', env('GOKADA_API_KEY'));
-
-        // Get signature from header and base64 decode it
-        $header = $_SERVER['HTTP_X_GOKADA_SIGNATURE'];
-        $signature = base64_decode($header);
-
-        // Get the expected hash
-        $hash = hash_hmac('sha1', $data, GOKADA_SECRET_KEY);
-
-        // Verify signature is correct
-        if($signature !== $hash) exit();
-
-        try {
-            //
-        } catch (Exception $e) {
-            logger($e->getMessage());
-            exit();
-        }
-
-        http_response_code(200);
-        exit();
-    }
+//    public function getCities()
+//    {
+//        return json_decode(Http::withHeaders(['Content-Type' => 'application/json', 'Authorization' => self::$token])
+//            ->get('https://api.clicknship.com.ng/clicknship/operations/cities'), true);
+//    }
 }

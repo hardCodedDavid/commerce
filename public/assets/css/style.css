@@ -777,6 +777,11 @@ body {
   font-size: 14px;
 }
 
+.form-group--block select {
+  height: 40px;
+  font-size: 14px;
+}
+
 .form-group--block textarea {
   min-height: 100px;
   font-size: 14px;

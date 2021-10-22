@@ -71,7 +71,7 @@
                                 <div style="font-size: 13px" class="my-2"><strong class="mr-2">State:</strong>{{ $order['state'] }}</div>
                                 <div style="font-size: 13px" class="my-2"><strong class="mr-2">City:</strong>{{ $order['city'] }}</div>
                                 <div style="font-size: 13px" class="my-2"><strong class="mr-2">Address:</strong>{{ $order['address'] }}</div>
-                                <div style="font-size: 13px" class="my-2"><strong class="mr-2">PostCode:</strong>{{ $order['postcode'] ?? 'N/A' }}</div>
+{{--                                <div style="font-size: 13px" class="my-2"><strong class="mr-2">PostCode:</strong>{{ $order['postcode'] ?? 'N/A' }}</div>--}}
                                 <div style="font-size: 13px" class="my-2"><strong class="mr-2">Note:</strong>{{ $order['note'] ?? 'N/A' }}</div>
                             </div>
                         </div>

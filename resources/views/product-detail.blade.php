@@ -94,8 +94,11 @@
                                     @endif
 
                                     <div class="ps-product__variable"><span>Weight:  {{ round($product['weight'], 2) }}Kg</span></div>
-
-                                    <div class="ps-product__avai alert__success">Availability: <span>{{ number_format($product['quantity']) }} in stock</span></div>
+                                    @if($product['in_stock'])
+                                        <div class="ps-product__avai alert__success">Availability: <span> in stock</span></div>
+                                    @else
+                                        <div class="ps-product__avai alert__error">Availability: <span>out of stock</span></div>
+                                    @endif
                                     <div class="mb-2">{{ $product['description'] }}</div>
                                     <div class="ps-product__info">
                                         <ul class="ps-list--rectangle">

@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @method static create(array $array)
@@ -14,22 +17,27 @@ class Order extends Model
 
     protected $guarded = [];
 
-    public function items()
+    public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function activities()
+    public function payment(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class);
+    }
+
+    public function activities(): HasMany
     {
         return $this->hasMany(OrderActivity::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function sale()
+    public function sale(): HasOne
     {
         return $this->hasOne(Sale::class);
     }
@@ -42,9 +50,9 @@ class Order extends Model
     public function getSubTotal()
     {
         $sum = 0;
-        foreach ($this->items as $item) {
+        foreach ($this->items()->get() as $item)
             $sum += $item['quantity'] * $item['price'];
-        }
+
         return $sum;
     }
 

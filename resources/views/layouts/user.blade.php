@@ -84,7 +84,7 @@
                     <div class="header-inner__left">
                         <button class="navbar-toggler"><i class="icon-menu"></i></button>
                     </div>
-                    <div class="header-inner__center"><a class="logo open" href="/"><img class="img-fluid" width="200px" src="{{ asset($settings->store_logo ?? null) }}" alt="Logo"></a></div>
+                    <div class="header-inner__center"><a class="logo open" href="/"><img class="img-fluid" style="height: 45px" src="{{ asset($settings->store_logo ?? null) }}" alt="Logo"></a></div>
                     <div class="header-inner__right">
                         <button class="button-icon icon-sm search-mobile"><i class="icon-magnifier"></i></button>
                     </div>
@@ -94,7 +94,7 @@
         <section class="ps-header--center header-desktop">
             <div class="container">
                 <div class="header-inner">
-                    <div class="header-inner__left"><a class="logo" href="/"><img class="img-fluid" width="200px" src="{{ asset($settings->store_logo ?? null) }}" alt="Logo"></a>
+                    <div class="header-inner__left"><a class="logo" href="/"><img class="img-fluid" style="height: 55px" src="{{ asset($settings->store_logo ?? null) }}" alt="Logo"></a>
                         <ul class="menu">
                             <li class="menu-item-has-children has-mega-menu">
                                 <button class="category-toggler"><i class="icon-menu"></i></button>

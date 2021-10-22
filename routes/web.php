@@ -24,11 +24,11 @@ use Illuminate\Http\Request;
 
 Auth::routes();
 
-Route::get('/a', [DeliveryController::class, 'estimateDeliveryFee']);
-Route::get('/b', [DeliveryController::class, 'getDeliveryTowns']);
-Route::get('/c', [DeliveryController::class, 'getDropOffLocations']);
-Route::get('/d', [DeliveryController::class, 'getStates']);
-Route::get('/e', [DeliveryController::class, 'getCitiesByState']);
+Route::get('/delivery/{destination}/{townID}/{weight}/estimate', [DeliveryController::class, 'estimateDeliveryFee']);
+Route::get('/delivery/cities/{city}/towns', [DeliveryController::class, 'getDeliveryTowns']);
+Route::get('/delivery/cities/{city}/dropoffs', [DeliveryController::class, 'getDropOffLocations']);
+Route::get('/delivery/states', [DeliveryController::class, 'getStates']);
+Route::get('/delivery/states/{state}/cities', [DeliveryController::class, 'getCitiesByState']);
 
 
 Route::get('/email/verify', [VerificationController::class, 'verifyEmail'])

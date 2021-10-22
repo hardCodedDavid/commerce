@@ -89,6 +89,7 @@ class PaymentController extends Controller
                         $method = $meta['delivery_method'];
                         if ($method == 'pickup')
                             $order = Order::create([
+                                'payment_id' => $payment['id'],
                                 'user_id' => auth()->user()['id'] ?? null,
                                 'code' => Order::getCode(),
                                 'name' => $meta['name'],
@@ -101,6 +102,7 @@ class PaymentController extends Controller
                             ]);
                         else
                             $order = Order::create([
+                                'payment_id' => $payment['id'],
                                 'user_id' => auth()->user()['id'] ?? null,
                                 'code' => Order::getCode(),
                                 'name' => $meta['name'],
@@ -114,6 +116,7 @@ class PaymentController extends Controller
                                 'latitude' => $meta['latitude'],
                                 'note' => $meta['note'],
                                 'delivery_method' => $method,
+                                'shipping' => $meta['delivery_fee'],
                                 'total' => $meta['amount']
                             ]);
                         foreach ($meta['cart']['items'] as $item) {
@@ -170,6 +173,7 @@ class PaymentController extends Controller
                             'order_id' => $order['id'],
                             'status' => 'successful'
                         ]);
+
                         NotificationController::sendOrderSuccessNotification($order);
                         return redirect()->route('orderSuccessful', $order)->with('success', 'Your payment was successful');
                     }

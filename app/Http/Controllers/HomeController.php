@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use App\Models\User;
+use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -14,6 +16,7 @@ use App\Models\Variation;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -76,25 +79,29 @@ class HomeController extends Controller
     public function checkout()
     {
         $delivery_fee = 0;
-        $user = User::find(auth()->id());
-        if ($user && $user['address'] && $user['latitude'] && $user['longitude']) {
-            $delivery_fee = 2500;
+        $weight = 0;
+        foreach (CartController::getUserCartAsArray()['items'] as $item)
+            $weight += $item['product']['weight'] * $item['quantity'];
+//        $user = User::find(auth()->id());
+//        if ($user && $user['address'] && $user['latitude'] && $user['longitude']) {
+//            $delivery_fee = 2500;
 //            try {
 //                $delivery_fee = DeliveryController::estimateDelivery([["address" => $user['address'], "latitude" => $user['latitude'], "longitude" => $user['longitude']]])['fare'] ?? 0;
 //            } catch (Exception $e) {
 //                $delivery_fee = 0;
 //            }
-        }
+//        }
         $cart = CartController::getUserCartAsArray();
         if (count($cart['items'])  < 1)
             return redirect('/cart');
-        return view('checkout', compact('delivery_fee'));
+
+        return view('checkout', compact('delivery_fee', 'weight'));
     }
 
     /**
      * @throws ValidationException
      */
-    public function processCheckout(): RedirectResponse
+    public function processCheckout()//: RedirectResponse
     {
         $this->validate(request(), ['delivery_method' => 'required']);
 
@@ -113,10 +120,10 @@ class HomeController extends Controller
                 'address' => 'required',
                 'city' => 'required',
                 'phone' => 'required',
-                'shipping_country' => 'required_if:ship_to_new_address,yes',
-                'shipping_state' => 'required_if:ship_to_new_address,yes',
-                'shipping_address' => 'required_if:ship_to_new_address,yes',
-                'shipping_city' => 'required_if:ship_to_new_address,yes',
+//                'shipping_country' => 'required_if:ship_to_new_address,yes',
+//                'shipping_state' => 'required_if:ship_to_new_address,yes',
+//                'shipping_address' => 'required_if:ship_to_new_address,yes',
+//                'shipping_city' => 'required_if:ship_to_new_address,yes',
             ];
         if (!auth()->user()) {
             if (request('delivery_method') == 'pickup') $rules['pickup_email'] = 'required';
@@ -129,24 +136,31 @@ class HomeController extends Controller
         $this->validate(request(), $rules);
 
         $cart = CartController::getUserCartAsArray();
+        $weight = 0;
+        foreach ($cart['items'] as $item)
+            $weight += $item['product']['weight'] * $item['quantity'];
         $errors = null;
-        foreach($cart['items'] as $item)
+        $shipmentItems = [];
+        foreach($cart['items'] as $item) {
             if ($item['product']['quantity'] < $item['quantity'])
-                $errors .= $item['product']['name'].', ';
+                $errors .= $item['product']['name'] . ', ';
+
+            $shipmentItems[] = ['ItemName' => $item['product']['name'], 'ItemUnitCost' => $item['product']->getDiscountedPrice(), 'ItemQuantity' => $item['quantity']];
+        }
         if ($errors)
             return back()->with('error', 'Can\'t checkout, quantities not available for '.$errors)->withInput();
 
         $delivery_fee = 0;
-        if (request('delivery_method') == 'ship') {
-            $delivery_fee = 2500;
-            if (request('ship_to_new_address')) {
-                if (request('shippingCityLat') == null || request('shippingCityLng') == null)
-                    return back()->with('error', 'Address could not be validated. Select a new address and try again')->withInput();
-            } else {
-                if (request('cityLat') == null || request('cityLng') == null)
-                    return back()->with('error', 'Address could not be validated. Select a new address and try again')->withInput();
-            }
-        }
+//        if (request('delivery_method') == 'ship') {
+//            $delivery_fee = 2500;
+//            if (request('ship_to_new_address')) {
+//                if (request('shippingCityLat') == null || request('shippingCityLng') == null)
+//                    return back()->with('error', 'Address could not be validated. Select a new address and try again')->withInput();
+//            } else {
+//                if (request('cityLat') == null || request('cityLng') == null)
+//                    return back()->with('error', 'Address could not be validated. Select a new address and try again')->withInput();
+//            }
+//        }
 
         if (request('create_account') == 'yes') {
             $user = User::create([
@@ -166,35 +180,66 @@ class HomeController extends Controller
             ];
         }
         else {
-            $data = request()->only('name', 'country', 'state', 'address', 'city', 'phone', 'email', 'note');
+            $data = request()->only('name', 'country', 'state', 'address', 'phone', 'email', 'note');
+            $data['region'] = explode('_', request('region'))[1];
+            $data['town'] = explode('_', request('city'))[0];
+            $data['city'] = explode('_', request('city'))[1];
             $data['email'] = auth()->user()['email'] ?? request('email');
+            $settings = Setting::query()->first();
+            $data['CNS'] = [
+//                'OrderNo' => 'ORD-1658705',
+                'Description' => env('APP_NAME').' Checkout',
+                'Weight' => $weight,
+                'SenderName' => $settings->name ?? env('APP_NAME'),
+                'SenderCity' => env('CNS_CITY'),
+                'SenderTownID' => env('CNS_TOWN_ID'),
+                'SenderAddress' => env('CNS_ADDRESS'),
+                'SenderPhone' => $settings->phone_1,
+                'SenderEmail' => $settings->email,
+                'RecipientName' => $data['name'],
+                'RecipientCity' => $data['region'],
+                'RecipientTownID' => $data['town'],
+                'RecipientAddress' => $data['address'],
+                'RecipientPhone' => $data['phone'],
+                'RecipientEmail' => $data['email'],
+                'PaymentType' => 'prepaid',
+                'DeliveryType' => 'Normal Delivery',
+                'PickupType' => 1,
+                'ShipmentItems' => $shipmentItems
+            ];
             $data['longitude'] = request('cityLng');
             $data['latitude'] = request('cityLat');
         }
-        if (auth()->user()) {
-            if (request('ship_to_new_address')) {
-                $data = [
-                    'country' => request('shipping_country'),
-                    'state' => request('shipping_state'),
-                    'address' => request('shipping_address'),
-                    'postcode' => request('shipping_postcode'),
-                    'city' => request('shipping_city'),
-                    'note' => request('note'),
-                    'name' => request('name'),
-                    'phone' => request('phone'),
-                    'email' => auth()->user()['email'] ?? request('email')
-                ];
-                $data['longitude'] = request('shippingCityLng');
-                $data['latitude'] = request('shippingCityLat');
-            }
-        }
-//        if (request('delivery_method') == 'ship') {
-//            try {
-//                $delivery_fee = DeliveryController::estimateDelivery([["address" => $data['address'], "latitude" => $data['latitude'], "longitude" => $data['longitude']]])['fare'] ?? request('delivery_fee');
-//            } catch (Exception $e) {
-//                $delivery_fee = request('delivery_fee');
+//        if (auth()->user()) {
+//            if (request('ship_to_new_address')) {
+//                $data = [
+//                    'country' => request('shipping_country'),
+//                    'state' => request('shipping_state'),
+//                    'address' => request('shipping_address'),
+//                    'postcode' => request('shipping_postcode'),
+//                    'city' => request('shipping_city'),
+//                    'note' => request('note'),
+//                    'name' => request('name'),
+//                    'phone' => request('phone'),
+//                    'email' => auth()->user()['email'] ?? request('email')
+//                ];
+//                $data['longitude'] = request('shippingCityLng');
+//                $data['latitude'] = request('shippingCityLat');
 //            }
 //        }
+        if (request('delivery_method') == 'ship') {
+            try {
+                $weight = 0;
+                foreach ($cart['items'] as $item)
+                    $weight += $item['product']['weight'];
+                $fee = (new DeliveryController)->estimateDeliveryFee($data['region'], $data['town'], $weight)[0];
+                $delivery_fee = (float) ($fee ? $fee['TotalAmount'] : request('delivery_fee'));
+                $data['delivery_fee'] = $delivery_fee;
+            } catch (Exception $e) {
+                logger($e);
+                return back()->withInput()->with('error', 'Unable to checkout, try again');
+            }
+        }
 
         $data['auth'] = !is_null(auth()->user());
         $data['delivery_method'] = request('delivery_method');

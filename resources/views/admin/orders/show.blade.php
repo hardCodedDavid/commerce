@@ -133,6 +133,7 @@
                                                 <th scope="col">{{ ucfirst($variation['name']) }}</th>
                                             @endforeach
                                             <th scope="col">Qty</th>
+                                            <th scope="col">Item Number(s)</th>
                                             <th scope="col">Unit Price</th>
                                             <th scope="col">Total Price</th>
                                         </tr>
@@ -153,8 +154,13 @@
                                                     <td>{{ $value ?? 'N/A' }}</td>
                                                 @endforeach
                                                 <td>{{ $item['quantity'] }}</td>
-                                                <td>₦{{ number_format($item['price']) }}</td>
-                                                <td>₦{{ number_format($item['price'] * $item['quantity']) }}</td>
+                                                <td>
+                                                    @foreach (json_decode($item['item_numbers'], true) as $number)
+                                                        <span class="small bg-light mx-1 px-1">{{ array_values($number)[0] }}</span>
+                                                    @endforeach
+                                                </td>
+                                                <td>₦{{ number_format($item['price'], 2) }}</td>
+                                                <td>₦{{ number_format($item['price'] * $item['quantity'], 2) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -173,15 +179,15 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Sub Total :</td>
-                                                    <td>₦{{ number_format($order->getSubTotal()) }}</td>
+                                                    <td>₦{{ number_format($order->getSubTotal(), 2) }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Shipping Fee :</td>
-                                                    <td>₦{{ $order['shipping'] ?? 0 }}</td>
+                                                    <td>Delivery Fee :</td>
+                                                    <td>₦{{ number_format($order['shipping'] ?? 0, 2) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="f-w-7 font-18"><h5>Total :</h5></td>
-                                                    <td class="f-w-7 font-18"><h5>₦{{ number_format($order->getTotal()) }}</h5></td>
+                                                    <td class="f-w-7 font-18"><h5>₦{{ number_format($order->getTotal(), 2) }}</h5></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -191,52 +197,54 @@
                         </div>
                         @can('Process Orders')
                         <div class="card-footer text-right">
-                            @if ($order['status'] != 'pending')
-                                <button type="button" onclick="confirmSubmission('markPendingForm')" class="btn btn-warning-rgba my-1">Mark Pending</button>
-                            @endif
+                            @if($order['status'] != 'cancelled' && $order['status'] != 'delivered')
+                                @if ($order['status'] != 'pending')
+                                    <button type="button" onclick="confirmSubmission('markPendingForm')" class="btn btn-warning-rgba my-1">Mark Pending</button>
+                                @endif
 
-                            @if ($order['status'] != 'processing')
-                                <button type="button" onclick="confirmSubmission('markProcessingForm')" class="btn btn-primary-rgba my-1">Mark Processing</button>
-                            @endif
+                                @if ($order['status'] != 'processing')
+                                    <button type="button" onclick="confirmSubmission('markProcessingForm')" class="btn btn-primary-rgba my-1">Mark Processing</button>
+                                @endif
 
-                            @if ($order['status'] != 'delivered')
-                                <button type="button" onclick="confirmSubmission('markDeliveredForm')" class="btn btn-success-rgba my-1">Mark Delivered</button>
-                            @endif
+                                @if ($order['status'] != 'delivered')
+                                    <button type="button" onclick="confirmSubmission('markDeliveredForm')" class="btn btn-success-rgba my-1">Mark Delivered</button>
+                                @endif
 
-                            @if ($order['status'] != 'cancelled')
-                                <button type="button" onclick="confirmSubmission('markCancelledForm')" class="btn btn-danger-rgba my-1">Mark Cancelled</button>
-                            @endif
+                                @if ($order['status'] != 'cancelled')
+                                    <button type="button" onclick="confirmSubmission('markCancelledForm')" class="btn btn-danger-rgba my-1">Mark Cancelled</button>
+                                @endif
 
-                            @if ($order['status'] != 'pending')
-                                <form method="POST" id="markPendingForm" action="{{ route('admin.orders.state.change', $order) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="state" value="pending" />
-                                </form>
-                            @endif
+                                @if ($order['status'] != 'pending')
+                                    <form method="POST" id="markPendingForm" action="{{ route('admin.orders.state.change', $order) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="state" value="pending" />
+                                    </form>
+                                @endif
 
-                            @if ($order['status'] != 'processing')
-                                <form method="POST" id="markProcessingForm" action="{{ route('admin.orders.state.change', $order) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="state" value="processing"/>
-                                </form>
-                            @endif
+                                @if ($order['status'] != 'processing')
+                                    <form method="POST" id="markProcessingForm" action="{{ route('admin.orders.state.change', $order) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="state" value="processing"/>
+                                    </form>
+                                @endif
 
-                            @if ($order['status'] != 'delivered')
-                                <form method="POST" id="markDeliveredForm" action="{{ route('admin.orders.state.change', $order) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="state" value="delivered" />
-                                </form>
-                            @endif
+                                @if ($order['status'] != 'delivered')
+                                    <form method="POST" id="markDeliveredForm" action="{{ route('admin.orders.state.change', $order) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="state" value="delivered" />
+                                    </form>
+                                @endif
 
-                            @if ($order['status'] != 'cancelled')
-                                <form method="POST" id="markCancelledForm" action="{{ route('admin.orders.state.change', $order) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="state" value="cancelled" />
-                                </form>
+                                @if ($order['status'] != 'cancelled')
+                                    <form method="POST" id="markCancelledForm" action="{{ route('admin.orders.state.change', $order) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="state" value="cancelled" />
+                                    </form>
+                                @endif
                             @endif
                         </div>
                         @endcan

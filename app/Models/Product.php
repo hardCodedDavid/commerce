@@ -25,6 +25,11 @@ class Product extends Model
         return $this->itemNumbers()->where('status', 'available')->count();
     }
 
+    public function getInStockAttribute(): bool
+    {
+        return $this->itemNumbers()->where('status', 'available')->count() > 0;
+    }
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
@@ -72,7 +77,7 @@ class Product extends Model
 
     public function getProfit()
     {
-        return $this['sell_price'] - $this['buy_price'];
+        return $this->getDiscountedPrice() - $this->attributes['buy_price'];
     }
 
     public static function getCode(): string

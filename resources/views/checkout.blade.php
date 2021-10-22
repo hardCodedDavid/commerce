@@ -122,58 +122,16 @@
                                     <div class="form-row">
                                         <div class="col-12 col-12 form-group--block">
                                             <label>Full Name: <span>*</span></label>
-                                            <input class="form-control @error('name') is-invalid @enderror" @auth readonly @endauth name="name" value="{{ old('name') ?? $name }}" type="text" placeholder="Full Name">
+                                            <input class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') ?? $name }}" type="text" placeholder="Full Name">
                                             @error('name')
                                             <div class="small">
                                                 <strong style="color: red">{{ $message }}</strong>
                                             </div>
                                             @enderror
                                         </div>
-                                        <div class="col-12 form-group--block">
-                                            <label>Country: <span>*</span></label>
-                                            <input class="form-control @error('country') is-invalid @enderror" @auth readonly @endauth name="country" value="{{ old('country') ?? $country }}" type="text" placeholder="Country">
-                                            @error('country')
-                                            <div class="small">
-                                                <strong style="color: red">{{ $message }}</strong>
-                                            </div>
-                                            @enderror
-                                        </div>
-                                        <div class="col-12 form-group--block">
-                                            <label>State: <span>*</span></label>
-                                            <input class="form-control @error('state') is-invalid @enderror" name="state" @auth readonly @endauth value="{{ old('state') ?? $state }}" type="text" placeholder="State">
-                                            @error('state')
-                                            <div class="small">
-                                                <strong style="color: red">{{ $message }}</strong>
-                                            </div>
-                                            @enderror
-                                        </div>
-                                        <div class="col-12 form-group--block">
-                                            <label>Address: <span>*</span></label>
-                                            <input class="form-control @error('address') is-invalid @enderror" @auth readonly @endauth name="address" value="{{ old('address') ?? $address }}" type="text" onblur="setTimeout(() => estimateDelivery(), 1500);" placeholder="Address" id="searchTextField" autocomplete="on" runat="server" />
-                                            <input type="hidden" id="cityLat" name="cityLat" value="{{ old('cityLat') ?? $lat }}" />
-                                            <input type="hidden" id="cityLng" name="cityLng" value="{{ old('cityLng') ?? $lng }}" />
-                                            @error('address')
-                                            <div class="small">
-                                                <strong style="color: red">{{ $message }}</strong>
-                                            </div>
-                                            @enderror
-                                        </div>
-                                        <div class="col-12 form-group--block">
-                                            <label>Postcode/ ZIP (optional)</label>
-                                            <input class="form-control @error('postcode') is-invalid @enderror" @auth readonly @endauth name="postcode" value="{{ old('postcode') ?? $postcode }}" type="text">
-                                        </div>
-                                        <div class="col-12 form-group--block">
-                                            <label>Town/ City: <span>*</span></label>
-                                            <input class="form-control @error('city') is-invalid @enderror" @auth readonly @endauth name="city" value="{{ old('city') ?? $city }}" type="text" required>
-                                            @error('city')
-                                            <div class="small">
-                                                <strong style="color: red">{{ $message }}</strong>
-                                            </div>
-                                            @enderror
-                                        </div>
-                                        <div class="col-12 form-group--block">
+                                        <div class="col-md-6 form-group--block">
                                             <label>Phone: <span>*</span></label>
-                                            <input class="form-control @error('phone') is-invalid @enderror" @auth readonly @endauth name="phone" value="{{ old('phone') ?? $phone }}" type="text" required>
+                                            <input class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') ?? $phone }}" type="text" required>
                                             @error('phone')
                                             <div class="small">
                                                 <strong style="color: red">{{ $message }}</strong>
@@ -181,12 +139,12 @@
                                             @enderror
                                         </div>
                                         @auth
-                                            <div class="col-12 form-group--block">
+                                            <div class="col-md-6 form-group--block">
                                                 <label>Email address: <span>*</span></label>
                                                 <input class="form-control" value="{{ $email }}" type="email" disabled required>
                                             </div>
                                         @else
-                                            <div class="col-12 form-group--block">
+                                            <div class="col-md-6 form-group--block">
                                                 <label>Email address: <span>*</span></label>
                                                 <input class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" type="email" required>
                                                 @error('email')
@@ -196,6 +154,68 @@
                                                 @enderror
                                             </div>
                                         @endauth
+                                        <div class="col-md-6 form-group--block">
+                                            <label>Country: <span>*</span></label>
+                                            <input class="form-control @error('country') is-invalid @enderror" name="country" readonly value="NIGERIA" type="text" placeholder="Country">
+                                            @error('country')
+                                            <div class="small">
+                                                <strong style="color: red">{{ $message }}</strong>
+                                            </div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 form-group--block">
+                                            <label>State: <span>*</span></label>
+                                            <select class="form-control @error('state') is-invalid @enderror" name="state" id="state" onchange="getCities($(this).val())">
+                                                <option value="">Select State</option>
+                                            </select>
+                                            @error('state')
+                                            <div class="small">
+                                                <strong style="color: red">{{ $message }}</strong>
+                                            </div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 form-group--block">
+                                            <label>Region: <span>*</span></label>
+                                            <select class="form-control @error('city') is-invalid @enderror" name="region" id="city" onchange="getTowns($(this).val().split('_')[0]); getDropOffs($(this).val().split('_')[0])">
+                                                <option value="">Select A State</option>
+                                            </select>
+                                            @error('region')
+                                            <div class="small">
+                                                <strong style="color: red">{{ $message }}</strong>
+                                            </div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6 form-group--block">
+                                            <label>City: <span>*</span></label>
+                                            <select class="form-control form-group--select @error('city') is-invalid @enderror" name="city" id="town" onchange="estimateDelivery(this)">
+                                                <option value="">Select A Region</option>
+                                            </select>
+                                            @error('city')
+                                            <div class="small">
+                                                <strong style="color: red">{{ $message }}</strong>
+                                            </div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-12 form-group--block">
+                                            <label>Address: <span>*</span></label>
+                                            <input class="form-control @error('address') is-invalid @enderror" name="address" value="{{ old('address') ?? $address }}" type="text" placeholder="Address" id="searchTextField" autocomplete="on" runat="server" />
+                                            <input type="hidden" id="cityLat" name="cityLat" value="{{ old('cityLat') ?? $lat }}" />
+                                            <input type="hidden" id="cityLng" name="cityLng" value="{{ old('cityLng') ?? $lng }}" />
+                                            @error('address')
+                                            <div class="small">
+                                                <strong style="color: red">{{ $message }}</strong>
+                                            </div>
+                                            @enderror
+                                        </div>
+{{--                                        <div class="col-md-12 form-group--block mb-4" id="dropoffs">--}}
+{{--                                            <label for="">Select Drop Off Location <span>*</span></label>--}}
+{{--                                            <div class="p-4 border" id="dropoff"></div>--}}
+{{--                                            @error('address')--}}
+{{--                                            <div class="small">--}}
+{{--                                                <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                            </div>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
                                         @guest
                                             <div class="col-12 form-group--block">
                                                 <input onchange="$('.create-account-section').toggle(500)" @if (old('create_account') && old('create_account') == 'yes') checked @endif id="create-account" name="create_account" value="yes" class="form-check-input" type="checkbox">
@@ -219,59 +239,6 @@
                                                 </div>
                                             </div>
                                         @endguest
-                                        @auth
-                                            <div class="col-12 form-group--block">
-                                                <input class="form-check-input" @if (old('ship_to_new_address') && old('ship_to_new_address') == 'yes') checked @endif onchange="$('.shipping-details').toggle(500)" name="ship_to_new_address" value="yes" id="ship-to-new-address" type="checkbox">
-                                                <label for="ship-to-new-address" class="label-checkbox"><b>Ship to a different address?</b></label>
-                                            </div>
-                                            <div @if (old('ship_to_new_address') && old('ship_to_new_address') == 'yes') style="display: block" @else style="display: none"  @endif  class="col-12 shipping-details">
-                                                <h3 class="my-0 checkout__title">Shipping Details</h3>
-                                                <div class="form-row">
-                                                    <div class="col-12 form-group--block">
-                                                        <label>Country: <span>*</span></label>
-                                                        <input class="form-control @error('shipping_country') is-invalid @enderror" name="shipping_country" value="{{ old('shipping_country') }}" type="text" placeholder="Country">
-                                                        @error('shipping_country')
-                                                        <div class="small">
-                                                            <strong style="color: red">{{ $message }}</strong>
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="col-12 form-group--block">
-                                                        <label>State: <span>*</span></label>
-                                                        <input class="form-control @error('shipping_state') is-invalid @enderror" name="shipping_state" value="{{ old('shipping_state') }}" type="text" placeholder="State">
-                                                        @error('shipping_state')
-                                                        <div class="small">
-                                                            <strong style="color: red">{{ $message }}</strong>
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="col-12 form-group--block">
-                                                        <label>Address: <span>*</span></label>
-                                                        <input class="form-control @error('shipping_address') is-invalid @enderror" name="shipping_address" value="{{ old('shipping_address') }}" type="text" onblur="setTimeout(() => estimateDelivery(true), 1500);" placeholder="Address" id="searchTextField1" autocomplete="on" runat="server" />
-                                                        <input type="hidden" id="cityLat1" name="shippingCityLat" value="{{ old('shippingCityLat') }}" />
-                                                        <input type="hidden" id="cityLng1" name="shippingCityLng" value="{{ old('shippingCityLng') }}" />
-                                                        @error('shipping_address')
-                                                        <div class="small">
-                                                            <strong style="color: red">{{ $message }}</strong>
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="col-12 form-group--block">
-                                                        <label>Postcode/ ZIP (optional)</label>
-                                                        <input class="form-control @error('shipping_postcode') is-invalid @enderror" name="shipping_postcode" value="{{ old('shipping_postcode') }}" type="text">
-                                                    </div>
-                                                    <div class="col-12 form-group--block">
-                                                        <label>Town/ City: <span>*</span></label>
-                                                        <input class="form-control @error('shipping_city') is-invalid @enderror" name="shipping_city" value="{{ old('shipping_city') }}" type="text" required>
-                                                        @error('shipping_city')
-                                                        <div class="small">
-                                                            <strong style="color: red">{{ $message }}</strong>
-                                                        </div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endauth
                                         <div class="col-12 form-group--block">
                                             <label>Order notes (optional)</label>
                                             <textarea class="form-control" name="note" placeholder="Note about your orders, e.g special notes for delivery.">{{ old('note') }}</textarea>
@@ -279,6 +246,169 @@
                                     </div>
                                 </div>
                             </div>
+{{--                            <div id="ship" style="display: @if(old('delivery_method') == 'ship') block @else none @endif">--}}
+{{--                                <h3 class="checkout__title">Billing Details</h3>--}}
+{{--                                <div class="checkout__form">--}}
+{{--                                    <div class="form-row">--}}
+{{--                                        <div class="col-12 col-12 form-group--block">--}}
+{{--                                            <label>Full Name: <span>*</span></label>--}}
+{{--                                            <input class="form-control @error('name') is-invalid @enderror" @auth readonly @endauth name="name" value="{{ old('name') ?? $name }}" type="text" placeholder="Full Name">--}}
+{{--                                            @error('name')--}}
+{{--                                            <div class="small">--}}
+{{--                                                <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                            </div>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
+{{--                                        <div class="col-12 form-group--block">--}}
+{{--                                            <label>Country: <span>*</span></label>--}}
+{{--                                            <input class="form-control @error('country') is-invalid @enderror" @auth readonly @endauth name="country" value="{{ old('country') ?? $country }}" type="text" placeholder="Country">--}}
+{{--                                            @error('country')--}}
+{{--                                            <div class="small">--}}
+{{--                                                <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                            </div>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
+{{--                                        <div class="col-12 form-group--block">--}}
+{{--                                            <label>State: <span>*</span></label>--}}
+{{--                                            <input class="form-control @error('state') is-invalid @enderror" name="state" @auth readonly @endauth value="{{ old('state') ?? $state }}" type="text" placeholder="State">--}}
+{{--                                            @error('state')--}}
+{{--                                            <div class="small">--}}
+{{--                                                <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                            </div>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
+{{--                                        <div class="col-12 form-group--block">--}}
+{{--                                            <label>Address: <span>*</span></label>--}}
+{{--                                            <input class="form-control @error('address') is-invalid @enderror" @auth readonly @endauth name="address" value="{{ old('address') ?? $address }}" type="text" onblur="setTimeout(() => estimateDelivery(), 1500);" placeholder="Address" id="searchTextField" autocomplete="on" runat="server" />--}}
+{{--                                            <input type="hidden" id="cityLat" name="cityLat" value="{{ old('cityLat') ?? $lat }}" />--}}
+{{--                                            <input type="hidden" id="cityLng" name="cityLng" value="{{ old('cityLng') ?? $lng }}" />--}}
+{{--                                            @error('address')--}}
+{{--                                            <div class="small">--}}
+{{--                                                <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                            </div>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
+{{--                                        <div class="col-12 form-group--block">--}}
+{{--                                            <label>Postcode/ ZIP (optional)</label>--}}
+{{--                                            <input class="form-control @error('postcode') is-invalid @enderror" @auth readonly @endauth name="postcode" value="{{ old('postcode') ?? $postcode }}" type="text">--}}
+{{--                                        </div>--}}
+{{--                                        <div class="col-12 form-group--block">--}}
+{{--                                            <label>Town/ City: <span>*</span></label>--}}
+{{--                                            <input class="form-control @error('city') is-invalid @enderror" @auth readonly @endauth name="city" value="{{ old('city') ?? $city }}" type="text" required>--}}
+{{--                                            @error('city')--}}
+{{--                                            <div class="small">--}}
+{{--                                                <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                            </div>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
+{{--                                        <div class="col-12 form-group--block">--}}
+{{--                                            <label>Phone: <span>*</span></label>--}}
+{{--                                            <input class="form-control @error('phone') is-invalid @enderror" @auth readonly @endauth name="phone" value="{{ old('phone') ?? $phone }}" type="text" required>--}}
+{{--                                            @error('phone')--}}
+{{--                                            <div class="small">--}}
+{{--                                                <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                            </div>--}}
+{{--                                            @enderror--}}
+{{--                                        </div>--}}
+{{--                                        @auth--}}
+{{--                                            <div class="col-12 form-group--block">--}}
+{{--                                                <label>Email address: <span>*</span></label>--}}
+{{--                                                <input class="form-control" value="{{ $email }}" type="email" disabled required>--}}
+{{--                                            </div>--}}
+{{--                                        @else--}}
+{{--                                            <div class="col-12 form-group--block">--}}
+{{--                                                <label>Email address: <span>*</span></label>--}}
+{{--                                                <input class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" type="email" required>--}}
+{{--                                                @error('email')--}}
+{{--                                                <div class="small">--}}
+{{--                                                    <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                                </div>--}}
+{{--                                                @enderror--}}
+{{--                                            </div>--}}
+{{--                                        @endauth--}}
+{{--                                        @guest--}}
+{{--                                            <div class="col-12 form-group--block">--}}
+{{--                                                <input onchange="$('.create-account-section').toggle(500)" @if (old('create_account') && old('create_account') == 'yes') checked @endif id="create-account" name="create_account" value="yes" class="form-check-input" type="checkbox">--}}
+{{--                                                <label for="create-account" class="label-checkbox">Create an account?</label>--}}
+{{--                                            </div>--}}
+{{--                                            <div @if (old('create_account') && old('create_account') == 'yes') style="display: block" @else style="display: none" @endif class="col-12 create-account-section">--}}
+{{--                                                <div class="form-row">--}}
+{{--                                                    <div class="col-12 form-group--block">--}}
+{{--                                                        <label>Password: </label>--}}
+{{--                                                        <input class="form-control @error('password') is-invalid @enderror" name="password" type="password">--}}
+{{--                                                        @error('password')--}}
+{{--                                                        <div class="small">--}}
+{{--                                                            <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                                        </div>--}}
+{{--                                                        @enderror--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-12 form-group--block">--}}
+{{--                                                        <label>Confirm Password: </label>--}}
+{{--                                                        <input class="form-control" name="password_confirmation" type="password">--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        @endguest--}}
+{{--                                        @auth--}}
+{{--                                            <div class="col-12 form-group--block">--}}
+{{--                                                <input class="form-check-input" @if (old('ship_to_new_address') && old('ship_to_new_address') == 'yes') checked @endif onchange="$('.shipping-details').toggle(500)" name="ship_to_new_address" value="yes" id="ship-to-new-address" type="checkbox">--}}
+{{--                                                <label for="ship-to-new-address" class="label-checkbox"><b>Ship to a different address?</b></label>--}}
+{{--                                            </div>--}}
+{{--                                            <div @if (old('ship_to_new_address') && old('ship_to_new_address') == 'yes') style="display: block" @else style="display: none"  @endif  class="col-12 shipping-details">--}}
+{{--                                                <h3 class="my-0 checkout__title">Shipping Details</h3>--}}
+{{--                                                <div class="form-row">--}}
+{{--                                                    <div class="col-12 form-group--block">--}}
+{{--                                                        <label>Country: <span>*</span></label>--}}
+{{--                                                        <input class="form-control @error('shipping_country') is-invalid @enderror" name="shipping_country" value="{{ old('shipping_country') }}" type="text" placeholder="Country">--}}
+{{--                                                        @error('shipping_country')--}}
+{{--                                                        <div class="small">--}}
+{{--                                                            <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                                        </div>--}}
+{{--                                                        @enderror--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-12 form-group--block">--}}
+{{--                                                        <label>State: <span>*</span></label>--}}
+{{--                                                        <input class="form-control @error('shipping_state') is-invalid @enderror" name="shipping_state" value="{{ old('shipping_state') }}" type="text" placeholder="State">--}}
+{{--                                                        @error('shipping_state')--}}
+{{--                                                        <div class="small">--}}
+{{--                                                            <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                                        </div>--}}
+{{--                                                        @enderror--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-12 form-group--block">--}}
+{{--                                                        <label>Address: <span>*</span></label>--}}
+{{--                                                        <input class="form-control @error('shipping_address') is-invalid @enderror" name="shipping_address" value="{{ old('shipping_address') }}" type="text" onblur="setTimeout(() => estimateDelivery(true), 1500);" placeholder="Address" id="searchTextField1" autocomplete="on" runat="server" />--}}
+{{--                                                        <input type="hidden" id="cityLat1" name="shippingCityLat" value="{{ old('shippingCityLat') }}" />--}}
+{{--                                                        <input type="hidden" id="cityLng1" name="shippingCityLng" value="{{ old('shippingCityLng') }}" />--}}
+{{--                                                        @error('shipping_address')--}}
+{{--                                                        <div class="small">--}}
+{{--                                                            <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                                        </div>--}}
+{{--                                                        @enderror--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-12 form-group--block">--}}
+{{--                                                        <label>Postcode/ ZIP (optional)</label>--}}
+{{--                                                        <input class="form-control @error('shipping_postcode') is-invalid @enderror" name="shipping_postcode" value="{{ old('shipping_postcode') }}" type="text">--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-12 form-group--block">--}}
+{{--                                                        <label>Town/ City: <span>*</span></label>--}}
+{{--                                                        <input class="form-control @error('shipping_city') is-invalid @enderror" name="shipping_city" value="{{ old('shipping_city') }}" type="text" required>--}}
+{{--                                                        @error('shipping_city')--}}
+{{--                                                        <div class="small">--}}
+{{--                                                            <strong style="color: red">{{ $message }}</strong>--}}
+{{--                                                        </div>--}}
+{{--                                                        @enderror--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        @endauth--}}
+{{--                                        <div class="col-12 form-group--block">--}}
+{{--                                            <label>Order notes (optional)</label>--}}
+{{--                                            <textarea class="form-control" name="note" placeholder="Note about your orders, e.g special notes for delivery.">{{ old('note') }}</textarea>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
 
                             <input type="hidden" name="delivery_fee" value="{{ old('delivery_fee') ?? $delivery_fee }}" id="delivery_fee">
                         </form>
@@ -320,7 +450,7 @@
                                         <div class="checkout__label">Delivery Fee</div>
                                     </div>
                                     <div class="col-4 text-right">
-                                        <div class="checkout__label" id="delivery_val">{!! old('delivery_fee') ? '₦'.old('delivery_fee') : (($lat && $lng) ? '₦'.number_format($delivery_fee) : '<i>enter valid address</i>') !!}</div>
+                                        <div class="checkout__label" id="delivery_val">{!! old('delivery_fee') ? '₦'.old('delivery_fee') : '<i>select a city</i>' !!}</div>
                                     </div>
                                 </div>
                                 <hr>
@@ -332,7 +462,7 @@
                                     <div class="checkout__total">Total</div>
                                 </div>
                                 <div class="col-4 text-right">
-                                    <div class="checkout__money" id="checkout-total">₦{{ old('delivery_fee') ? number_format($cart['total'] + old('delivery_fee')) : number_format($cart['total']) }}</div>
+                                    <div class="checkout__money" id="checkout-total">₦{{ old('delivery_fee') ? number_format($cart['total'] + old('delivery_fee'), 2) : number_format($cart['total'], 2) }}</div>
                                 </div>
                             </div>
                         </div>
@@ -349,6 +479,102 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN_UW11I0wCCLflmY5Eu1FLc2-UYXrOmw&libraries=places" type="text/javascript"></script>
     <script type="text/javascript">
         getStates();
+        const oldState = '{{ old('state') }}';
+        const oldCity = '{{ old('region') }}'
+        const oldTown = '{{ old('city') }}'
+        const oldAddress = '{{ old('address') }}'
+        if (oldState)
+            getCities(oldState);
+        if (oldCity)
+            getTowns(oldCity.split('_')[0]);
+
+
+        function getStates() {
+            $.ajax({
+                url: "/delivery/states",
+                type: "GET",
+                headers: {"Authorization" : "Bearer {{ env('CNS_ACCESS_TOKEN') }}", "X-CSRF-TOKEN": "{{ csrf_token() }}"},
+                success: function (res) {
+                    $('#state').html(`<option value="" selected>Select State</option>`)
+                    res.forEach(state => {
+                        if (oldState === state.StateName)
+                            $('#state').append(`<option value="${state.StateName}" selected>${state.StateName}</option>`)
+                        else
+                            $('#state').append(`<option value="${state.StateName}">${state.StateName}</option>`)
+                    })
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        }
+
+        function getCities(state) {
+            $.ajax({
+                url: `/delivery/states/${state}/cities`,
+                type: "GET",
+                headers: {"Authorization" : "Bearer {{ env('CNS_ACCESS_TOKEN') }}", "X-CSRF-TOKEN": "{{ csrf_token() }}"},
+                success: function (res) {
+                    const oldCity = '{{ old('region') }}'
+                    $('#city').html('<option value="" selected>Select Region</option>')
+                    res.forEach(city => {
+                        if (oldCity.split('_')[0] === city.CityCode)
+                            $('#city').append(`<option value="${city.CityCode}_${city.CityName}" selected>${city.CityName}</option>`)
+                        else
+                            $('#city').append(`<option value="${city.CityCode}_${city.CityName}">${city.CityName}</option>`)
+
+                    })
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        }
+
+        function getTowns(city) {
+            $.ajax({
+                url: `/delivery/cities/${city}/towns`,
+                type: "GET",
+                headers: {"Authorization" : "Bearer {{ env('CNS_ACCESS_TOKEN') }}", "X-CSRF-TOKEN": "{{ csrf_token() }}"},
+                success: function (res) {
+                    $('#town').html('<option value="" selected>Select City</option>')
+                    const oldTown = '{{ old('city') }}'
+                    res.forEach(town => {
+                        if (oldTown.split('_')[1] === town.TownName)
+                            $('#town').append(`<option value="${town.TownID}_${town.TownName}" selected>${town.TownName}</option>`)
+                        else
+                            $('#town').append(`<option value="${town.TownID}_${town.TownName}">${town.TownName}</option>`)
+
+                    })
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        }
+
+        function getDropOffs(city) {
+            $.ajax({
+                url: `/delivery/cities/${city}/dropoffs`,
+                type: "GET",
+                headers: {"Authorization" : "Bearer {{ env('CNS_ACCESS_TOKEN') }}", "X-CSRF-TOKEN": "{{ csrf_token() }}"},
+                success: function (res) {
+                    $('#dropoff').html('')
+                    const oldDropOff = '{{ old('address') }}'
+                    res.forEach(dropOff => {
+                        if (oldDropOff.split('_')[1] === dropOff.DropOffAddress)
+                            $('#dropoff').append(`<input type="radio" oninput="estimateDelivery(this)" class="form-check-input" name="address" id="dropoff-${dropOff.ID}" value="${dropOff.ID}_${dropOff.DropOffAddress}" checked> <label for="dropoff-${dropOff.ID}" class="small ml-5 form-check-label">${dropOff.DropOffAddress}</label><br>`)
+                        else
+                            $('#dropoff').append(`<input type="radio" oninput="estimateDelivery(this)" class="form-check-input" name="address" id="dropoff-${dropOff.ID}" value="${dropOff.ID}_${dropOff.DropOffAddress}"> <label for="dropoff-${dropOff.ID}" class="small ml-5 form-check-label">${dropOff.DropOffAddress}</label><br>`)
+
+                    })
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        }
+
         const del1 = $('#delivery_method1')
         const del2 = $('#delivery_method2')
         const delFeeCont = $('#delivery_fee_container')
@@ -394,46 +620,25 @@
         google.maps.event.addDomListener(window, 'load', initialize);
 
 
-        function getStates() {
-            $.ajax({
-                url: "/d",
-                type: "GET",
-                headers: {"Authorization" : "Bearer {{ env('CNS_ACCESS_TOKEN') }}", "X-CSRF-TOKEN": "{{ csrf_token() }}"},
-                success: function (res) {
-                    console.log(res)
-                },
-                error: function (err) {
-                    console.log(err)
-                }
-            });
-        }
-
-        function estimateDelivery(diff = false) {
-            let loc, lat, lng;
-            if (diff) {
-                loc = $('input[name="shipping_address"]').val();
-                lat = $('input[name="shippingCityLat"]').val();
-                lng = $('input[name="shippingCityLng"]').val();
-            } else {
-                loc = $('input[name="address"]').val();
-                lat = $('input[name="cityLat"]').val();
-                lng = $('input[name="cityLng"]').val();
-            }
+        function estimateDelivery(address) {
             const fee = parseFloat($('#delivery_fee').val())
             const btn = $('#checkout-btn')
+            const destination = $('#city').val().split('_')[1]
+            const townID = $(address).val().split('_')[0]
+            const weight = '{{ $weight }}';
 
-            if (loc && lat && lng) {
+            if (destination && townID && weight) {
                 $.ajax({
-                    url: "{{ route('estimateDelivery') }}",
-                    data: {loc, lat, lng},
+                    url: `/delivery/${destination}/${townID}/${weight}/estimate`,
                     type: "GET",
                     beforeSend: function (xhr) {
                         btn.attr('disabled', true)
                     },
                     success: function (res) {
-                        $('#delivery_val').html('₦' + numberFormat(parseFloat('2500')))
-                        $('#delivery_fee').val(parseFloat('2500'))
-                        calcTotal('2500')
+                        res = res[0]
+                        $('#delivery_val').html('₦' + numberFormat(parseFloat(res.TotalAmount)))
+                        $('#delivery_fee').val(parseFloat(res.TotalAmount))
+                        calcTotal(res.TotalAmount)
                         // if (res) {
                         //     res = JSON.parse(res)
                         //     console.log(res.fare)
@@ -454,13 +659,13 @@
                         btn.attr('disabled', false)
                     },
                     error: function (err) {
-                        $('#delivery_val').html('enter valid address')
+                        $('#delivery_val').html('enter a valid address')
                         calcTotal('0')
                         btn.attr('disabled', false)
                     }
                 });
             } else {
-                $('#delivery_val').html('enter valid address')
+                $('#delivery_val').html('enter a valid address')
                 calcTotal('0')
                 $.notify('Address could not be validated', 'error');
             }

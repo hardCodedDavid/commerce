@@ -122,6 +122,7 @@
                                                             <th scope="col">{{ ucfirst($variation['name']) }}</th>
                                                         @endforeach
                                                         <th scope="col">Qty</th>
+                                                        <th scope="col">Item Number(s)</th>
                                                         <th scope="col">Unit Price</th>
                                                         <th scope="col">Total Price</th>
                                                     </tr>
@@ -142,6 +143,11 @@
                                                                 <td>{{ $value ?? 'N/A' }}</td>
                                                             @endforeach
                                                             <td>{{ $item['quantity'] }}</td>
+                                                            <td>
+                                                                @foreach (json_decode($item['item_numbers'], true) as $number)
+                                                                    <span class="small bg-light mx-1 px-1">{{ array_values($number)[0] }}</span>
+                                                                @endforeach
+                                                            </td>
                                                             <td>₦{{ number_format($item['price']) }}</td>
                                                             <td>₦{{ number_format($item['price'] * $item['quantity']) }}</td>
                                                         </tr>

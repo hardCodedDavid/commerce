@@ -98,6 +98,8 @@ class TransactionController extends Controller
 
     public function editSale(Sale $sale)
     {
+        if ($sale['type'] == 'online')
+            return redirect()->route('admin.orders.show', $sale->order()->first());
         $suppliers = Supplier::query()->orderBy('name')->get();
         $products = Product::query()->with(['variationItems'])->get();
         $variations = Variation::query()->with(['items'])->get();
@@ -141,7 +143,8 @@ class TransactionController extends Controller
         foreach (request('products') as $key => $product)
             foreach ($product['item_numbers'] as $curKey => $number)
                 if (count($numbers[$number]) > 1)
-                    $errors['products.'.$key.'.item_numbers.'.$curKey] = 'The item number must be unique';
+                    $errors['products.' . $key . '.item_numbers.' . $curKey] = 'The item number must be unique';
+
 
         if (count($errors) > 0)
             return back()->withInput()->withErrors($errors);
@@ -223,9 +226,13 @@ class TransactionController extends Controller
 
         foreach (request('products') as $key => $product)
             if (isset($product['item_numbers']))
-                foreach ($product['item_numbers'] as $number)
+                foreach ($product['item_numbers'] as $number) {
                     if (count($numbers[$number]) > 1)
-                        $errors['products.'.$key.'.item_numbers'] = 'Item number selected in multiple places';
+                        $errors['products.' . $key . '.item_numbers'] = 'Item number selected in multiple places';
+                    $avail = ItemNumber::query()->where('id', $number)->where('status', 'available')->first();
+                    if (!$avail)
+                        $errors['products.' . $key . '.item_numbers'] = 'One or more item numbers not found';
+                }
 
         if (count($errors) > 0)
             return back()->withInput()->withErrors($errors);
@@ -442,9 +449,14 @@ class TransactionController extends Controller
 
         foreach (request('products') as $key => $product)
             if (isset($product['item_numbers']))
-                foreach ($product['item_numbers'] as $number)
+                foreach ($product['item_numbers'] as $number) {
                     if (count($numbers[$number]) > 1)
-                        $errors['products.'.$key.'.item_numbers'] = 'Item number selected in multiple places';
+                        $errors['products.' . $key . '.item_numbers'] = 'Item number selected in multiple places';
+
+                    $avail = ItemNumber::query()->where('id', $number)->where('status', 'available')->first();
+                    if (!$avail)
+                        $errors['products.' . $key . '.item_numbers'] = 'One or more item numbers not found';
+                }
 
 
         if (count($errors) > 0)
