@@ -50,26 +50,36 @@ class HomeController extends Controller
         // Generate current month data
         for ($day = 1; $day <= date('t'); $day++){
             $monthPurchases[] = round(PurchaseItem::query()
-                ->whereDate('date', date('Y-m') . '-' . $day)
+                ->whereHas('purchase', function ($q) use($day) {
+                    $q->whereDate('date', date('Y-m') . '-' . $day);
+                })
                 ->select(DB::raw('sum(price * quantity) as total'))->first()['total']);
             $monthSales[] = round(SaleItem::query()
-                ->whereDate('date', date('Y-m') . '-' . $day)
+                ->whereHas('sale', function ($q) use($day) {
+                    $q->whereDate('date', date('Y-m') . '-' . $day);
+                })
                 ->select(DB::raw('sum(price * quantity) as total'))->first()['total']);
         }
 
         //  Generate current year data
         for ($month = 1; $month <= 12; $month++){
             $yearPurchases[] = round(PurchaseItem::query()
-                ->whereYear('date', date('Y'))
-                ->whereMonth('date', $month)
+                ->whereHas('purchase', function ($q) use($month) {
+                    $q->whereYear('date', date('Y'))
+                        ->whereMonth('date', $month);
+                })
                 ->select(DB::raw('sum(price * quantity) as total'))->first()['total']);
             $yearSales[] = round(SaleItem::query()
-                ->whereYear('date', date('Y'))
-                ->whereMonth('date', $month)
+                ->whereHas('sale', function ($q) use($month) {
+                    $q->whereYear('date', date('Y'))
+                        ->whereMonth('date', $month);
+                })
                 ->select(DB::raw('sum(price * quantity) as total'))->first()['total']);
             $yearProfit[] = round(SaleItem::query()
-                ->whereYear('date', date('Y'))
-                ->whereMonth('date', $month)
+                ->whereHas('sale', function ($q) use($month) {
+                    $q->whereYear('date', date('Y'))
+                        ->whereMonth('date', $month);
+                })
                 ->sum('profit'));
         }
 
