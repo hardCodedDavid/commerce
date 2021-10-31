@@ -16,7 +16,7 @@ class NotificationController extends Controller
         $orderDetails = '<h3>Order Summary</h3><table style="border-collapse: collapse; width: 100%; margin: 25px 0; font-family: sans-serif; min-width: 400px;">';
         foreach ($order->items()->get() as $orderDetail) {
             $orderDetails .= '<tr style="border-bottom: thin solid #dddddd; width: 100%">
-                                   <td style="padding: 20px 15px;"><img src="'.asset($orderDetail->product->image).'" width="80" alt=""></td>
+                                   <td style="padding: 20px 15px;"><img src="'.asset($orderDetail->product->media()->first() ? $orderDetail->product->media()->first()['url'] : '').'" width="80" alt=""></td>
                                    <td style="padding: 20px 15px;">'.$orderDetail->product->name.' x '.$orderDetail->quantity.'</td>
                                    <td style="padding: 20px 15px;">₦'.number_format(($orderDetail->price * $orderDetail->quantity), 2).'</td>
                               </tr>';
