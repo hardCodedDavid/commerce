@@ -29,6 +29,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('queue:work --sansdaemon')
             ->everyMinute()
             ->withoutOverlapping();
+        $schedule->command('log:it')
+            ->everyMinute()
+            ->withoutOverlapping();
 
         $schedule->command('CNS:token')->weekly();
     }

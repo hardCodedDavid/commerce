@@ -368,8 +368,6 @@ class TransactionController extends Controller
             $currentProduct = Product::find($product['product']);
             $oldItemNumbers = $product['old_item_numbers'] ?? [];
             $newItemNumbers = $product['item_numbers'] ?? [];
-            logger($oldItemNumbers);
-            logger($newItemNumbers);
             if ($currentProduct) {
                 // Store purchase items
                 $item = $purchase->items()->create([
