@@ -15,8 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        CNSCommand::class,
-        LogCommand::class
+        CNSCommand::class
     ];
 
     /**
@@ -29,9 +28,6 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('queue:work --sansdaemon')
-            ->everyMinute()
-            ->withoutOverlapping();
-        $schedule->command('log:it')
             ->everyMinute()
             ->withoutOverlapping();
 
