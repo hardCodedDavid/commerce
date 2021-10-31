@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -18,6 +19,7 @@ use App\Models\Purchase;
 use App\Models\PurchaseItem;
 use App\Models\SaleItem;
 use App\Models\Setting;
+use Illuminate\Validation\ValidationException;
 
 class HomeController extends Controller
 {
@@ -33,7 +35,6 @@ class HomeController extends Controller
         $monthPurchases = [];
         $monthSales = [];
         $yearProfit = [];
-        $salesYear = [];
 
         // Compute total sales and profit
         foreach ($sales as $sale) {
@@ -49,41 +50,41 @@ class HomeController extends Controller
         // Generate current month data
         for ($day = 1; $day <= date('t'); $day++){
             $monthPurchases[] = round(PurchaseItem::query()
-                ->whereDate('created_at', date('Y-m') . '-' . $day)
+                ->whereDate('date', date('Y-m') . '-' . $day)
                 ->select(DB::raw('sum(price * quantity) as total'))->first()['total']);
             $monthSales[] = round(SaleItem::query()
-                ->whereDate('created_at', date('Y-m') . '-' . $day)
+                ->whereDate('date', date('Y-m') . '-' . $day)
                 ->select(DB::raw('sum(price * quantity) as total'))->first()['total']);
         }
 
         //  Generate current year data
         for ($month = 1; $month <= 12; $month++){
             $yearPurchases[] = round(PurchaseItem::query()
-                ->whereYear('created_at', date('Y'))
-                ->whereMonth('created_at', $month)
+                ->whereYear('date', date('Y'))
+                ->whereMonth('date', $month)
                 ->select(DB::raw('sum(price * quantity) as total'))->first()['total']);
             $yearSales[] = round(SaleItem::query()
-                ->whereYear('created_at', date('Y'))
-                ->whereMonth('created_at', $month)
+                ->whereYear('date', date('Y'))
+                ->whereMonth('date', $month)
                 ->select(DB::raw('sum(price * quantity) as total'))->first()['total']);
             $yearProfit[] = round(SaleItem::query()
-                ->whereYear('created_at', date('Y'))
-                ->whereMonth('created_at', $month)
+                ->whereYear('date', date('Y'))
+                ->whereMonth('date', $month)
                 ->sum('profit'));
         }
 
         return view('admin.index', [
-            'products' => Product::count(),
-            'listed_products' => Product::where('is_listed', 1)->count(),
-            'admins' => Admin::count(),
-            'orders' => Order::count(),
+            'products' => Product::query()->count(),
+            'listed_products' => Product::query()->where('is_listed', 1)->count(),
+            'admins' => Admin::query()->count(),
+            'orders' => Order::query()->count(),
             'sales' => $totalSales,
             'purchases' => $totalPurchases,
             'profit' => $totalProfit,
-            'users' => User::count(),
-            'suppliers' => Supplier::count(),
-            'sales_count' => Sale::count(),
-            'puchases_count' => Purchase::count(),
+            'users' => User::query()->count(),
+            'suppliers' => Supplier::query()->count(),
+            'sales_count' => Sale::query()->count(),
+            'purchases_count' => Purchase::query()->count(),
             'top_selling' => Product::with('saleItems')->get()->sortBy(function ($q) { $q->saleItems->count(); })->take(5),
             'chart_data' => [
                 'year_transactions' => [
@@ -107,15 +108,18 @@ class HomeController extends Controller
     public function settings()
     {
         try {
-            $banks = json_decode(Http::get('https://api.paystack.co/bank')->getBody(), true)['data'];
-        }catch (\Exception $exception){
+            $banks = json_decode(Http::get('https://api.paystack.co/bank'), true)['data'];
+        }catch (Exception $exception){
             $banks = [];
         }
-        $settings = Setting::first();
+        $settings = Setting::query()->first();
         return view('admin.settings', compact('settings', 'banks'));
     }
 
-    public function updateBusiness()
+    /**
+     * @throws ValidationException
+     */
+    public function updateBusiness(): RedirectResponse
     {
         // Validate request
         $this->validate(request(), [
@@ -126,7 +130,7 @@ class HomeController extends Controller
             'logo' => ['sometimes', 'mimes:jpg,jpeg,png,svg,gif', 'file', 'max:2048'],
             'dashboard_logo' => ['sometimes', 'mimes:jpg,jpeg,png,svg,gif', 'file', 'max:2048'],
         ]);
-        $settings = Setting::first();
+        $settings = Setting::query()->first();
         if (request('logo')) {
             $path1 = ProductController::saveFileAndReturnPath(request('logo'), Str::random(8));
             if ($settings && $settings['logo']) unlink($settings['logo']);
@@ -158,20 +162,26 @@ class HomeController extends Controller
         return back()->with('success', 'Business profile updated successfully');
     }
 
-    public function updateLocations()
+    /**
+     * @throws ValidationException
+     */
+    public function updateLocations(): RedirectResponse
     {
         // Validate request
         $this->validate(request(), [
             'locations' => ['required', 'array', 'min:1']
         ]);
-        $settings = Setting::first();
+        $settings = Setting::query()->first();
         $data = [];
         foreach (request('locations') as $location) $data[] = array_values($location)[0];
         $settings->update(['pickup_locations' => json_encode($data)]);
         return back()->with('success', 'Bank details updated successfully');
     }
 
-    public function updateBank()
+    /**
+     * @throws ValidationException
+     */
+    public function updateBank(): RedirectResponse
     {
         // Validate request
         $this->validate(request(), [
@@ -180,12 +190,15 @@ class HomeController extends Controller
             'bank_name' => ['required']
         ]);
         $data = request()->only('account_name', 'account_number', 'bank_name');
-        if ($settings = Setting::first()) $settings->update($data);
-        else Setting::create($data);
+        if ($settings = Setting::query()->first()) $settings->update($data);
+        else Setting::query()->create($data);
         return back()->with('success', 'Bank details updated successfully');
     }
 
-    public function updateProfile()
+    /**
+     * @throws ValidationException
+     */
+    public function updateProfile(): RedirectResponse
     {
         // Validate request
         $this->validate(request(), [
@@ -193,7 +206,7 @@ class HomeController extends Controller
             'phone' => ['required']
         ]);
 
-        auth()->user()->update([
+        Admin::find(auth('admin')->id())->update([
             'name' => request('name'),
             'phone' => request('phone')
         ]);
@@ -201,7 +214,10 @@ class HomeController extends Controller
         return back()->with('success', 'Profile updated successfully');
     }
 
-    public function changePasssword()
+    /**
+     * @throws ValidationException
+     */
+    public function changePassword(): RedirectResponse
     {
         // Validate request
         $this->validate(request(), [
@@ -213,21 +229,21 @@ class HomeController extends Controller
             return back()->with('error', 'Old password is incorrect');
         }
 
-        auth()->user()->update([
+        Admin::find(auth('admin')->id())->update([
             'password' => Hash::make(request('new_password')),
         ]);
 
         return back()->with('success', 'Profile updated successfully');
     }
 
-    public function sendInvoiceLinkToMail($type, $code): \Illuminate\Http\RedirectResponse
+    public function sendInvoiceLinkToMail($type, $code): RedirectResponse
     {
         if ($type == "sales") {
-            $sale = Sale::where('code', $code)->first();
+            $sale = Sale::query()->where('code', $code)->first();
             $email = $sale['customer_email'];
         }
         else if ($type == "purchases") {
-            $purchase = Purchase::where('code', $code)->first();
+            $purchase = Purchase::query()->where('code', $code)->first();
             $email = $purchase['supplier']['email'];
         }
         else return back()->with('error', 'Invoice type not Supported');

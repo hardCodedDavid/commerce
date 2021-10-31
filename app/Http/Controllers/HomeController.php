@@ -78,10 +78,6 @@ class HomeController extends Controller
 
     public function checkout()
     {
-        $delivery_fee = 0;
-        $weight = 0;
-        foreach (CartController::getUserCartAsArray()['items'] as $item)
-            $weight += $item['product']['weight'] * $item['quantity'];
 //        $user = User::find(auth()->id());
 //        if ($user && $user['address'] && $user['latitude'] && $user['longitude']) {
 //            $delivery_fee = 2500;
@@ -94,14 +90,19 @@ class HomeController extends Controller
         $cart = CartController::getUserCartAsArray();
         if (count($cart['items'])  < 1)
             return redirect('/cart');
+        $delivery_fee = 0;
+        $weight = 0;
+        foreach ($cart['items'] as $item)
+            $weight += $item['product']['weight'] * $item['quantity'];
+        $additional_fee = 0.01 * $cart['total'];
 
-        return view('checkout', compact('delivery_fee', 'weight'));
+        return view('checkout', compact('delivery_fee', 'weight', 'additional_fee'));
     }
 
     /**
      * @throws ValidationException
      */
-    public function processCheckout()//: RedirectResponse
+    public function processCheckout(): RedirectResponse
     {
         $this->validate(request(), ['delivery_method' => 'required']);
 
@@ -150,7 +151,6 @@ class HomeController extends Controller
         if ($errors)
             return back()->with('error', 'Can\'t checkout, quantities not available for '.$errors)->withInput();
 
-        $delivery_fee = 0;
 //        if (request('delivery_method') == 'ship') {
 //            $delivery_fee = 2500;
 //            if (request('ship_to_new_address')) {
@@ -185,6 +185,7 @@ class HomeController extends Controller
             $data['town'] = explode('_', request('city'))[0];
             $data['city'] = explode('_', request('city'))[1];
             $data['email'] = auth()->user()['email'] ?? request('email');
+            $data['payment_type'] = request()->has('payment_type') ? 'pay_on_delivery' : 'prepaid';
             $settings = Setting::query()->first();
             $data['CNS'] = [
 //                'OrderNo' => 'ORD-1658705',
@@ -202,7 +203,7 @@ class HomeController extends Controller
                 'RecipientAddress' => $data['address'],
                 'RecipientPhone' => $data['phone'],
                 'RecipientEmail' => $data['email'],
-                'PaymentType' => 'prepaid',
+                'PaymentType' => $data['payment_type'] == 'pay_on_delivery' ? 'Pay On Delivery' : $data['payment_type'],
                 'DeliveryType' => 'Normal Delivery',
                 'PickupType' => 1,
                 'ShipmentItems' => $shipmentItems
@@ -227,11 +228,17 @@ class HomeController extends Controller
 //                $data['latitude'] = request('shippingCityLat');
 //            }
 //        }
+
+        $delivery_fee = 0;
+        $additional_fee = 0;
         if (request('delivery_method') == 'ship') {
             try {
                 $weight = 0;
+                if ($data['payment_type'] == 'pay_on_delivery')
+                    $additional_fee = 0.01 * $cart['total'];
+                $data['additional_fee'] = $additional_fee ?? request('additional_fee');
                 foreach ($cart['items'] as $item)
-                    $weight += $item['product']['weight'];
+                    $weight += $item['product']['weight'] * $item['quantity'];
                 $fee = (new DeliveryController)->estimateDeliveryFee($data['region'], $data['town'], $weight)[0];
                 $delivery_fee = (float) ($fee ? $fee['TotalAmount'] : request('delivery_fee'));
                 $data['delivery_fee'] = $delivery_fee;
@@ -242,10 +249,15 @@ class HomeController extends Controller
         }
 
         $data['auth'] = !is_null(auth()->user());
+        $data['user_id'] = auth()->id();
         $data['delivery_method'] = request('delivery_method');
         $data['cart'] = $cart;
+        $data['amount'] = $cart['total'] + $delivery_fee + $additional_fee;
 
-        return PaymentController::initializeTransaction(($cart['total'] + $delivery_fee), $data);
+        if (request('payment_type') == 'pay_on_delivery')
+            if ($order = PaymentController::finishOrder($data))
+                return redirect()->route('orderSuccessful', $order)->with('success', 'Your order was successful');
+        return PaymentController::initializeTransaction($data);
     }
 
     public function estimateDeliveryCost(): bool

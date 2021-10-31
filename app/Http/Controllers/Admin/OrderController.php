@@ -15,7 +15,7 @@ use Illuminate\Validation\ValidationException;
 class OrderController extends Controller
 {
     public function index()
-    {
+    {;
         switch (true){
             case request()->offsetExists("pending") :
                 $type = "pending";
@@ -57,7 +57,7 @@ class OrderController extends Controller
         $this->validate(request(), [
             'state' => ['required', 'in:pending,processing,delivered,cancelled']
         ]);
-        $cns = false;
+
         if (request('state') == 'cancelled') {
             if ($sale = $order->sale()->first()) {
                 try {
@@ -81,8 +81,7 @@ class OrderController extends Controller
         }
         elseif (request('state') == 'processing' && $order['delivery_method'] == 'ship' && $order['ready_for_delivery'] == 0)
             try {
-                $delivery = (new DeliveryController)->pickupRequest($order['code'], json_decode($order->payment()->first()['meta'], true)['CNS']);
-                logger($delivery);
+                $delivery = (new DeliveryController)->pickupRequest($order['code'], json_decode($order['CNS'], true));
                 if (isset($delivery['TransStatus'])) {
                     if ($delivery['TransStatus'] == 'Successful')
                         if (isset($delivery['WaybillNumber']))
@@ -92,6 +91,13 @@ class OrderController extends Controller
                         if (isset($delivery['TransStatusDetails']))
                             return back()->with('error', $delivery['TransStatusDetails']);
                 }
+            } catch (Exception $e) {
+                logger($e);
+                return back()->with('error', 'An error occurred');
+            }
+        elseif (request('state') == 'delivered' && $order['delivery_method'] == 'pickup')
+            try {
+                $order->update(['pickup_date' => now()]);
             } catch (Exception $e) {
                 logger($e);
                 return back()->with('error', 'An error occurred');
@@ -131,7 +137,7 @@ class OrderController extends Controller
     {
         return view('admin.orders.show', [
             'order' => $order,
-            'variations' => Variation::all()
+            'variations' => Variation::all(),
         ]);
     }
 
@@ -139,7 +145,7 @@ class OrderController extends Controller
     {
         //   Define all column names
         $columns = [
-            'id', 'code', 'id', 'id', 'id', 'shipping', 'id', 'created_at', 'status', 'id'
+            'id', 'code', 'id', 'id', 'id', 'shipping', 'additional_fee', 'id', 'created_at', 'status', 'id'
         ];
 
         if (request('type')){
@@ -238,6 +244,7 @@ class OrderController extends Controller
             $datum['products'] = count($order['items']);
             $datum['subtotal'] = number_format($order->getSubTotal(), 2);
             $datum['shipping'] = number_format($order['shipping'], 2);
+            $datum['additional_fee'] = number_format($order['additional_fee'], 2);
             $datum['total'] = number_format($order->getTotal(), 2);
             $datum['date'] = $order['created_at']->format('M d, Y');
             $datum['status'] = $status;

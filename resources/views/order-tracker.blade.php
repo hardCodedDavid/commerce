@@ -71,6 +71,9 @@
                                 <div style="font-size: 13px" class="my-2"><strong class="mr-2">State:</strong>{{ $order['state'] }}</div>
                                 <div style="font-size: 13px" class="my-2"><strong class="mr-2">City:</strong>{{ $order['city'] }}</div>
                                 <div style="font-size: 13px" class="my-2"><strong class="mr-2">Address:</strong>{{ $order['address'] }}</div>
+                                @if($order['payment_type'] != 'prepaid')
+                                    <div style="font-size: 13px" class="my-2"><strong class="mr-2">Payment Type:</strong>{{ str_replace('_', ' ', $order['payment_type']) }}</div>
+                                @endif
 {{--                                <div style="font-size: 13px" class="my-2"><strong class="mr-2">PostCode:</strong>{{ $order['postcode'] ?? 'N/A' }}</div>--}}
                                 <div style="font-size: 13px" class="my-2"><strong class="mr-2">Note:</strong>{{ $order['note'] ?? 'N/A' }}</div>
                             </div>

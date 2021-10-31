@@ -62,6 +62,7 @@
                                         <th>Products</th>
                                         <th>Subtotal</th>
                                         <th>Shipping</th>
+                                        <th>Additional Fee</th>
                                         <th>Total</th>
                                         <th>Date</th>
                                         <th>Status</th>
@@ -114,6 +115,7 @@
                { "data": "products" },
                { "data": "subtotal" },
                { "data": "shipping" },
+               { "data": "additional_fee" },
                { "data": "total" },
                { "data": "date" },
                { "data": "status" },

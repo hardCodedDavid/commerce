@@ -675,14 +675,14 @@ class TransactionController extends Controller
             $datum['sn'] = $key;
             $datum['code'] = '<a href="'. route('admin.transactions.purchases.edit', $purchase) .'">'. $purchase['code'] .'</a>';
             $datum['supplier'] = $purchase['supplier']['name'];
-            $datum['creator'] = $purchase->getCreatedBy();
+            $datum['creator'] = $purchase->getCreatedBy() ?? '-----';
             $datum['products'] = count($purchase['items']);
             $datum['quantity'] = $purchase->getTotalQuantity();
             $datum['date'] = $purchase['date']->format('M d, Y');
-            $datum['sub_total'] = number_format($purchase->getSubTotal());
-            $datum['shipping'] = $purchase['shipping_fee'] ? number_format($purchase['shipping_fee']) : '---';
-            $datum['additional'] = $purchase['additional_fee'] ? number_format($purchase['additional_fee']) : '---';
-            $datum['total'] = number_format($purchase->getTotal());
+            $datum['sub_total'] = number_format($purchase->getSubTotal(), 2);
+            $datum['shipping'] = $purchase['shipping_fee'] ? number_format($purchase['shipping_fee'], 2) : '---';
+            $datum['additional'] = $purchase['additional_fee'] ? number_format($purchase['additional_fee'], 2) : '---';
+            $datum['total'] = number_format($purchase->getTotal(), 2);
             $datum['action'] = '<div class="dropdown">
                                     <button style="white-space: nowrap" class="btn small btn-sm btn-primary" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Action <i class="icon-lg fa fa-angle-down"></i>
@@ -782,15 +782,15 @@ class TransactionController extends Controller
             $datum['sn'] = $key;
             $datum['code'] = '<a href="'. route('admin.transactions.sales.edit', $sale) .'">'. $sale['code'] .'</a>';
             $datum['customer'] = $sale['customer_name'];
-            $datum['creator'] = $sale->getCreatedBy();
+            $datum['creator'] = $sale->getCreatedBy() ?? '-----';
             $datum['type'] = $sale['type'] == 'online' ? '<span class="badge badge-success-inverse">Online</span>' : '<span class="badge badge-secondary-inverse">Offline</span>';
             $datum['products'] = count($sale['items']);
             $datum['quantity'] = $sale->getTotalQuantity();
             $datum['date'] = $sale['date']->format('M d, Y');
-            $datum['sub_total'] = number_format($sale->getSubTotal());
-            $datum['shipping'] = $sale['shipping_fee'] ? number_format($sale['shipping_fee']) : '---';
-            $datum['additional'] = $sale['additional_fee'] ? number_format($sale['additional_fee']) : '---';
-            $datum['total'] = number_format($sale->getTotal());
+            $datum['sub_total'] = number_format($sale->getSubTotal(), 2);
+            $datum['shipping'] = $sale['shipping_fee'] ? number_format($sale['shipping_fee'], 2) : '---';
+            $datum['additional'] = $sale['additional_fee'] ? number_format($sale['additional_fee'], 2) : '---';
+            $datum['total'] = number_format($sale->getTotal(), 2);
             $datum['action'] = '<div class="dropdown">
                                     <button style="white-space: nowrap" class="btn small btn-sm btn-primary" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Action <i class="icon-lg fa fa-angle-down"></i>

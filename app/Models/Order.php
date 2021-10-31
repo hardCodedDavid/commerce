@@ -59,7 +59,8 @@ class Order extends Model
     public function getTotal()
     {
         $shipping = $this->shipping ?? 0;
-        return $this->getSubTotal() + $shipping;
+        $additional_fee = $this->additional_fee ?? 0;
+        return $this->getSubTotal() + $shipping + $additional_fee;
     }
 
     public static function getCode(): int

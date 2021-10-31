@@ -81,6 +81,14 @@
                                         <p class="mb-0">{{ $order['delivery_method'] }}</p>
                                     </div>
                                 </div>
+                                @if($order['delivery_method'] == 'ship')
+                                    <div class="col-md-6 col-lg-6 col-xl-3">
+                                        <div class="order-primary-detail mb-4">
+                                            <h6>Payment Type</h6>
+                                            <p class="mb-0">{{ str_replace('_', ' ', $order['payment_type']) }}</p>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                             <div class="row">
                                 <div class="col-md-8">
@@ -182,6 +190,10 @@
                                                     <td>₦{{ number_format($order->getSubTotal(), 2) }}</td>
                                                 </tr>
                                                 <tr>
+                                                    <td>Additional Fee :</td>
+                                                    <td>₦{{ number_format($order['additional_fee'] ?? 0, 2) }}</td>
+                                                </tr>
+                                                <tr>
                                                     <td>Delivery Fee :</td>
                                                     <td>₦{{ number_format($order['shipping'] ?? 0, 2) }}</td>
                                                 </tr>
@@ -258,5 +270,5 @@
 @endsection
 
 @section('script')
-
+    <script></script>
 @endsection
