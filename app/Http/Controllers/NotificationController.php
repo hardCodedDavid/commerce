@@ -21,7 +21,8 @@ class NotificationController extends Controller
                                    <td style="padding: 20px 15px;">₦'.number_format(($orderDetail->price * $orderDetail->quantity), 2).'</td>
                               </tr>';
         }
-        if ($order['shipping_fee']) $orderDetails .= '<tr style="width: 100%"><td colspan="2" style="padding: 20px 15px;"><b>Shipping Fee</b></td><td style="padding: 12px 15px;"> ₦'.number_format($order['shipping_fee'], 2).'</td></tr>';
+        if ($order['additional_fee']) $orderDetails .= '<tr style="width: 100%"><td colspan="2" style="padding: 20px 15px;"><b>Additional Fee</b></td><td style="padding: 12px 15px;"> ₦'.number_format($order['additional_fee'], 2).'</td></tr>';
+        if ($order['shipping']) $orderDetails .= '<tr style="width: 100%"><td colspan="2" style="padding: 20px 15px;"><b>Delivery Fee</b></td><td style="padding: 12px 15px;"> ₦'.number_format($order['shipping'], 2).'</td></tr>';
         $orderDetails .= '<tr style="width: 100%"><td colspan="2" style="padding: 20px 15px;"><b>Total</b></td><td style="padding: 12px 15px;">₦'.number_format($order['total'], 2).'</td></tr></table>';
 
         $buyerData = [
@@ -45,7 +46,8 @@ class NotificationController extends Controller
             'additional_text' => null
         ];
 
-        Notification::route('mail', env('ADMIN_EMAIL'))->notify(new OrderNotification($vendorData));
+        if (env('ADMIN_EMAIL'))
+            Notification::route('mail', env('ADMIN_EMAIL'))->notify(new OrderNotification($vendorData));
     }
 
 
