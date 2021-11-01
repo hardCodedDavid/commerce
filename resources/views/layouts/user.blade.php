@@ -240,11 +240,24 @@
                         <p> <b>Head office: </b>{{ $settings['address'] }}</p>
                         <p> <b>Email us: </b><a href="mailto:{{ $settings['email'] }}" >{{ $settings['email'] }}</a></p>
                         <div class="mt-4 col-12 d-flex">
-                            <a class="icon_social facebook" target="_blank" href="{{ $settings['facebook'] ?? '#' }}"><i class="fa fa-facebook-f"></i></a>
-                            <a class="icon_social twitter" target="_blank" href="{{ $settings['twitter'] ?? '#' }}"><i class="fa fa-twitter"></i></a>
-                            <a class="icon_social google" target="_blank" href="mailto:{{ $settings['email'] ?? '#' }}"><i class="fa fa-google-plus"></i></a>
-                            <a class="icon_social youtube" target="_blank" href="{{ $settings['youtube'] ?? '#' }}"><i class="fa fa-youtube"></i></a>
-                            <a class="icon_social google" target="_blank" href="{{ $settings['instagram'] ?? '#' }}"><i class="fa fa-instagram"></i></a>
+                            @if($settings['email'])
+                                <a class="icon_social google" target="_blank" href="mailto:{{ $settings['email'] }}"><i class="fa fa-envelope"></i></a>
+                            @endif
+                            @if($settings['facebook'])
+                                <a class="icon_social facebook" target="_blank" href="{{ $settings['facebook'] }}"><i class="fa fa-facebook-f"></i></a>
+                            @endif
+                            @if($settings['instagram'])
+                                <a class="icon_social google" target="_blank" href="{{ $settings['instagram'] }}"><i class="fa fa-instagram"></i></a>
+                            @endif
+                            @if($settings['twitter'])
+                                <a class="icon_social twitter" target="_blank" href="{{ $settings['twitter'] }}"><i class="fa fa-twitter"></i></a>
+                            @endif
+                            @if($settings['youtube'])
+                                <a class="icon_social youtube" target="_blank" href="{{ $settings['youtube'] }}"><i class="fa fa-youtube-play"></i></a>
+                            @endif
+                            @if($settings['linkedin'])
+                                <a class="icon_social facebook" target="_blank" href="{{ $settings['linkedin'] }}"><i class="fa fa-linkedin"></i></a>
+                            @endif
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
