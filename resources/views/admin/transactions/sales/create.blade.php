@@ -87,7 +87,9 @@
                             <div class="col-md-6 my-1">
                                 <label class="col-form-label">Address</label>
                                 <div>
-                                    <input type="text" value="{{ old('customer_address') }}" name="customer_address" class="form-control">
+                                    <input class="form-control" name="customer_address" value="{{ old('customer_address') }}" type="text" placeholder="Address" id="searchTextField" autocomplete="on" runat="server" />
+                                    <input type="hidden" id="cityLat" name="cityLat" value="{{ old('cityLat') }}" />
+                                    <input type="hidden" id="cityLng" name="cityLng" value="{{ old('cityLng') }}" />
                                 </div>
                             </div>
                         </div>
@@ -162,6 +164,9 @@
 
                                                     <div class="col-sm-12 my-2 item-numbers">
                                                         <label class="form-label">Item Number(s)</label>
+                                                        <span class="text-danger d-flex mx-auto small" role="alert">
+                                                            <strong id="item-number-warning">Select Quantity</strong>
+                                                        </span>
                                                         <select class="select2-multi-select form-control" name="products[{{ $key }}][item_numbers]" id="oldItemNumbers-{{ $key }}" multiple="multiple">
                                                             <option value="">Select Item Number</option>
 {{--                                                            @if(isset($currentProduct['item_numbers']))--}}
@@ -231,6 +236,9 @@
 
                                                 <div class="col-sm-12 my-2 item-numbers">
                                                     <label class="form-label">Item Number(s)</label>
+                                                    <span class="text-danger d-flex mx-auto small" role="alert">
+                                                        <strong id="item-number-warning">Select Quantity</strong>
+                                                    </span>
                                                     <select class="select2-multi-select form-control" name="products[0][item_numbers]" multiple="multiple">
                                                         <option value="">Select Item Number</option>
                                                     </select>
@@ -340,13 +348,27 @@
     <script src="{{ asset('admin/assets/js/custom/custom-form-datepicker.js') }}"></script>
     <script src="{{ asset('admin/assets/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/custom/custom-form-select.js') }}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('PLACES_API_KEY') }}&libraries=places" type="text/javascript"></script>
     <script>
+
         $(document).ready(() => {
             const select2 = $('.select2-multi-select')
             select2.select2({
                 placeholder: 'Select an item number',
                 tags: true
             });
+            setTimeout(() => {
+                $('.item-quantity input').on('input', function () {
+                    updateQty($(this).parent().parent().find('.item-numbers select'))
+                })
+                $('.item-numbers select').on('change', function () {
+                    updateQty(this)
+                })
+            }, 10)
+            setTimeout(() => {
+                const itemNumbers = $('.item-numbers select')
+                itemNumbers.each(i => updateQty(itemNumbers[i]))
+            }, 1000)
         })
         const variationList = {!! json_encode($variations) !!};
         const productsList = $('#productsList');
@@ -366,6 +388,13 @@
                 const repeaters = $('.repeater')
                 $(repeaters[repeaters.length - 1]).find('.item-numbers select').attr('id', 'oldItemNumbers-'+(repeaters.length - 1)).html('')
                 $('.select2-multi-select').select2({placeholder: 'Select an item number', tags: true});
+
+                $('.item-quantity input').on('input', function () {
+                    updateQty($(this).parent().parent().find('.item-numbers select'))
+                })
+                $('.item-numbers select').on('change', function () {
+                    updateQty(this)
+                })
             }, 10)
         }
 
@@ -419,6 +448,21 @@
                     tags: true
                 });
             }
+        }
+
+        function updateQty(el) {
+            const qty = $(el).parent().parent().find('.item-quantity input').val() ?? 0
+            const text = $(el).prev().children()[0]
+            const val = $(el).val().length
+
+            if (parseInt(qty) !== parseInt(val) || parseInt(qty) < 1)
+                $(text).parent().addClass('text-danger').removeClass('text-success')
+            else
+                $(text).parent().removeClass('text-danger').addClass('text-success')
+            if (qty < 1)
+                $(text).html('Select quantity')
+            else
+                $(text).html(val + ' of ' + qty + ' selected')
         }
 
         function clearItemNumbers(el){
@@ -502,5 +546,17 @@
                 }
             });
         }
+
+        function initialize() {
+            var input = document.getElementById('searchTextField');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var place = autocomplete.getPlace();
+                // document.getElementById('city2').value = place.name;
+                document.getElementById('cityLat').value = place.geometry.location.lat();
+                document.getElementById('cityLng').value = place.geometry.location.lng();
+            });
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
     </script>
 @endsection

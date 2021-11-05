@@ -561,7 +561,7 @@
 @endsection
 
 @section('scripts')
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN_UW11I0wCCLflmY5Eu1FLc2-UYXrOmw&libraries=places" type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('PLACES_API_KEY') }}&libraries=places" type="text/javascript"></script>
     <script type="text/javascript">
         getStates();
         const oldState = '{{ old('state') }}';

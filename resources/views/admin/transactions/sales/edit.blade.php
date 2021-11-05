@@ -77,7 +77,9 @@
                             <div class="col-md-6 my-1">
                                 <label class="col-form-label">Address</label>
                                 <div>
-                                    <input type="text" value="{{ old('customer_address') ?? $sale['customer_address'] }}" name="customer_address" class="form-control">
+                                    <input class="form-control" name="customer_address" value="{{ old('customer_address') ?? $sale['customer_address'] }}" type="text" placeholder="Address" id="searchTextField" autocomplete="on" runat="server" />
+                                    <input type="hidden" id="cityLat" name="cityLat" value="{{ old('cityLat') }}" />
+                                    <input type="hidden" id="cityLng" name="cityLng" value="{{ old('cityLng') }}" />
                                 </div>
                             </div>
                         </div>
@@ -545,6 +547,7 @@
     <script src="{{ asset('admin/assets/js/custom/custom-form-datepicker.js') }}"></script>
     <script src="{{ asset('admin/assets/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/custom/custom-form-select.js') }}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('PLACES_API_KEY') }}&libraries=places" type="text/javascript"></script>
     <script>
         $(document).ready(function () {
             const select2 = $('.select2-multi-select')
@@ -729,5 +732,17 @@
                 }
             });
         }
+
+        function initialize() {
+            var input = document.getElementById('searchTextField');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var place = autocomplete.getPlace();
+                // document.getElementById('city2').value = place.name;
+                document.getElementById('cityLat').value = place.geometry.location.lat();
+                document.getElementById('cityLng').value = place.geometry.location.lng();
+            });
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
     </script>
 @endsection
