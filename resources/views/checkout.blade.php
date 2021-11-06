@@ -749,14 +749,14 @@
                 document.getElementById('cityLng').value = place.geometry.location.lng();
             });
 
-            var input1 = document.getElementById('searchTextField1');
-            var autocomplete1 = new google.maps.places.Autocomplete(input1);
-            google.maps.event.addListener(autocomplete1, 'place_changed', function () {
-                var place = autocomplete1.getPlace();
-                // document.getElementById('city3').value = place.name;
-                document.getElementById('cityLat1').value = place.geometry.location.lat();
-                document.getElementById('cityLng1').value = place.geometry.location.lng();
-            });
+            // var input1 = document.getElementById('searchTextField1');
+            // var autocomplete1 = new google.maps.places.Autocomplete(input1);
+            // google.maps.event.addListener(autocomplete1, 'place_changed', function () {
+            //     var place = autocomplete1.getPlace();
+            //     // document.getElementById('city3').value = place.name;
+            //     document.getElementById('cityLat1').value = place.geometry.location.lat();
+            //     document.getElementById('cityLng1').value = place.geometry.location.lng();
+            // });
         }
         google.maps.event.addDomListener(window, 'load', initialize);
     </script>
