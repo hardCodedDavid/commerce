@@ -79,7 +79,6 @@ class DeliveryController extends Controller
                 'grant_type' => 'password'
             ]), true);
 
-        logger($data);
         if (isset($data['access_token'])) {
             file_put_contents(App::environmentFilePath(), str_replace(
                 'CNS_ACCESS_TOKEN' . '=' . env('CNS_ACCESS_TOKEN'),
