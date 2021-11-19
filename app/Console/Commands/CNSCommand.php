@@ -39,5 +39,6 @@ class CNSCommand extends Command
     public function handle()
     {
         DeliveryController::getToken();
+        $this->alert('ClickNShip token generated');
     }
 }
