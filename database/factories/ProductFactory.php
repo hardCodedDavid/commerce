@@ -19,7 +19,7 @@ class ProductFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'code' => 'PD0000'.$this->faker->randomNumber(5),
@@ -34,7 +34,7 @@ class ProductFactory extends Factory
             'quantity' => $this->faker->randomNumber(),
             'weight' => $this->faker->randomNumber(2),
             'is_listed' => $this->faker->boolean,
-            'item_number' => mt_rand(100000, 999999)
+//            'item_number' => mt_rand(100000, 999999)
         ];
     }
 }

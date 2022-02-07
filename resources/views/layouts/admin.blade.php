@@ -38,7 +38,7 @@
                 </div>
                 <!-- End Logobar -->
                 <!-- Start Navigationbar -->
-                <div class="navigationbar" style="height: calc(100vh - 150px)">
+                <div class="navigationbar" style="height: calc(100vh - 150px); overflow-y: scroll !important;">
                     <ul class="vertical-menu">
                         <li class="vertical-header">Main</li>
                         <li @if (Route::is(['admin.dashboard']))

@@ -207,19 +207,19 @@ code {
   left: 0;
 }
 
-.slimScrollBar {
-  z-index: 0 !important;
-}
+/*.slimScrollBar {*/
+/*  z-index: 0 !important;*/
+/*}*/
 
 .navigationbar {
   height: calc(100vh - 100px);
-  overflow: auto;
+  /*overflow: auto;*/
   -webkit-transition: 0.5s;
   transition: 0.5s;
 }
 
 ::-webkit-scrollbar {
-  width: 0;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -227,11 +227,12 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: transparent;
+  background: #ccc;
+    border-radius: 12px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: transparent;
+  background: #ccc;
 }
 
 /*

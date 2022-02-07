@@ -134,7 +134,7 @@
                     { "data": "status" },
                     { "data": "action" }
                 ],
-                "lengthMenu": [50, 100, 200, 500]
+                "lengthMenu": [10, 50, 100, 200, 500]
             });
         });
     </script>
