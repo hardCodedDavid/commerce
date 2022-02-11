@@ -575,13 +575,12 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    console.log(data);
                     let html = '';
                     let htmlMobile = '';
                     data.forEach(item => {
                         html += `<li class="cart-item">
-                                    <div class="ps-product--mini-cart"><a href="/product/${item.code}/details"><img class="ps-product__thumbnail" src="${item.media[0]}" /></a>
-                                        <div class="ps-product__content"><a class="ps-product__name" href="/product/${item.code}/details"><u>Organic</u> ${item.name}</a>
+                                    <div class="ps-product--mini-cart"><a href="/product/${item.code}/details"><img class="ps-product__thumbnail" src="${item.media[0]}" alt=""/></a>
+                                        <div class="ps-product__content"><a class="ps-product__name" href="/product/${item.code}/details">${item.name}</a>
                                             <p class="ps-product__meta"> <span class="ps-product__price">₦${numberFormat(item.price)}</span>
                                             </p>
                                         </div>
@@ -589,7 +588,7 @@
                                 </li>`;
                         htmlMobile += `<li class="cart-item">
                                     <div class="ps-product--mini-cart"><a href="/product/${item.code}/details"><img class="ps-product__thumbnail" src="${item.media[0]}" alt="alt" /></a>
-                                        <div class="ps-product__content"><a class="ps-product__name" href="/product/${item.code}/details">Avocado <u>Organic</u> ${item.name}</a>
+                                        <div class="ps-product__content"><a class="ps-product__name" href="/product/${item.code}/details">${item.name}</a>
                                             <p class="ps-product__meta"> <span class="ps-product__price">₦${numberFormat(item.price)}</span>
                                             </p>
                                         </div>

@@ -296,9 +296,9 @@
         $('#inputSearchMobile').on('click', function(e) {
             $('.mobile-search__result').addClass('open');
         });
-        $('#inputSearchMobile').on('mouseleave', function (e) {
-            $('.mobile-search__result').removeClass('open');
-        });
+        // $('#inputSearchMobile').on('mouseleave', function (e) {
+        //     $('.mobile-search__result').removeClass('open');
+        // });
 
         $('.btn-cart-header').on('click', function(e) {
             let cartProducts = document.querySelector('.mini-cart__products');

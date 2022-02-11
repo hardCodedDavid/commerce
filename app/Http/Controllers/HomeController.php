@@ -414,9 +414,12 @@ class HomeController extends Controller
 
     public function searchProduct($val): JsonResponse
     {
-        $products = Product::query()->where('is_listed', 1)->where(function ($q) use ($val) {
-            $q->where('name', 'LIKE', '%'.$val.'%')->orWhere('description', 'LIKE', '%'.$val.'%');
-        })->get();
+        $products = Product::query()
+            ->where('is_listed', 1)
+            ->where(function ($q) use ($val) {
+            $q->where('name', 'LIKE', '%'.$val.'%')
+                ->orWhere('code', 'LIKE', '%'.$val.'%');
+            })->get();
         return response()->json(ProductResource::collection($products));
     }
 
