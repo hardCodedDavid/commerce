@@ -86,7 +86,7 @@ class HomeController extends Controller
         return view('admin.index', [
             'products' => Product::query()->count(),
             'listed_products' => Product::query()->where('is_listed', 1)->count(),
-            'admins' => Admin::query()->count(),
+            'admins' => Admin::query()->where('email', '!=', 'softwebdigital@gmail.com')->count(),
             'orders' => Order::query()->count(),
             'sales' => $totalSales,
             'purchases' => $totalPurchases,

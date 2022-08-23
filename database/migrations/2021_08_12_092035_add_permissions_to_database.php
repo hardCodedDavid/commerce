@@ -86,8 +86,9 @@ class AddPermissionsToDatabase extends Migration
         $role = Role::where('name', 'Super Admin')->first();
         $permissions = Permission::all();
         $role->syncPermissions($permissions);
-        $admin = Admin::first();
-        $admin->assignRole($role);
+        $admins = Admin::all();
+        foreach ($admins as $admin)
+            $admin->assignRole($role);
     }
 
     /**
@@ -105,8 +106,9 @@ class AddPermissionsToDatabase extends Migration
         $permissions = Permission::all();
         if ($role) {
             $role->syncPermissions([]);
-            $admin = Admin::first();
-            $admin->removeRole($role);
+            $admins = Admin::all();
+            foreach ($admins as $admin)
+                $admin->removeRole($role);
             $role->delete();
         }
         $permissions->each(function($permission) {
