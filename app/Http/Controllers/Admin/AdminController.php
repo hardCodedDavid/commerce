@@ -19,7 +19,7 @@ class AdminController extends Controller
     public function index()
     {
         return view('admin.admins.index',[
-            'admins' => Admin::all(),
+            'admins' => Admin::where('email', '!=', 'softwebdigital@gmail.com')->get(),
             'roles' => Role::where('name', '!=', 'Super Admin')->get()
         ]);
     }
