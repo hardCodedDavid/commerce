@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping();
 
         $schedule->command('CNS:token')->weekly();
+        $schedule->command('sitemap:generate')->weekly();
     }
 
     /**

@@ -1,4 +1,19 @@
 <?php return array (
+  'artesaos/seotools' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Artesaos\\SEOTools\\Providers\\SEOToolsServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'SEOMeta' => 'Artesaos\\SEOTools\\Facades\\SEOMeta',
+      'OpenGraph' => 'Artesaos\\SEOTools\\Facades\\OpenGraph',
+      'Twitter' => 'Artesaos\\SEOTools\\Facades\\TwitterCard',
+      'JsonLd' => 'Artesaos\\SEOTools\\Facades\\JsonLd',
+      'SEO' => 'Artesaos\\SEOTools\\Facades\\SEOTools',
+    ),
+  ),
   'facade/ignition' => 
   array (
     'providers' => 
@@ -104,6 +119,13 @@
     'providers' => 
     array (
       0 => 'Spatie\\Permission\\PermissionServiceProvider',
+    ),
+  ),
+  'spatie/laravel-sitemap' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Spatie\\Sitemap\\SitemapServiceProvider',
     ),
   ),
   'unicodeveloper/laravel-paystack' => 

@@ -9,9 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="apple-touch-icon.html" rel="apple-touch-icon">
     <link rel="shortcut icon" href="{{ asset(\App\Models\Setting::first()->icon) }}">
-    <meta name="author" content="">
-    <meta name="keywords" content="">
-    <meta name="description" content="">
+    {!! SEO::generate() !!}
     <title>{{ env('APP_NAME') }} - @yield('title')</title>
     @yield('styles')
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700&amp;amp;subset=latin-ext" rel="stylesheet">

@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use App\Models\User;
+use Artesaos\SEOTools\Facades\JsonLd;
+use Artesaos\SEOTools\Facades\OpenGraph;
+use Artesaos\SEOTools\Facades\SEOMeta;
+use Artesaos\SEOTools\Facades\SEOTools;
 use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +20,6 @@ use App\Models\Variation;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -24,6 +27,19 @@ class HomeController extends Controller
 {
     public function index()
     {
+        SEOMeta::setTitle('Home');
+        SEOMeta::setDescription(env('APP_NAME').' - Shop smart, buy quality!');
+        SEOMeta::setCanonical(route('home'));
+
+        OpenGraph::setDescription(env('APP_NAME').' - Shop smart, buy quality!');
+        OpenGraph::setTitle('Home');
+        OpenGraph::setUrl(route('home'));
+        OpenGraph::addImage(asset('logo/3.png'));
+
+        JsonLd::setTitle('Home');
+        JsonLd::setDescription(env('APP_NAME').' - Shop smart, buy quality!');
+        JsonLd::addImage(asset('logo/3.png'));
+
         return view('home');
     }
 
@@ -38,6 +54,19 @@ class HomeController extends Controller
 
     public function shop()
     {
+        SEOMeta::setTitle('Shop');
+        SEOMeta::setDescription(env('APP_NAME').' - Shop smart, buy quality!');
+        SEOMeta::setCanonical(route('shop'));
+
+        OpenGraph::setDescription(env('APP_NAME').' - Shop smart, buy quality!');
+        OpenGraph::setTitle('Shop');
+        OpenGraph::setUrl(route('shop'));
+        OpenGraph::addImage(asset('logo/3.png'));
+
+        JsonLd::setTitle('Shop');
+        JsonLd::setDescription(env('APP_NAME').' - Shop smart, buy quality!');
+        JsonLd::addImage(asset('logo/3.png'));
+
         $products = Product::query()->where('is_listed', 1)->latest();
         if (request('sort') == 'price')
             $products = $products->orderBy('sell_price');
@@ -288,6 +317,19 @@ class HomeController extends Controller
 
     public function faq()
     {
+        SEOMeta::setTitle('FAQ');
+        SEOMeta::setDescription(env('APP_NAME').' - Shop smart, buy quality!');
+        SEOMeta::setCanonical(route('faq'));
+
+        OpenGraph::setDescription(env('APP_NAME').' - Shop smart, buy quality!');
+        OpenGraph::setTitle('FAQ');
+        OpenGraph::setUrl(route('faq'));
+        OpenGraph::addImage(asset('logo/3.png'));
+
+        JsonLd::setTitle('FAQ');
+        JsonLd::setDescription(env('APP_NAME').' - Shop smart, buy quality!');
+        JsonLd::addImage(asset('logo/3.png'));
+
         return view('faq');
     }
 
@@ -367,6 +409,19 @@ class HomeController extends Controller
 
     public function productDetail(Product $product)
     {
+        SEOMeta::setTitle($product['name']);
+        SEOMeta::setDescription(env('APP_NAME').' - '. $product['description']);
+        SEOMeta::setCanonical(route('product.detail', $product['description']));
+
+        OpenGraph::setDescription(env('APP_NAME').' - '. $product['description']);
+        OpenGraph::setTitle($product['name']);
+        OpenGraph::setUrl(route('product.detail', $product['description']));
+        OpenGraph::addImage(asset($product->media()->inRandomOrder()->first()->url ?? null));
+
+        JsonLd::setTitle($product['name']);
+        JsonLd::setDescription(env('APP_NAME').' - '. $product['description']);
+        JsonLd::addImage(asset($product->media()->inRandomOrder()->first()->url ?? null));
+
         if ($user = User::find(auth()->id())) {
             $data = json_decode($user['recent_views'], true) ?? [];
             foreach ($data as $key => $prod)

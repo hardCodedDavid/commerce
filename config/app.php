@@ -170,6 +170,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Queueworker\SansDaemon\SansDaemonServiceProvider::class,
         KingFlamez\Rave\RaveServiceProvider::class,
+        Artesaos\SEOTools\Providers\SEOToolsServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -234,6 +235,12 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Rave' => KingFlamez\Rave\Facades\Rave::class,
+        'SEOMeta' => Artesaos\SEOTools\Facades\SEOMeta::class,
+        'OpenGraph' => Artesaos\SEOTools\Facades\OpenGraph::class,
+        'Twitter' => Artesaos\SEOTools\Facades\TwitterCard::class,
+        'JsonLd' => Artesaos\SEOTools\Facades\JsonLd::class,
+        'JsonLdMulti' => Artesaos\SEOTools\Facades\JsonLdMulti::class,
+        'SEO' => Artesaos\SEOTools\Facades\SEOTools::class,
     ],
 
 ];

@@ -7,6 +7,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
+        "artesaos/seotools": "^0.22.1",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -18,6 +19,7 @@
         "maatwebsite/excel": "^3.1",
         "queueworker/sansdaemon": "^1.2",
         "spatie/laravel-permission": "^4.2",
+        "spatie/laravel-sitemap": "^6.2",
         "twilio/sdk": "^6.28",
         "unicodeveloper/laravel-paystack": "^1.0"
     },
